@@ -1,4 +1,5 @@
-export type CorpusSourceType = 'text' | 'txt' | 'pdf';
+import type {DocumentMetadata} from '../utils/pdfExtractor';
+export type CorpusSourceType = 'text' | 'txt' | 'pdf' | 'md' | 'docx';
 
 export interface CorpusDocument {
   id: string;
@@ -13,6 +14,7 @@ export interface ActiveCorpus {
   sourceType: CorpusSourceType;
   rawText: string;
   documents: CorpusDocument[];
+  metadata?: DocumentMetadata;
   pageCount?: number;
   createdAt: string;
 }

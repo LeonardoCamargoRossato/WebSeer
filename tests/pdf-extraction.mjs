@@ -1,0 +1,22 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {reconstructPdfText,removeRepeatedMargins} from '../src/utils/pdfText.ts';
+import {compareCorpus,corpusContains} from '../src/utils/compareCorpus.ts';
+import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
+const fragment=(str,x,width=10,extra={})=>({str,transform:[10,0,0,10,x,100],width,height:10,...extra});
+assert.equal(reconstructPdfText([fragment('Gê',0),fragment('nesis',10)]),'Gênesis');
+assert.equal(reconstructPdfText([fragment('nã',0),fragment('o',10),fragment(' ',20,4),fragment('pode',24)]),'não pode');
+assert.equal(reconstructPdfText([fragment('duas',0),fragment('palavras',15)]),'duas palavras');
+assert.equal(reconstructPdfText([fragment('fim',0,10,{hasEOL:true}),fragment('linha',0)]),'fim\nlinha');
+assert.equal(reconstructPdfText([fragment('de',0),fragment(' ',10,4),fragment('mais',14)]),'de mais');
+assert.deepEqual(removeRepeatedMargins(['Header 1\nTexto A\nOutro A\nFim 1','Header 2\nTexto B\nOutro B\nFim 2','Header 3\nTexto C\nOutro C\nFim 3']),['Texto A\nOutro A','Texto B\nOutro B','Texto C\nOutro C']);
+assert.equal(corpusContains('Alice viu o coelho.','lice'),false);
+assert.equal(corpusContains('Alice viu o coelho.','ALICE VIU'),true);
+assert.deepEqual(compareCorpus([{text:'Alice viu o coelho. Alice viu a casa.'}],'alice').map(s=>[s.text,s.frequency]),[['viu',2]]);
+assert.deepEqual(compareCorpus([{text:'Alice'},{text:'viu'}],'alice'),[]);
+const data=new Uint8Array(await readFile(new URL('../livros_pdf/Genesis_Pt_Br.pdf',import.meta.url)));
+const pdf=await pdfjs.getDocument({data}).promise;
+let old='',fixed='';
+try{for(let n=1;n<=3;n++){const {items}=await(await pdf.getPage(n)).getTextContent();const fragments=items.filter(i=>'str'in i);old+=fragments.map(i=>i.str).filter(Boolean).join(' ')+'\n';fixed+=reconstructPdfText(fragments)+'\n';}}finally{await pdf.destroy()}
+assert.match(old,/Gê nesis/);assert.doesNotMatch(fixed,/Gê\s+nesis/);assert.match(fixed,/Gênesis/);assert.match(fixed,/princípio/);assert.match(fixed,/céus/);
+console.log('PASS: fragment geometry, real spaces, EOL, margin filtering, exact corpus queries, document boundaries, and Genesis PDF regression.');

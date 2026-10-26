@@ -1,4 +1,5 @@
-export type StoredPdf = {id:string; name:string; file:Blob; pages:string[]; savedAt:string};
+import type {DocumentMetadata,PdfReadOptions} from '../utils/pdfExtractor';
+export type StoredPdf = {id:string; name:string; file:Blob; pages:string[]; savedAt:string; metadata?:DocumentMetadata; options?:PdfReadOptions};
 function openDatabase():Promise<IDBDatabase>{
   return new Promise((resolve,reject)=>{
     const request=indexedDB.open('webseer',1);
