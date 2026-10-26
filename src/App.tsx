@@ -1,3 +1,4 @@
+import AnimatedHistogram from './components/workflow/AnimatedHistogram';
 import Attribution from './components/layout/Attribution';
 import DocumentHistory from './components/workflow/DocumentHistory';
 import ReportActions from './reports/ReportActions';
@@ -35,6 +36,7 @@ export default function App(){
  const [networkQuery,setNetworkQuery]=useState(''),[relationDraft,setRelationDraft]=useState('and'),[phraseMatches,setPhraseMatches]=useState<Edge[]>([]),[minOccurrence,setMinOccurrence]=useState(1),[maxNodes,setMaxNodes]=useState(40),[clusterStrength,setClusterStrength]=useState(55);
  const [frequencyCount,setFrequencyCount]=useState(25),[frequencyOrder,setFrequencyOrder]=useState<'desc'|'asc'>('desc'),[frequencyRemoveStopwords,setFrequencyRemoveStopwords]=useState(false),[frequencyStopwordLanguage,setFrequencyStopwordLanguage]=useState<StopwordLanguage>('pt'),[frequencyMinLength,setFrequencyMinLength]=useState(3),[frequencyOrientation,setFrequencyOrientation]=useState<'horizontal'|'vertical'>('horizontal');
  const [cloudCount,setCloudCount]=useState(80),[cloudPalette,setCloudPalette]=useState<CloudPalette>('webseer'),[cloudColor,setCloudColor]=useState('#315fba'),[cloudBackground,setCloudBackground]=useState('#ffffff'),[cloudShape,setCloudShape]=useState<CloudShape>('circle'),[cloudRotation,setCloudRotation]=useState<CloudRotation>('mixed'),[cloudFont,setCloudFont]=useState('Inter, sans-serif'),[cloudScale,setCloudScale]=useState(1),[cloudSizeContrast,setCloudSizeContrast]=useState(1),[cloudWordSpacing,setCloudWordSpacing]=useState(6),[cloudRemoveStopwords,setCloudRemoveStopwords]=useState(true),[cloudStopwordLanguage,setCloudStopwordLanguage]=useState<StopwordLanguage>('pt');
+ const [histogramInputs,setHistogramInputs]=useState<Inputs|null>(null);
  const [archiveError,setArchiveError]=useState('');
  const [executionTick,setExecutionTick]=useState(0);
  const [resumeRequest,setResumeRequest]=useState<{corpus:ActiveCorpus;tool:ResearchRun['tool'];inputs:Inputs}|null>(null);
@@ -69,7 +71,7 @@ export default function App(){
 
 
  const configs:Record<ResearchRun['tool'],Inputs>={
-  dashboard:{},compare:{qa,qb,weight,resultCount},
+  animatedHistogram:{},dashboard:{},compare:{qa,qb,weight,resultCount},
   wordTree:{query:treeQuery,depth,maxBranches,direction,caseSensitive,ignorePunctuation,selectedTokens},
   phraseNet:{relation:networkQuery,minOccurrence,maxNodes,clusterStrength},
   frequencies:{frequencyCount,frequencyOrder,frequencyRemoveStopwords,frequencyStopwordLanguage,frequencyMinLength,frequencyOrientation},
@@ -83,6 +85,7 @@ export default function App(){
  useEffect(()=>{
   if(resumeRequest){
    const r=resumeRequest,p=r.inputs;skipRecord.current=signature(r.corpus.id,r.tool,p,executionTick);setPage(r.tool);
+   if(r.tool==='animatedHistogram')setHistogramInputs({...p});
    if(r.tool==='compare'){setQa(String(p.qa));setQb(String(p.qb));setWeight(p.weight as typeof weight);setResultCount(Number(p.resultCount));setA(compareCorpus(r.corpus.documents,String(p.qa)).slice(0,Number(p.resultCount)));setB(compareCorpus(r.corpus.documents,String(p.qb)).slice(0,Number(p.resultCount)))}
    if(r.tool==='wordTree'){setQueryDraft(String(p.query));setTreeQuery(String(p.query));setDepth(Number(p.depth));setMaxBranches(Number(p.maxBranches));setDirection(p.direction as typeof direction);setCaseSensitive(Boolean(p.caseSensitive));setIgnorePunctuation(Boolean(p.ignorePunctuation));setSelectedTokens(p.selectedTokens as string[])}
    if(r.tool==='phraseNet'){setRelationDraft(String(p.relation));setNetworkQuery(String(p.relation));setMinOccurrence(Number(p.minOccurrence));setMaxNodes(Number(p.maxNodes));setClusterStrength(Number(p.clusterStrength));setPhraseMatches(matchPhrases(r.corpus.rawText,String(p.relation)))}
@@ -91,7 +94,7 @@ export default function App(){
    setResumeRequest(null);return;
   }
  },[resumeRequest]);
- useEffect(()=>{if(resumeRequest)return;setA([]);setB([]);setQa('');setQb('');setTreeQuery('');setQueryDraft('');setSelectedTokens([]);setPhraseMatches([]);setNetworkQuery('');setRelationDraft(activeCorpus&&detectCorpusLanguage(activeCorpus.rawText)==='pt'?'e':'and')},[activeCorpus?.id]);
+ useEffect(()=>{if(resumeRequest)return;setHistogramInputs(null);setA([]);setB([]);setQa('');setQb('');setTreeQuery('');setQueryDraft('');setSelectedTokens([]);setPhraseMatches([]);setNetworkQuery('');setRelationDraft(activeCorpus&&detectCorpusLanguage(activeCorpus.rawText)==='pt'?'e':'and')},[activeCorpus?.id]);
  const currentView=useRef({page,id:activeCorpus?.id});currentView.current={page,id:activeCorpus?.id};
  const recordSignature=activeCorpus&&tool?signature(activeCorpus.id,tool,inputs,executionTick):'';
  useEffect(()=>{
@@ -105,6 +108,7 @@ export default function App(){
  return <><AppHeader page={page} setPage={setPage}/><main className="appMain">{(storageError||archiveError)&&<p className="notice errorNotice" role="alert">{storageError||archiveError}</p>}{exampleError&&<p role="alert">{t.storage.loadError}</p>}<div className="pageFade" key={page}>
  {tool&&activeCorpus&&<ReportActions key={`${activeCorpus.id}-${tool}`} corpus={activeCorpus} tool={tool} inputs={inputs} data={reportData} ready={ready} onRerun={()=>setExecutionTick(n=>n+1)} onHistory={()=>setPage('history')}/>}
   {page==='home'&&<Landing onOpen={setPage}/>}
+  {page==='animatedHistogram'&&<AnimatedHistogram key={activeCorpus?.id} onOpen={setPage} initialInputs={histogramInputs}/>}
   {page==='examples'&&<Landing onOpen={setPage} examples/>}
   {page==='dashboard'&&<Dashboard onOpen={setPage}/>}
   {page==='corpus'&&<DocumentWorkspace onOpen={setPage}/>}

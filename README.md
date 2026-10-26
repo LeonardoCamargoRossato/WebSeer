@@ -156,3 +156,38 @@ indisponível. Mantenha cópias dos originais e exporte relatórios importantes.
 Os PDFs antigos continuam também na biblioteca de conversão para compatibilidade;
 essa cópia pode ocupar espaço adicional. Excluir um PDF nessa lista de conversão
 não remove o documento nem os relatórios do Histórico.
+
+## Histograma animado (V0)
+
+Última ferramenta no guia da página inicial e no menu Ferramentas de Análise.
+Selecione de 2 a 8 palavras distintas, verifique a existência ou use sugestões
+(4–8 palavras frequentes ou frequentes sem stopwords PT/EN). Candidatos a nomes
+próprios usam capitalização/repetição, não reconhecimento semântico de pessoas;
+podem incluir lugares ou outros nomes e deixar nomes de fora. Clique para copiar
+ou arraste para o campo. A contagem usa palavras inteiras, ignora caixa e preserva
+acentos, sem stemming.
+
+Cada página física de PDF mantém sua contagem individual. As barras acumulam as
+ocorrências ao avançar páginas, reordenando o ranking, com cores fixas por termo.
+TXT/MD/DOCX normalmente têm apenas uma seção: não inventamos paginação. CSV inclui
+contagens individuais e acumuladas. A prévia possui reproduzir/pausar, reiniciar
+e seleção de página.
+
+GIF é codificado em worker com gifenc. MP4 usa VideoEncoder/WebCodecs H.264 e
+mp4-muxer, somente quando suportado pelo navegador. Ambos são gerados localmente
+em 960×540, sem upload; o browser libera o download. A duração por página pode
+ser configurada, e a geração cancelada. Documentos grandes exigem mais tempo,
+memória e armazenamento. Navegadores sem codificação H.264 devem usar GIF.
+
+Cada geração salva automaticamente uma pesquisa e um relatório versionado com
+os bytes GIF/MP4, contagens e parâmetros no IndexedDB. O arquivo pode ser
+reproduzido/baixado novamente no Histórico e incluído no relatório geral.
+Retomar pesquisa restaura palavras e duração; gerar uma nova animação cria outra
+versão. Gerar relatório na ferramenta exporta o relatório HTML já salvo, sem
+criar outra cópia da animação. Se o armazenamento falhar, o arquivo gerado ainda
+pode ser baixado e a interface informa que ele não foi salvo na biblioteca.
+
+`npm test` inclui as regressões de contagem, acentos, limites e cruzamento de
+ranking. `CHROMIUM_PATH=/usr/bin/chromium npm run test:animation` cobre PDF de três
+páginas com contagens conhecidas, clipboard, arquivo GIF, CSV, player, Histórico,
+retomada, cancelamento, MP4 quando disponível e layout móvel.

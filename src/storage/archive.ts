@@ -1,7 +1,7 @@
 import {announceChange,openDatabase,operation} from './database';
 import type {ActiveCorpus} from '../types/corpus';
 import {listPdfs} from './pdfStore';
-export type Tool='dashboard'|'compare'|'wordTree'|'phraseNet'|'frequencies'|'wordCloud'|'general';
+export type Tool='dashboard'|'compare'|'wordTree'|'phraseNet'|'frequencies'|'wordCloud'|'animatedHistogram'|'general';
 export type Inputs=Record<string,string|number|boolean|string[]>;
 export type ArchiveDocument={id:string;name:string;sourceType:ActiveCorpus['sourceType'];original:Blob;originalName:string;createdAt:string;updatedAt:string;currentSnapshotId:string};
 export type Snapshot={id:string;documentId:string;corpus:ActiveCorpus};
@@ -37,7 +37,7 @@ export async function saveReport(corpus:ActiveCorpus,tool:Tool,inputs:Inputs,dat
  // Count and insert within a single transaction so concurrent tabs cannot reuse a version.
  return new Promise<Report>((resolve,reject)=>{
   const tx=db.transaction('reports','readwrite'),store=tx.objectStore('reports'),request=store.getAll();let report:Report;let failure:unknown;
-  request.onsuccess=()=>{try{const prior=request.result as Report[];report={id:crypto.randomUUID(),...refs,tool,version:Math.max(0,...prior.filter(r=>r.documentId===refs.documentId&&r.tool===tool).map(r=>r.version))+1,createdAt:new Date().toISOString(),inputs:structuredClone(inputs),data:structuredClone(data),visual,visualName:visual?`visualization.${visual.type==='image/png'?'png':'svg'}`:undefined,runId,relatedReportIds,formatVersion:1};store.add(report)}catch(error){failure=error;tx.abort()}};
+  request.onsuccess=()=>{try{const prior=request.result as Report[];report={id:crypto.randomUUID(),...refs,tool,version:Math.max(0,...prior.filter(r=>r.documentId===refs.documentId&&r.tool===tool).map(r=>r.version))+1,createdAt:new Date().toISOString(),inputs:structuredClone(inputs),data:structuredClone(data),visual,visualName:visual?`visualization.${visual.type==='image/png'?'png':visual.type==='image/gif'?'gif':visual.type==='video/mp4'?'mp4':'svg'}`:undefined,runId,relatedReportIds,formatVersion:1};store.add(report)}catch(error){failure=error;tx.abort()}};
   tx.oncomplete=()=>{db.close();announceChange();resolve(report)};tx.onerror=tx.onabort=()=>{db.close();reject(failure??tx.error)};
  });
 }
