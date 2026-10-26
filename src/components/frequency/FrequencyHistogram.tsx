@@ -20,8 +20,8 @@ export default function FrequencyHistogram({data,orientation,onOpenWordTree}:Pro
   const W=1200,H=700,pad={top:45,right:70,bottom:70,left:150};
 
   useEffect(()=>{
-    const svg=d3.select(svgRef.current);
-    const root=d3.select(rootRef.current);
+    const svg=d3.select(svgRef.current!);
+    const root=d3.select(rootRef.current!);
     const zoomBehavior=d3.zoom<SVGSVGElement,unknown>().scaleExtent([.35,5]).on('zoom',event=>{
       root.attr('transform',event.transform.toString());
       setZoom(event.transform.k*100);
@@ -40,7 +40,7 @@ export default function FrequencyHistogram({data,orientation,onOpenWordTree}:Pro
     const tr=d3.zoomIdentity.translate(W/2,H/2).scale(k).translate(-(box.x+box.width/2),-(box.y+box.height/2));
     d3.select(svg).transition().duration(220).call(behavior.transform,tr);
   };
-  const zoomBy=(factor:number)=>{if(svgRef.current&&zoomRef.current)d3.select(svgRef.current).transition().duration(160).call(zoomRef.current.scaleBy,factor)};
+  const zoomBy=(factor:number)=>{if(svgRef.current&&zoomRef.current)d3.select(svgRef.current!).transition().duration(160).call(zoomRef.current.scaleBy,factor)};
 
   const exportSvg=()=>{
     const svg=svgRef.current;if(!svg)return;

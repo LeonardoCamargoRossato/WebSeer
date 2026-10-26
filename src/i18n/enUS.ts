@@ -1,4 +1,5 @@
 export const enUS = {
+  storage: {"title": "Storage Options", "browser": "In the browser (IndexedDB)", "supabase": "Supabase Storage (future implementation)", "browserInfoLabel": "About IndexedDB", "supabaseInfoLabel": "About Supabase", "browserInfo": "PDFs and extracted text stay in this browser and device, without being sent to a server. They remain available after reloading. Clearing site data, private browsing, or browser eviction may remove them. Keep your original files.", "supabaseInfo": "Future integration to save files in the cloud and access them across devices. Unavailable in this version; no files are sent to Supabase.", "library": "PDFs saved in this browser", "open": "Open", "remove": "Delete", "empty": "No saved PDFs.", "error": "Could not access or save browser storage. Check available space and permissions. You can continue analyzing in this session.", "saved": "PDF saved in this browser.", "examples": "Example texts", "english": "English example", "portuguese": "Portuguese example", "loadError": "Could not load the example text. Please try again."},
   brand: { name: 'Web Seer Lab', tagline: 'Visual Language Explorer' },
   nav: { home: 'Home', compare: 'Compare', wordTree: 'Word Tree', phraseNet: 'Phrase Net', frequencies: 'Frequencies', wordCloud: 'Word Cloud', corpus: 'Corpus', history: 'History' },
   common: {
@@ -71,7 +72,7 @@ export const enUS = {
     title: 'Corpus Explorer', description: 'Prepare and understand your data before analysis.', source: 'Corpus source',
     paste: 'Paste text', upload: 'Upload TXT', uploadPdf: 'Upload PDF', viewPdf: 'View PDF', expand: 'Expand', minimize: 'Minimize',
     zoomIn: 'Zoom in', zoomOut: 'Zoom out', page: 'Page', extractedText: 'Extracted text', noPdf: 'No PDF loaded',
-    pdfLocalHint: 'The PDF is kept locally for this session only.', statsTextNote: 'Statistics use the active corpus.',
+    pdfLocalHint: 'PDFs are stored in this browser when IndexedDB is available.', statsTextNote: 'Statistics use the active corpus.',
     placeholder: 'Paste or edit corpus text here...', stats: 'Statistics', topTerms: 'Most frequent terms',
     uploadHint: '.txt files are loaded locally in your browser.', useText: 'Use this text',
     extracting: 'Extracting PDF text...', corpusReady: 'Corpus ready for analysis.', processingError: 'Could not process the PDF.'

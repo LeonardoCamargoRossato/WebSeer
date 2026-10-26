@@ -88,3 +88,20 @@ select:disabled{color:var(--text-secondary)!important}
   background:linear-gradient(90deg,#2563eb 0%,#06b6d4 25%,#facc15 50%,#f97316 75%,#dc2626 100%);
   border:1px solid rgba(23,32,51,.08);
 }
+
+/* Browser storage selector and local document library. */
+.storageOptions{position:relative;font-size:12px;flex-shrink:0}
+.storageOptions>summary{cursor:pointer;padding:9px 10px;border:1px solid #dce3ee;border-radius:8px;list-style:none}
+.storageOptions>summary::after{content:' ▾'}
+.storagePopover{position:absolute;right:0;top:calc(100% + 8px);z-index:100;background:white;color:#20324c;border:1px solid #dce3ee;border-radius:12px;padding:14px;width:min(360px,85vw);box-shadow:0 12px 30px #172c4926}
+.storageOption{padding:9px 0;display:flex;align-items:flex-start;gap:10px}
+.storageOption label{display:flex;gap:8px;align-items:center;flex:1}
+.storageOption>details>summary{cursor:pointer;color:#315fba;font-size:18px;list-style:none}
+.storageOption p{font-size:13px;line-height:1.6;margin:8px 0}
+.storageOption:has(details[open]){flex-wrap:wrap}
+.storageOption details[open]{width:100%}
+.corpusLibrary{padding:20px;margin-bottom:20px}
+.libraryActions,.savedPdf,.savedPdf>div{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.savedPdf{justify-content:space-between;padding:12px 0;border-top:1px solid #e5eaf2}
+.corpusLibrary button{border:1px solid #dce3ee;background:white;border-radius:8px;padding:8px 12px;cursor:pointer;color:#315fba}
+@media(min-width:1100px){.headerInner{flex-wrap:wrap}.headerRight{flex-wrap:wrap;justify-content:flex-end}}

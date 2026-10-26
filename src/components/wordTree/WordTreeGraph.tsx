@@ -41,7 +41,7 @@ export default function WordTreeGraph({result,onSelect}:{result:WordTreeResult;o
   const all=[...backward,...forward];
 
   useEffect(()=>{
-    const svg=d3.select(svgRef.current),group=d3.select(rootGroupRef.current);
+    const svg=d3.select(svgRef.current!),group=d3.select(rootGroupRef.current!);
     const behavior=d3.zoom<SVGSVGElement,unknown>().scaleExtent([.3,5]).on('zoom',e=>{
       group.attr('transform',e.transform.toString()); setZoom(e.transform.k*100);
     });
@@ -52,7 +52,7 @@ export default function WordTreeGraph({result,onSelect}:{result:WordTreeResult;o
   const parentMetrics=(item:Positioned)=>item.parent?.metrics??root;
   const isActive=(item:Positioned)=>!hover||item.id===hover||item.id.startsWith(hover)||hover.startsWith(item.id);
   const click=(item:Positioned)=>{setSelected(item.id);onSelect(item.node.pathTokens)};
-  const zoomBy=(factor:number)=>{if(svgRef.current&&zoomRef.current)d3.select(svgRef.current).transition().duration(160).call(zoomRef.current.scaleBy,factor)};
+  const zoomBy=(factor:number)=>{if(svgRef.current&&zoomRef.current)d3.select(svgRef.current!).transition().duration(160).call(zoomRef.current.scaleBy,factor)};
   const fit=()=>{
     const svg=svgRef.current,group=rootGroupRef.current,behavior=zoomRef.current;if(!svg||!group||!behavior)return;
     const box=group.getBBox();if(!box.width||!box.height)return;

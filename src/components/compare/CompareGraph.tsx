@@ -18,7 +18,7 @@ export default function CompareGraph({a,b,weightBy,queryA,queryB}:Props){
  const W=1200,H=760,leftX=225,rightX=975,centerX=600,rootY=78;
 
  useEffect(()=>{
-   const svg=d3.select(svgRef.current),root=d3.select(rootRef.current);
+   const svg=d3.select(svgRef.current!),root=d3.select(rootRef.current!);
    const behavior=d3.zoom<SVGSVGElement,unknown>().scaleExtent([.35,4]).on('zoom',e=>{
      root.attr('transform',e.transform.toString());
      setZoom(e.transform.k*100);
@@ -41,7 +41,7 @@ export default function CompareGraph({a,b,weightBy,queryA,queryB}:Props){
  const leftRoot=metrics(leftX,rootY,queryA,18),rightRoot=metrics(rightX,rootY,qbSafe(queryB),18);
  const opacity=(term:string)=>hover ? (hover===term ? 1 : .12) : .74;
 
- const zoomBy=(factor:number)=>{if(svgRef.current&&zoomRef.current)d3.select(svgRef.current).transition().duration(160).call(zoomRef.current.scaleBy,factor)};
+ const zoomBy=(factor:number)=>{if(svgRef.current&&zoomRef.current)d3.select(svgRef.current!).transition().duration(160).call(zoomRef.current.scaleBy,factor)};
  const fit=()=>{
    const svg=svgRef.current,root=rootRef.current,behavior=zoomRef.current;
    if(!svg||!root||!behavior)return;

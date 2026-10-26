@@ -1,4 +1,5 @@
 export const ptBR = {
+  storage: {"title": "Opções de Armazenamento", "browser": "Pelo navegador (IndexedDB)", "supabase": "Storage Supabase (implementação futura)", "browserInfoLabel": "Informações sobre IndexedDB", "supabaseInfoLabel": "Informações sobre Supabase", "browserInfo": "Os PDFs e o texto extraído ficam neste navegador e dispositivo, sem envio a um servidor. Continuam disponíveis após recarregar a página. Limpar os dados do site, usar navegação privada ou a remoção de dados pelo navegador pode apagá-los. Mantenha uma cópia dos originais.", "supabaseInfo": "Integração futura para salvar arquivos na nuvem e acessá-los em outros dispositivos. Está indisponível nesta versão; nenhum arquivo é enviado ao Supabase.", "library": "PDFs salvos neste navegador", "open": "Abrir", "remove": "Excluir", "empty": "Nenhum PDF salvo.", "error": "Não foi possível acessar ou salvar no navegador. Verifique o espaço disponível e as permissões. A análise pode continuar nesta sessão.", "saved": "PDF salvo neste navegador.", "examples": "Textos de exemplo", "english": "Exemplo em inglês", "portuguese": "Exemplo em português", "loadError": "Não foi possível carregar o texto de exemplo. Tente novamente."},
   brand: { name: 'Web Seer Lab', tagline: 'Explorador Visual da Linguagem' },
   nav: { home: 'Início', compare: 'Comparar', wordTree: 'Árvore de Palavras', phraseNet: 'Rede de Frases', frequencies: 'Frequências', wordCloud: 'Mapa de Palavras', corpus: 'Corpus', history: 'Histórico' },
   common: {
@@ -71,7 +72,7 @@ export const ptBR = {
     title: 'Explorador de Corpus', description: 'Prepare e compreenda seus dados antes da análise.', source: 'Fonte do corpus',
     paste: 'Colar texto', upload: 'Upload TXT', uploadPdf: 'Upload PDF', viewPdf: 'Visualizar PDF', expand: 'Expandir', minimize: 'Minimizar',
     zoomIn: 'Aumentar zoom', zoomOut: 'Reduzir zoom', page: 'Página', extractedText: 'Texto extraído', noPdf: 'Nenhum PDF carregado',
-    pdfLocalHint: 'O PDF é mantido apenas localmente durante esta sessão.', statsTextNote: 'As estatísticas usam o corpus ativo.',
+    pdfLocalHint: 'PDFs são armazenados neste navegador quando o IndexedDB está disponível.', statsTextNote: 'As estatísticas usam o corpus ativo.',
     placeholder: 'Cole ou edite o texto do corpus aqui...', stats: 'Estatísticas', topTerms: 'Termos mais frequentes',
     uploadHint: 'Arquivos .txt são carregados localmente no navegador.', useText: 'Usar este texto',
     extracting: 'Extraindo texto do PDF...', corpusReady: 'Corpus pronto para análise.', processingError: 'Não foi possível processar o PDF.'

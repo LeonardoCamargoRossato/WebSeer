@@ -1,3 +1,4 @@
+import StorageOptions from './StorageOptions';
 import {useState} from 'react';
 import {useI18n} from '../../i18n';
 
@@ -21,7 +22,7 @@ export default function AppHeader({page,setPage}:{page:Page;setPage:(p:Page)=>vo
   <button className="menuToggle" aria-label="Menu" onClick={()=>setOpen(v=>!v)}>☰</button>
   <div className={`headerRight ${open?'open':''}`}>
    <nav>{nav.map(([key,label])=><button className={page===key?'active':''} onClick={()=>{setPage(key);setOpen(false)}} key={key}>{label}</button>)}</nav>
-   <select className="localeSelect" aria-label="Language" value={locale} onChange={e=>setLocale(e.target.value as typeof locale)}><option value="pt-BR">PT-BR</option><option value="en-US">EN-US</option></select>
+   <StorageOptions/><select className="localeSelect" aria-label="Language" value={locale} onChange={e=>setLocale(e.target.value as typeof locale)}><option value="pt-BR">PT-BR</option><option value="en-US">EN-US</option></select>
   </div>
  </div></header>
 }

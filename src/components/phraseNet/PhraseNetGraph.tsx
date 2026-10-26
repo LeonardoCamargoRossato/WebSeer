@@ -26,16 +26,16 @@ export default function PhraseNetGraph({edges,clusterStrength=55,maxNodes=40}:{e
  },[edges,maxNodes]);
 
  useEffect(()=>{
-   const svg=d3.select(ref.current);svg.selectAll('*').remove();
+   const svg=d3.select(ref.current!);svg.selectAll('*').remove();
    const sourceSet=new Set(filtered.map(e=>e.source)),targetSet=new Set(filtered.map(e=>e.target));
    const freq=new Map<string,number>();
    filtered.forEach(e=>{freq.set(e.source,(freq.get(e.source)||0)+e.count);freq.set(e.target,(freq.get(e.target)||0)+e.count)});
    const maxFreq=Math.max(1,...freq.values()),font=d3.scaleLinear().domain([1,maxFreq]).range([14,25]);
-   const nodes:Node=[...freq].map(([id,frequency],i)=>{
+   const nodes:Node[]=[...freq].map(([id,frequency],i)=>{
      const f=font(frequency),role=sourceSet.has(id)&&targetSet.has(id)?'shared':sourceSet.has(id)?'source':'target';
      return{id,frequency,role,width:Math.max(58,id.length*f*.56+28),height:f+18,x:W/2+Math.cos(i)*35,y:H/2+Math.sin(i)*35};
    });
-   const links:Link=filtered.map(e=>({source:e.source,target:e.target,count:e.count}));
+   const links:Link[]=filtered.map(e=>({source:e.source,target:e.target,count:e.count}));
    const defs=svg.append('defs');
    defs.append('marker').attr('id','phrase-arrow').attr('viewBox','0 0 10 10').attr('refX',8).attr('refY',5).attr('markerWidth',7).attr('markerHeight',7).attr('orient','auto-start-reverse')
      .append('path').attr('d','M 0 0 L 10 5 L 0 10 z').attr('class','arrowHead');
@@ -71,7 +71,7 @@ export default function PhraseNetGraph({edges,clusterStrength=55,maxNodes=40}:{e
    return()=>{sim.stop();svg.on('.zoom',null)};
  },[filtered,clusterStrength]);
 
- const changeZoom=(factor:number)=>{if(ref.current&&zoomRef.current)d3.select(ref.current).transition().duration(180).call(zoomRef.current.scaleBy,factor)};
+ const changeZoom=(factor:number)=>{if(ref.current&&zoomRef.current)d3.select(ref.current!).transition().duration(180).call(zoomRef.current.scaleBy,factor)};
  const fit=()=>{
    const svg=ref.current,root=rootRef.current,behavior=zoomRef.current;if(!svg||!root||!behavior)return;
    const box=root.getBBox();if(!box.width||!box.height)return;
