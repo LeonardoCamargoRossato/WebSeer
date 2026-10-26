@@ -191,3 +191,47 @@ pode ser baixado e a interface informa que ele não foi salvo na biblioteca.
 ranking. `CHROMIUM_PATH=/usr/bin/chromium npm run test:animation` cobre PDF de três
 páginas com contagens conhecidas, clipboard, arquivo GIF, CSV, player, Histórico,
 retomada, cancelamento, MP4 quando disponível e layout móvel.
+
+## Login Google e painel de criação de vídeo
+
+O cabeçalho oferece Entrar. Depois da configuração Google, a tela usa Google
+Identity Services em popup e mostra nome/foto no cabeçalho e na biblioteca. A
+biblioteca continua local e compartilhada no navegador; login não sincroniza nem
+separa documentos por conta. Consulte [GOOGLE_LOGIN.md](docs/GOOGLE_LOGIN.md) para
+criar o Client ID público e configurar a variável GitHub `GOOGLE_CLIENT_ID`.
+Sem essa configuração, a interface informa que a ativação está pendente.
+
+Após gerar uma animação salva, abra **Painel de criação de vídeo** pelo resultado
+ou **Preparar vídeo para YouTube** no relatório do Histórico. O painel edita
+título, descrição, tags, categoria, idioma dos metadados/áudio, privacidade,
+agendamento, público infantil, conteúdo sintético, promoção paga, licença,
+incorporação, estatísticas públicas e notificação de inscritos. Playlists,
+restrição etária e legendas ficam como planejamento separado; miniaturas/agente
+de imagens e upload são etapas futuras, não implementadas.
+
+Sugestões automáticas usam nome do documento, palavras, contagens e páginas,
+sem GPT. Não decidem declarações de público infantil/licença/sintético. A
+validação cobre limites do título (100 caracteres), descrição (5000 bytes UTF-8),
+tags (500 contando separadores/aspas), idioma e agendamento privado/futuro.
+Metadados inválidos podem ser salvos como rascunho, mas não exportados como
+payload de YouTube. O usuário pode baixar o arquivo e exportar rascunho/JSON dos
+metadados sem enviar nada.
+
+Os campos foram conferidos na especificação oficial Google YouTube Data API v3
+(discovery revision **20261012**, fonte:
+https://github.com/googleapis/google-api-python-client/blob/main/googleapiclient/discovery_cache/documents/youtube.v3.json).
+`notifySubscribers` é parâmetro de query, não corpo do vídeo. Miniaturas,
+playlists e legendas usam operações separadas; estado de processamento,
+estatísticas e ID do canal não são campos de preenchimento de `videos.insert`.
+Categorias/permissões reais do canal serão revalidadas na implementação de upload.
+
+O IndexedDB passou para versão 3, preservando documentos/pesquisas/relatórios e
+adicionando `videoDrafts`. Cada rascunho referencia uma versão de animação sem
+duplicar o arquivo. O salvamento é explícito; alterações não salvas são protegidas
+por confirmação ao navegar/sair. Um GIF pode ter metadados preparados, mas o
+futuro upload requer MP4. Login e rascunhos não autorizam envio ao YouTube.
+
+`npm test` inclui validação/sugestões de metadados. Com preview em 4173,
+`CHROMIUM_PATH=/usr/bin/chromium npm run test:video` valida painel, rascunhos,
+exportação, proteção contra perda de edição, layout e ausência de upload.
+O teste de autenticação usa somente provedor simulado; veja o guia de configuração.

@@ -1,9 +1,9 @@
 export function announceChange(){if(typeof window!=='undefined')window.dispatchEvent(new Event('webseer-archive-change'));if(typeof BroadcastChannel!=='undefined'){const channel=new BroadcastChannel('webseer-archive');channel.postMessage('changed');channel.close()}}
-export const DB_VERSION=2;
+export const DB_VERSION=3;
 export function openDatabase():Promise<IDBDatabase>{
  return new Promise((resolve,reject)=>{
   const request=indexedDB.open('webseer',DB_VERSION);
-  request.onupgradeneeded=()=>{const db=request.result;for(const name of ['pdfs','documents','snapshots','runs','reports'])if(!db.objectStoreNames.contains(name))db.createObjectStore(name,{keyPath:'id'})};
+  request.onupgradeneeded=()=>{const db=request.result;for(const name of ['pdfs','documents','snapshots','runs','reports','videoDrafts'])if(!db.objectStoreNames.contains(name))db.createObjectStore(name,{keyPath:'id'})};
   request.onsuccess=()=>{const db=request.result;db.onversionchange=()=>db.close();resolve(db)};
   request.onerror=()=>reject(request.error);
   request.onblocked=()=>reject(new Error('Close other WebSeer tabs to update browser storage.'));

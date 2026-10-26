@@ -1,0 +1,1 @@
+interface Window{google?:{accounts:{id:{initialize:(options:{client_id:string;callback:(response:{credential:string})=>void;nonce:string;auto_select:boolean;ux_mode:'popup';cancel_on_tap_outside:boolean})=>void;renderButton:(element:HTMLElement,options:Record<string,unknown>)=>void;disableAutoSelect:()=>void}}}}

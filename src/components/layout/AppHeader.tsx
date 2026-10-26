@@ -1,9 +1,11 @@
+import {GoogleAvatar,useAuth} from '../../auth/AuthContext';
 import {AUTHOR_NAME,PORTFOLIO_URL} from '../../config/author';
 import StorageOptions from './StorageOptions';
 import {useState} from 'react';
 import {useI18n} from '../../i18n';
-export type Page='home'|'corpus'|'dashboard'|'compare'|'wordTree'|'phraseNet'|'frequencies'|'wordCloud'|'history'|'examples'|'animatedHistogram';
+export type Page='home'|'corpus'|'dashboard'|'compare'|'wordTree'|'phraseNet'|'frequencies'|'wordCloud'|'history'|'examples'|'animatedHistogram'|'login'|'videoStudio';
 export default function AppHeader({page,setPage}:{page:Page;setPage:(p:Page)=>void}){
+ const {profile}=useAuth();
  const {t,locale,setLocale}=useI18n();const en=locale==='en-US';const [open,setOpen]=useState(false),[tools,setTools]=useState(false);
  const analyses:[Page,string][]=[['dashboard',en?'Data dashboard':'Dashboard de dados'],['compare',t.nav.compare],['wordTree',t.nav.wordTree],['phraseNet',t.nav.phraseNet],['frequencies',t.nav.frequencies],['wordCloud',t.nav.wordCloud],['animatedHistogram',en?'Animated Histogram':'Histograma animado']];
  const go=(next:Page)=>{setPage(next);setOpen(false);setTools(false)};
@@ -12,5 +14,5 @@ export default function AppHeader({page,setPage}:{page:Page;setPage:(p:Page)=>vo
  <button className={page==='corpus'?'active':''} onClick={()=>go('corpus')}>{en?'Document Corpus':'Corpus do Documento'}</button>
  <div className="analysisMenu"><button className={analyses.some(([key])=>key===page)?'active':''} aria-expanded={tools} onClick={()=>setTools(v=>!v)}>{en?'Analysis Tools':'Ferramentas de Análise'} ▾</button>{tools&&<div className="analysisPopover">{analyses.map(([key,label])=><button key={key} onClick={()=>go(key)}>{label}</button>)}</div>}</div>
  <button className={page==='history'?'active':''} onClick={()=>go('history')}>{t.nav.history}</button><button className={page==='examples'?'active':''} onClick={()=>go('examples')}>{en?'Application Examples':'Exemplos de Aplicação'}</button>
- </nav><StorageOptions/><select className="localeSelect" aria-label="Language" value={locale} onChange={e=>setLocale(e.target.value as typeof locale)}><option value="pt-BR">PT-BR</option><option value="en-US">EN-US</option></select></div></div></header>;
+ </nav><button className="profileButton" onClick={()=>go('login')}>{profile?<><GoogleAvatar profile={profile}/><span>{profile.name}</span></>:<span>{en?'Sign in':'Entrar'}</span>}</button><StorageOptions/><select className="localeSelect" aria-label="Language" value={locale} onChange={e=>setLocale(e.target.value as typeof locale)}><option value="pt-BR">PT-BR</option><option value="en-US">EN-US</option></select></div></div></header>;
 }

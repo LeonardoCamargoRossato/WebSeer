@@ -8,14 +8,17 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test:browser": "node tests/browser-smoke.cjs",
-    "test": "node tests/pdf-extraction.mjs && node tests/animation-counts.mjs",
+    "test": "node tests/pdf-extraction.mjs && node tests/animation-counts.mjs && node tests/video-metadata.mjs",
     "test:history": "node tests/history-browser.cjs",
-    "test:animation": "node tests/animation-browser.cjs"
+    "test:animation": "node tests/animation-browser.cjs",
+    "test:video": "node tests/video-studio-browser.cjs",
+    "test:auth": "node tests/google-auth-browser.cjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
     "d3": "^7.9.0",
     "gifenc": "1.0.3",
+    "jose": "6.2.13",
     "mammoth": "1.13.0",
     "mp4-muxer": "5.2.2",
     "pdfjs-dist": "^4.10.38",
