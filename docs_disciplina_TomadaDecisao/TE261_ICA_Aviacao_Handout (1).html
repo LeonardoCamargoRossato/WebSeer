@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análise Temática Indutiva — Entrevistas em Aviação | TE-261/264 ITA</title>
+<style>
+/* ===================================================================
+   DESIGN: Cockpit Instrument Panel
+   Palette: Navy + Instrument Amber + Category Colors
+   =================================================================== */
+:root {
+  --navy:      #0B1826;
+  --cockpit:   #162334;
+  --surface:   #1E3248;
+  --card:      #243D5A;
+  --border:    #2E4D6A;
+  --muted:     #6E92AB;
+  --light:     #EAF1F7;
+
+  --amber:     #F5C842;
+  --amber-dim: #C9A030;
+  --amber-bg:  rgba(245,200,66,0.09);
+
+  /* Category palette */
+  --sa:    #4B9FE1;   /* Consciência Situacional */
+  --crm:   #52C070;   /* Coordenação de Tripulação */
+  --dec:   #F5A623;   /* Tomada de Decisão */
+  --wl:    #E05C5C;   /* Gestão de Workload */
+  --com:   #B97AE0;   /* Comunicação */
+  --ref:   #7AB8CC;   /* Reflexão / Aprendizado */
+  --desc:  #8BA0B0;   /* Descrição */
+
+  --r: 6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+body {
+  background: var(--navy);
+  color: var(--light);
+  font-family: Georgia,'Times New Roman',serif;
+  font-size: 15px;
+  line-height: 1.72;
+}
+h1,h2,h3,h4,h5 {
+  font-family: system-ui,-apple-system,sans-serif;
+  font-weight: 700;
+  line-height: 1.3;
+}
+a { color: var(--sa); text-decoration: none; }
+code,.mono { font-family:'Courier New',monospace; }
+p { margin-bottom: .6em; }
+
+/* ---- HERO ---- */
+.hero {
+  background: linear-gradient(150deg,#070f1a 0%,#111f30 55%,#162840 100%);
+  border-bottom: 2px solid var(--amber);
+  padding: 52px 28px 40px;
+  text-align: center;
+}
+.eyebrow {
+  font-family:'Courier New',monospace;
+  font-size: 10px;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 14px;
+}
+.hero h1 { font-size: clamp(22px,4vw,40px); margin-bottom: 10px; }
+.hero h1 em { font-style:normal; color: var(--amber); }
+.hero-sub {
+  color: var(--muted);
+  font-size: 14px;
+  max-width: 580px;
+  margin: 0 auto 30px;
+}
+.hero-cards {
+  display: flex; gap: 12px;
+  justify-content: center; flex-wrap: wrap;
+  max-width: 860px; margin: 0 auto;
+}
+.hc {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--amber);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  flex: 1; min-width: 190px; max-width: 240px;
+  text-align: left;
+}
+.hc .lbl {
+  font-family:'Courier New',monospace;
+  font-size: 9.5px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--amber);
+  margin-bottom: 6px;
+}
+.hc p { font-size: 13px; color: var(--muted); margin: 0; }
+
+/* ---- NAV ---- */
+.step-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--cockpit);
+  border-bottom: 1px solid var(--border);
+  display: flex; overflow-x: auto;
+}
+.step-nav::-webkit-scrollbar { display: none; }
+.snb {
+  flex: 0 0 auto;
+  background: none; border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: system-ui,sans-serif;
+  font-size: 12.5px; font-weight: 600;
+  padding: 13px 18px; white-space: nowrap;
+  transition: color .2s, border-color .2s;
+}
+.snb:hover { color: var(--light); }
+.snb.active { color: var(--amber); border-bottom-color: var(--amber); }
+
+/* ---- SECTION ---- */
+.sec {
+  display: none;
+  max-width: 1080px; margin: 0 auto;
+  padding: 36px 24px 64px;
+}
+.sec.active { display: block; }
+
+.sec-head {
+  display: flex; align-items: flex-start; gap: 14px;
+  margin-bottom: 26px; padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+.badge {
+  background: var(--amber); color: var(--navy);
+  font-family:'Courier New',monospace;
+  font-size: 10px; font-weight: 700;
+  padding: 4px 10px; border-radius: 3px;
+  white-space: nowrap; margin-top: 5px;
+}
+.sec-head-text h2 { font-size: 21px; }
+.sec-head-text p  { color: var(--muted); font-size: 13.5px; margin: 4px 0 0; }
+
+/* ---- CARDS & BOXES ---- */
+.card {
+  background: var(--cockpit);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px 24px; margin-bottom: 18px;
+}
+.card-title {
+  font-family: system-ui,sans-serif;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--amber); margin-bottom: 10px;
+}
+.info-box {
+  background: var(--amber-bg);
+  border-left: 3px solid var(--amber);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 13px 16px; margin: 14px 0;
+  font-size: 14px;
+}
+.info-box strong { color: var(--amber); }
+.method-ref {
+  background: rgba(75,159,225,0.07);
+  border-left: 3px solid var(--sa);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 11px 14px; margin: 12px 0;
+  font-size: 13px; color: var(--muted);
+}
+.method-ref strong { color: var(--sa); }
+.tip {
+  background: rgba(82,192,112,0.07);
+  border-left: 3px solid var(--crm);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 11px 14px; margin: 12px 0;
+  font-size: 13px;
+}
+
+/* ---- LEGEND ---- */
+.legend {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin: 14px 0 4px;
+}
+.li {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; font-family: system-ui,sans-serif;
+}
+.ld {
+  width: 13px; height: 13px;
+  border-radius: 3px; flex-shrink: 0;
+}
+
+/* ---- TRANSCRIPT ---- */
+.transcript {
+  background: #09131E;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  font-family:'Courier New',monospace;
+  font-size: 13px; overflow: hidden;
+}
+.turn { border-bottom: 1px solid rgba(46,77,106,.5); }
+.turn:last-child { border-bottom: none; }
+
+.turn-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 16px;
+  background: var(--cockpit);
+  border-bottom: 1px solid rgba(46,77,106,.35);
+  cursor: pointer; user-select: none;
+}
+.turn-head:hover { background: var(--surface); }
+.tn {
+  font-size: 10px; color: var(--amber);
+  font-weight: 700; letter-spacing: 1px; min-width: 26px;
+}
+.tt {
+  font-size: 11px; color: var(--muted); flex: 1;
+  font-family: system-ui,sans-serif;
+}
+.cat-pill {
+  font-size: 10px; font-weight: 700;
+  padding: 2px 8px; border-radius: 10px;
+  font-family: system-ui,sans-serif;
+}
+.expand-btn {
+  font-size: 14px; color: var(--muted);
+  transition: transform .2s;
+}
+.turn.open .expand-btn { transform: rotate(90deg); }
+
+.turn-body {
+  padding: 14px 18px;
+  font-family: Georgia,serif;
+  font-size: 14px; color: #C8DBE8;
+  line-height: 1.82; display: none;
+}
+.turn.open .turn-body { display: block; }
+
+/* Coded spans — color by category */
+[data-cat] {
+  padding: 1px 3px; border-radius: 2px;
+  cursor: pointer; position: relative;
+  transition: filter .15s;
+}
+[data-cat]:hover { filter: brightness(1.2); }
+
+[data-cat="sa"]  { background:rgba(75,159,225,.18); border-bottom:2px solid var(--sa); }
+[data-cat="crm"] { background:rgba(82,192,112,.18); border-bottom:2px solid var(--crm); }
+[data-cat="dec"] { background:rgba(245,166,35,.18);  border-bottom:2px solid var(--dec); }
+[data-cat="wl"]  { background:rgba(224,92,92,.18);   border-bottom:2px solid var(--wl); }
+[data-cat="com"] { background:rgba(185,122,224,.18); border-bottom:2px solid var(--com); }
+[data-cat="ref"] { background:rgba(122,184,204,.18); border-bottom:2px solid var(--ref); }
+[data-cat="desc"]{ background:rgba(139,160,176,.14); border-bottom:2px solid var(--desc); }
+
+/* ---- TOOLTIP ---- */
+#tooltip {
+  position: fixed;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 10px 14px;
+  font-family: system-ui,sans-serif;
+  font-size: 12.5px; color: var(--light);
+  max-width: 280px;
+  z-index: 500;
+  box-shadow: 0 6px 20px rgba(0,0,0,.5);
+  pointer-events: none;
+  display: none;
+}
+#tooltip .tc { font-weight: 700; margin-bottom: 3px; }
+#tooltip .ts { color: var(--muted); font-size: 11.5px; }
+
+/* ---- STEP PROCESS BAR ---- */
+.proc-bar {
+  display: flex; margin: 18px 0; overflow-x: auto;
+}
+.pb {
+  flex: 1; min-width: 110px; text-align: center;
+  padding: 12px 6px;
+  background: var(--cockpit);
+  border: 1px solid var(--border);
+  font-family: system-ui,sans-serif;
+}
+.pb:first-child { border-radius: var(--r) 0 0 var(--r); }
+.pb:last-child  { border-radius: 0 var(--r) var(--r) 0; }
+.pb.cur { background: var(--amber-bg); border-color: var(--amber); }
+.pb .sn {
+  display: block; font-family:'Courier New',monospace;
+  font-size: 10px; color: var(--amber); margin-bottom: 4px;
+}
+.pb .sl { font-size: 11px; font-weight: 700; color: var(--light); }
+
+/* ---- TABLE ---- */
+.ica-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 13px; margin: 14px 0;
+}
+.ica-table th {
+  background: var(--surface); color: var(--amber);
+  font-family: system-ui,sans-serif; font-size: 10.5px;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 10px 13px; text-align: left;
+  border-bottom: 2px solid var(--border);
+}
+.ica-table td {
+  padding: 9px 13px;
+  border-bottom: 1px solid rgba(46,77,106,.4);
+  vertical-align: top;
+}
+.ica-table tr:hover td { background: rgba(255,255,255,.025); }
+.cat-tag {
+  display: inline-block; padding: 2px 8px;
+  border-radius: 3px; font-size: 11px;
+  font-weight: 700; font-family: system-ui,sans-serif;
+  white-space: nowrap;
+}
+
+/* ---- TWO-COL ---- */
+.two-col {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+}
+@media(max-width:720px){ .two-col{ grid-template-columns:1fr; } }
+
+/* ---- SAW LEVELS ---- */
+.saw-level {
+  border-radius: var(--r); padding: 16px 20px;
+  margin-bottom: 12px; border-left: 4px solid;
+}
+.saw-l1 { background:rgba(75,159,225,.08); border-color:var(--sa); }
+.saw-l2 { background:rgba(82,192,112,.08); border-color:var(--crm); }
+.saw-l3 { background:rgba(245,166,35,.08); border-color:var(--dec); }
+.saw-level h4 {
+  font-family: system-ui,sans-serif; font-size: 13px;
+  font-weight: 700; margin-bottom: 5px;
+}
+.saw-level p  { font-size: 13px; color: var(--muted); margin: 0; }
+.saw-level blockquote {
+  font-style: italic; color: var(--light);
+  margin: 8px 0 0; font-size: 13.5px;
+  border-left: 2px solid; padding-left: 10px;
+}
+.saw-l1 blockquote { border-color:var(--sa); }
+.saw-l2 blockquote { border-color:var(--crm); }
+.saw-l3 blockquote { border-color:var(--dec); }
+
+/* ---- TAXONOMY TREE ---- */
+.tax-cat { margin-bottom: 10px; }
+.tax-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 16px; border-radius: var(--r);
+  font-family: system-ui,sans-serif; font-weight: 700;
+  font-size: 14px; cursor: pointer; user-select: none;
+  border: 1px solid var(--border);
+}
+.tax-head .tax-icon { margin-left: auto; color: var(--amber); font-size: 16px; transition: transform .2s; }
+.tax-head.open .tax-icon { transform: rotate(90deg); }
+.tax-subs { display: none; padding: 8px 0 8px 42px; }
+.tax-subs.open { display: block; }
+.tax-sub {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 6px 0; font-size: 13px; color: var(--muted);
+  border-bottom: 1px dotted rgba(46,77,106,.35);
+}
+.tax-sub:last-child { border-bottom: none; }
+.saw-tag {
+  font-size: 10px; padding: 2px 6px; border-radius: 3px;
+  font-weight: 700; white-space: nowrap;
+  font-family:'Courier New',monospace;
+  flex-shrink: 0; margin-top: 2px;
+}
+
+/* ---- SCHEMA BOX ---- */
+.schema-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 16px; margin: 14px 0;
+  font-family: system-ui,sans-serif; font-size: 13px;
+}
+.schema-box h4 { font-size: 12px; color: var(--amber); margin-bottom: 10px; letter-spacing: 1px; text-transform: uppercase; }
+.schema-box ul { list-style: none; padding: 0; }
+.schema-box li { padding: 4px 0; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+.schema-box li::before { content:'▸'; color: var(--amber); font-size: 10px; }
+
+/* ---- SWARM PANEL ---- */
+.swarm-panel {
+  background: var(--surface); border: 1px solid var(--border);
+  border-top: 3px solid var(--crm); border-radius: var(--r);
+  padding: 20px 24px; margin: 20px 0;
+}
+.swarm-panel h3 { font-size: 15px; color: var(--crm); margin-bottom: 10px; font-family:system-ui,sans-serif; }
+
+/* ---- R SNIPPET ---- */
+.r-block {
+  background: #09131E; border: 1px solid var(--border);
+  border-left: 3px solid var(--crm); border-radius: var(--r);
+  padding: 14px 16px; font-family:'Courier New',monospace;
+  font-size: 12px; line-height: 1.65; overflow-x: auto;
+  color: #B8D8B8; white-space: pre; margin: 12px 0;
+}
+.rc { color: #7AB8CC; }  /* comment */
+.rf { color: #F5C842; }  /* function */
+.rs { color: #F5A623; }  /* string */
+
+/* ---- SEP ---- */
+.sep { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+/* ---- TOGGLE ALL ---- */
+.toggle-all {
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--amber); cursor: pointer;
+  font-family:'Courier New',monospace; font-size: 11px;
+  padding: 6px 14px; border-radius: var(--r); margin-bottom: 14px;
+}
+.toggle-all:hover { background: var(--amber-bg); }
+
+/* ---- NOTE FOOTER ---- */
+.note { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+/* ---- STEP GRID (Etapas 3-4 refinement) ---- */
+.refine-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media(max-width:680px){ .refine-grid{ grid-template-columns:1fr; } }
+
+/* Print */
+@media print {
+  .step-nav, .toggle-all { display: none; }
+  .sec { display: block !important; }
+  body { background: #fff; color: #000; }
+}
+</style>
+</head>
+<body>
+
+<!-- =====================================================================
+     HERO
+     ===================================================================== -->
+<header class="hero">
+  <div class="eyebrow">TE-261 / TE-264 · ITA · Material Didático</div>
+  <h1>Análise Temática <em>Indutiva</em><br>em Pesquisa Qualitativa de Aviação</h1>
+  <p class="hero-sub">Guia passo a passo baseado em entrevistas com pilotos · Fundamentação em Vears &amp; Gillam (2022) e tidytext (Silge &amp; Robinson, 2017)</p>
+  <div class="hero-cards">
+    <div class="hc">
+      <div class="lbl">Processo Indutivo</div>
+      <p>Categorias emergem dos dados, não de teorias preexistentes</p>
+    </div>
+    <div class="hc">
+      <div class="lbl">Codificação Iterativa</div>
+      <p>Cada segmento é recodificado em rodadas progressivamente mais finas</p>
+    </div>
+    <div class="hc">
+      <div class="lbl">Síntese Interpretativa</div>
+      <p>Categorias se articulam em narrativa coesa respondendo à pergunta de pesquisa</p>
+    </div>
+    <div class="hc">
+      <div class="lbl">Conexão SAW / SWARM</div>
+      <p>A taxonomia emergente alimenta os requisitos de Consciência Situacional</p>
+    </div>
+  </div>
+</header>
+
+<!-- =====================================================================
+     STEP NAVIGATOR
+     ===================================================================== -->
+<nav class="step-nav">
+  <button class="snb active" data-target="s-corpus">O Corpus</button>
+  <button class="snb" data-target="s-step1">Etapa 1 — Leitura</button>
+  <button class="snb" data-target="s-step2">Etapa 2 — Big-Picture</button>
+  <button class="snb" data-target="s-step34">Etapas 3-4 — Refinamento</button>
+  <button class="snb" data-target="s-step5">Etapa 5 — Síntese</button>
+  <button class="snb" data-target="s-saw">Taxonomia SAW / SWARM</button>
+  <button class="snb" data-target="s-r">Código R</button>
+</nav>
+
+<div id="tooltip"><div class="tc"></div><div class="ts"></div></div>
+
+<!-- =====================================================================
+     SECTION 0: O CORPUS
+     ===================================================================== -->
+<section class="sec active" id="s-corpus">
+  <div class="sec-head">
+    <span class="badge">CORPUS</span>
+    <div class="sec-head-text">
+      <h2>A Entrevista — Dados Brutos</h2>
+      <p>Transcrição fictícia de entrevista semi-estruturada com Cap. Roberto A. · Incidente GRU / Pista 28L · Condições IMC</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Contexto da Entrevista</div>
+    <div class="two-col">
+      <div>
+        <p><strong>Participante:</strong> Cap. Roberto A., 18 anos de experiência em aviação comercial, 6.200 h de voo total, habilitado para operações CAT III.</p>
+        <p><strong>Incidente:</strong> Aproximação RNAV/ILS instável para a pista 28L do Aeroporto Internacional de Guarulhos (GRU), com falha simultânea de comunicação ATC.</p>
+        <p><strong>Condições:</strong> IMC desde FL180; teto 300 ft; VV 600 m; área montanhosa; aeronave: Boeing 737-800.</p>
+      </div>
+      <div>
+        <p><strong>Pergunta norteadora:</strong> "Como você percebeu e gerenciou a situação de degradação do ILS e falha de comunicação durante aquela aproximação?"</p>
+        <p><strong>Método:</strong> Entrevista semi-estruturada pós-ocorrência, gravada, transcrita verbatim.</p>
+        <p><strong>Contexto de uso:</strong> Esta transcrição serve como corpus para demonstração de Análise Temática Indutiva (ICA) e derivação de taxonomia SAW.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <strong>Como ler a transcrição:</strong> Clique em qualquer turno para expandi-lo. Os trechos sublinhados são segmentos pré-anotados pelo pesquisador. Passe o cursor sobre eles para ver o código atribuído. As cores correspondem à legenda abaixo.
+  </div>
+
+  <div class="legend">
+    <div class="li"><div class="ld" style="background:var(--sa)"></div> Consciência Situacional (SA)</div>
+    <div class="li"><div class="ld" style="background:var(--crm)"></div> Coordenação de Tripulação (CRM)</div>
+    <div class="li"><div class="ld" style="background:var(--dec)"></div> Tomada de Decisão</div>
+    <div class="li"><div class="ld" style="background:var(--wl)"></div> Gestão de Workload</div>
+    <div class="li"><div class="ld" style="background:var(--com)"></div> Comunicação</div>
+    <div class="li"><div class="ld" style="background:var(--ref)"></div> Reflexão / Aprendizado</div>
+    <div class="li"><div class="ld" style="background:var(--desc)"></div> Descrição do Evento</div>
+  </div>
+
+  <button class="toggle-all" id="toggleAll">▶ Expandir todos os turnos</button>
+
+  <div class="transcript" id="transcript">
+
+    <!-- T1 -->
+    <div class="turn" id="t1">
+      <div class="turn-head">
+        <span class="tn">T01</span>
+        <span class="tt">Descrição do Evento</span>
+        <span class="cat-pill" style="background:rgba(139,160,176,.2);color:var(--desc)">Descrição</span>
+        <span class="expand-btn">▶</span>
+      </div>
+      <div class="turn-body">
+        <span data-cat="desc" data-code="Contexto da missão" data-sub="Condições IMC; aproximação no limite operacional">Era uma aproximação RNAV para a pista 28L em Guarulhos. Estávamos em IMC desde o FL180, visibilidade praticamente zero durante o <em>descent</em>. O TAF previa teto de 300 pés e visibilidade de 600 metros, bem no limite para a aproximação. Eu era o piloto em comando e o Frederico era meu copiloto naquele voo.</span>
+      </div>
+    </div>
+
+    <!-- T2 -->
+    <div class="turn" id="t2">
+      <div class="turn-head">
+        <span class="tn">T02</span>
+        <span class="tt">Percepção da Anomalia</span>
+        <span class="cat-pill" style="background:rgba(75,159,225,.2);color:var(--sa)">Consciência Situacional</span>
+        <span class="expand-btn">▶</span>
+      </div>
+      <div class="turn-body">
+        Quando cruzamos o FAF, <span data-cat="sa" data-code="SA-L1: Percepção de anomalia" data-sub="ILS com indicações espúrias; localizer oscilante">o ILS começou a dar indicações espúrias. O localizer estava oscilando de forma errática. Percebi imediatamente que algo estava errado porque a agulha não estabilizava.</span> Olhei para o EHSI e confirmei a frequência e o identificador — estavam corretos. <span data-cat="sa" data-code="SA-L2: Diagnóstico da falha" data-sub="Hipótese de interferência ou falha no ILS do aeroporto">Concluí então que o sinal poderia estar degradado por interferência ou por falha técnica no próprio equipamento do aeroporto.</span>
+      </div>
+    </div>
+
+    <!-- T3 -->
+    <div class="turn" id="t3">
+      <div class="turn-head">
+        <span class="tn">T03</span>
+        <span class="tt">Comunicação com ATC</span>
+        <span class="cat-pill" style="background:rgba(185,122,224,.2);color:var(--com)">Comunicação</span>
+        <span class="expand-btn">▶</span>
+      </div>
+      <div class="turn-body">
+        <span data-cat="com" data-code="Falha bidirecional de comunicação" data-sub="Ruído intenso; sem resposta na frequência primária e no backup">Tentei contato com a torre para informar a instabilidade do ILS, mas o rádio estava com ruído intenso. Chamei duas vezes na frequência primária sem obter resposta clara. O Frederico tentou no rádio reserva e também sem confirmação.</span> <span data-cat="com" data-code="Incerteza sobre estado do canal ATC" data-sub="Impossível distinguir falha local de falha do sistema ATC">Ficamos em situação de incerteza total: não sabíamos se a torre recebia nossos chamados ou se o problema estava apenas na nossa recepção.</span>
+      </div>
+    </div>
+
+    <!-- T4 -->
+    <div class="turn" id="t4">
+      <div class="turn-head">
+        <span class="tn">T04</span>
+        <span class="tt">Projeção de Consequências</span>
+        <span class="cat-pill" style="background:rgba(75,159,225,.2);color:var(--sa)">Consciência Situacional</span>
+        <span class="expand-btn">▶</span>
+      </div>
+      <div class="turn-body">
+        <span data-cat="sa" data-code="SA-L3: Projeção de consequências" data-sub="Restrição temporal (MAP) + limitação de combustível para alternado">O que mais me preocupou foi a restrição de tempo. Estávamos a menos de dois minutos do MAP, o <em>missed approach point</em>. Se não tivéssemos referências visuais até lá, teríamos que arremeter de qualquer forma. E eu sabia que o combustível disponível permitia apenas mais uma tentativa de aproximação antes de termos que divergir para o alternado em Campinas.</span>
+      </div>
+    </div>
+
+    <!-- T5 -->
+    <div class="turn" id="t5">
+      <div class="turn-head">
+        <span class="tn">T05</span>
+        <span class="tt">Gestão de Workload</span>
+        <span class="cat-pill" style="background:rgba(224,92,92,.2);color:var(--wl)">Workload</span>
+        <span class="expand-btn">▶</span>
+      </div>
+      <div class="turn-body">
+        <span data-cat="wl" data-code="Acúmulo de demandas simultâneas" data-sub="Pilotagem manual + comunicação ATC + monitoramento EGPWS">A carga de trabalho naquele momento estava extremamente elevada. Pilotava manualmente porque o autopilot havia desengajado pelas oscilações do ILS. O Frederico tentava comunicação com ATC e ao mesmo tempo monitorava os instrumentos. E aí as alertas de terreno do EGPWS começaram a soar porque estávamos em área montanhosa. Era muita coisa acontecendo ao mesmo tempo.</span> <span data-cat="sa" data-code="SA Degradada por workload" data-sub="Sobrecarga reduz capacidade de processamento e monitoramento">A sensação era de que estávamos perdendo o controle da situação — não da aeronave, mas do entendimento do que estava acontecendo.</span>
+      </div>
+    </div>
+
+    <!-- T6 -->
+    <div class="turn" id="t6">
+      <div class="turn-head">
+        <span class="tn">T06</span>
+        <span class="tt">Coordenação de Tripulação</span>
+        <span class="cat-pill" style="background:rgba(82,192,112,.2);color:var(--crm)">CRM</span>
+        <span class="expand-btn">▶</span>
+      </div>
+      <div class="turn-body">
+        <span data-cat="crm" data-code="Delegação explícita de funções" data-sub="Verbalizou divisão de tarefas: piloto monitora aeronave, copiloto monitora e reporta">Disse claramente para o Frederico: <em>"Você monitora os instrumentos, eu piloto, você me informa qualquer desvio de altitude ou rota."</em> Ele confirmou verbalmente.</span> <span data-cat="crm" data-code="Monitoramento cruzado (cross-check)" data-sub="Procedimento formal de cross-monitoring com confirmação mútua">A partir daí passamos ao procedimento de monitoramento cruzado com funções bem definidas. Isso ajudou muito a reduzir a sobrecarga. Sentimos que retomamos o controle da situação a partir desse momento de reorganização da tripulação.</span>
+      </div>
+    </div>
+
+    <!-- T7 -->
+    <div class="turn" id="t7">
+      <div class="turn-head">
+        <span class="tn">T07</span>
+        <span class="tt">Consciência dos Sistemas</span>
+        <span class="cat-pill" style="background:rgba(75,159,225,.2);color:var(--sa)">Consciência Situacional</span>
+        <span class="expand-btn">▶</span>
+      </div>
+      <div class="turn-body">
+        <span data-cat="sa" data-code="SA-L1: Estado dos sistemas" data-sub="Checklist mental: motores, combustível, trem, flaps — todos OK exceto ILS">Todos os sistemas da aeronave estavam operacionais exceto o ILS instável. Motores normais, combustível conforme planejado, trem de pouso baixado e travado, flaps na posição correta. Fiz o checklist mentalmente e tudo checava exceto aquele localizer.</span> <span data-cat="sa" data-code="SA-L2: Triagem de falhas" data-sub="Isolamento da falha: apenas ILS; demais sistemas nominais → tranquilidade parcial">Isso me deu alguma tranquilidade. Pelo menos eu sabia exatamente o que estava falhando e o que permanecia funcionando.</span>
+      </div>
+    </div>
+
+    <!-- T8 -->
+    <div class="turn" id="t8">
+      <div class="turn-head">
+        <span class="tn">T08</span>
+        <span class="tt">Modelo Mental Espacial</span>
+        <span class="cat-pill" style="background:rgba(75,159,225,.2);color:var(--sa)">Consciência Situacional</span>
+        <span class="expand-btn">▶</span>
+      </div>
+      <div class="turn-body">
+        <span data-cat="sa" data-code="SA-L2: Modelo mental espacial" data-sub="Imagem tridimensional clara da posição/altitude/distância via DME e instrumentos de backup">Pela distância DME sabia exatamente onde estávamos geograficamente. Sabia a distância ao threshold, a altitude que deveríamos ter naquele ponto, e o que os instrumentos de navegação de backup indicavam. Mesmo sem referência visual ainda, tinha uma imagem mental bastante clara de onde a aeronave estava posicionada no espaço tridimensional naquele momento da aproximação.</span>
+      </div>
+    </div>
+
+    <!-- T9 -->
+    <div class="turn" id="t9">
+      <div class="turn-head">
+        <span class="tn">T09</span>
+        <span class="tt">Processo Decisório</span>
+        <span class="cat-pill" style="background:rgba(245,166,35,.2);color:var(--dec)">Tomada de Decisão</span>
+        <span class="expand-btn">▶</span>
+      </div>
+      <div class="turn-body">
+        <span data-cat="dec" data-code="Reconhecimento de padrão (RPD)" data-sub="Decisão de arremeter antes do MAP — reconhecimento de situação instabilizada">Quando chegamos a 500 pés acima do aeródromo ainda sem referências visuais, tomei a decisão de executar a arremetida. Isso foi antes do MAP. Não precisei esperar o ponto de arremetida perdida para decidir.</span> <span data-cat="dec" data-code="Critério SOP: regra dos 1000 ft em IMC" data-sub="Aplicação direta do SOP → aproximação não estabilizada a 1000 ft em IMC exige arremetida">Já sabia que a aproximação não estava estabilizada conforme os critérios do SOP. A regra é clara: se não está estabilizada até 1000 pés em IMC, a decisão correta é arremeter.</span>
+      </div>
+    </div>
+
+    <!-- T10 -->
+    <div class="turn" id="t10">
+      <div class="turn-head">
+        <span class="tn">T10</span>
+        <span class="tt">Execução da Arremetida</span>
+        <span class="cat-pill" style="background:rgba(82,192,112,.2);color:var(--crm)">CRM</span>
+        <span class="expand-btn">▶</span>
+      </div>
+      <div class="turn-body">
+        <span data-cat="crm" data-code="Callouts padronizados" data-sub="Verbalização e confirmação da arremetida segundo SOP">A execução da arremetida foi tranquila e ordenada. Chamei verbalmente <em>"arremetida"</em>. O Frederico confirmou <em>"arremetida confirmada"</em>. Apliquei potência total e o Frederico recolheu trem e flaps na sequência correta do procedimento.</span> <span data-cat="crm" data-code="Confirmação verbal cruzada" data-sub="Read-back / hear-back: cada ação confirmada pelo outro tripulante">O TOGA foi ativado e a aeronave respondeu adequadamente. Saímos do procedimento de forma organizada e declaramos emergência de comunicação ao ATC.</span>
+      </div>
+    </div>
+
+    <!-- T11 -->
+    <div class="turn" id="t11">
+      <div class="turn-head">
+        <span class="tn">T11</span>
+        <span class="tt">Reflexão Pós-Evento</span>
+        <span class="cat-pill" style="background:rgba(122,184,204,.2);color:var(--ref)">Reflexão</span>
+        <span class="expand-btn">▶</span>
+      </div>
+      <div class="turn-body">
+        <span data-cat="ref" data-code="Análise post-hoc da causa raiz" data-sub="Falha técnica no ILS + mudança de frequência ATC não percebida = falha bidirecional">No debriefing depois do voo percebemos que o ILS havia tido falha técnica justamente naquele período. A torre tentava nos contactar no canal secundário, mas não percebemos que tinham mudado a frequência. A perda de comunicação foi bidirecional com causas independentes em cada lado, o que tornou o problema mais difícil de diagnosticar durante o voo.</span>
+      </div>
+    </div>
+
+    <!-- T12 -->
+    <div class="turn" id="t12">
+      <div class="turn-head">
+        <span class="tn">T12</span>
+        <span class="tt">Aprendizado</span>
+        <span class="cat-pill" style="background:rgba(122,184,204,.2);color:var(--ref)">Reflexão</span>
+        <span class="expand-btn">▶</span>
+      </div>
+      <div class="turn-body">
+        <span data-cat="ref" data-code="Lição aprendida: CRM precoce" data-sub="Divisão de tarefas deve ocorrer ao surgir as primeiras complicações, não na crise">O que aprendi foi que devo estabelecer a divisão de tarefas entre os tripulantes muito mais cedo, assim que surgem as primeiras complicações. Não esperar a situação ficar crítica para reorganizar a tripulação.</span> <span data-cat="ref" data-code="Lição aprendida: freq. alternativas" data-sub="Canal guarda deve ser tentado precocemente em falha de comunicação">E também verificar frequências alternativas muito mais precocemente. Ficamos insistindo no canal primário quando deveríamos ter tentado o canal guarda muito antes. São lições que incorporei permanentemente nos meus briefings pré-voo.</span>
+      </div>
+    </div>
+
+  </div><!-- /transcript -->
+</section>
+
+<!-- =====================================================================
+     SECTION 1: ETAPA 1 — LEITURA E FAMILIARIZAÇÃO
+     ===================================================================== -->
+<section class="sec" id="s-step1">
+  <div class="sec-head">
+    <span class="badge">ETAPA 1</span>
+    <div class="sec-head-text">
+      <h2>Leitura e Familiarização</h2>
+      <p>Antes de qualquer codificação, o pesquisador deve compreender o corpus como um todo — "set the stage for having the insight" (Morse, 1994, p. 23)</p>
+    </div>
+  </div>
+
+  <div class="proc-bar">
+    <div class="pb cur"><span class="sn">ETAPA 1</span><span class="sl">Leitura</span></div>
+    <div class="pb"><span class="sn">ETAPA 2</span><span class="sl">Big-Picture</span></div>
+    <div class="pb"><span class="sn">ETAPAS 3-4</span><span class="sl">Refinamento</span></div>
+    <div class="pb"><span class="sn">ETAPA 5</span><span class="sl">Síntese</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">O que fazer nesta etapa</div>
+    <p>Leia <strong>toda a transcrição</strong> sem fazer anotações de código. O objetivo é desenvolver uma compreensão holística: <em>do que se trata este corpus?</em> Quais são os temas gerais? Qual é a experiência central narrada pelo piloto?</p>
+    <div class="info-box">
+      <strong>Para a nossa entrevista:</strong> A narrativa centra-se em uma aproximação instrumental com degradação dupla (ILS + comunicação), cujo desfecho é uma arremetida decidida antes do MAP. A questão nuclear para o pesquisador é: <em>como o piloto percebeu, compreendeu e reagiu a essa situação de múltiplas falhas?</em>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Questões de orientação</div>
+      <ul style="list-style:none;padding:0">
+        <li style="padding:6px 0;border-bottom:1px solid var(--border)">▸ Do que trata cada turno da entrevista?</li>
+        <li style="padding:6px 0;border-bottom:1px solid var(--border)">▸ Quais experiências estão sendo relatadas?</li>
+        <li style="padding:6px 0;border-bottom:1px solid var(--border)">▸ Quais momentos parecem mais salientes para o piloto?</li>
+        <li style="padding:6px 0;border-bottom:1px solid var(--border)">▸ Existe uma progressão temporal na narrativa?</li>
+        <li style="padding:6px 0">▸ Que tipo de linguagem o piloto usa para descrever a tomada de decisão?</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Impressões iniciais do corpus</div>
+      <p style="font-size:13px;color:var(--muted)">Após primeira leitura, o pesquisador poderia anotar:</p>
+      <ul style="list-style:none;padding:0;margin-top:8px">
+        <li style="padding:5px 0;font-size:13px;border-bottom:1px solid var(--border)">▸ Forte ênfase em <em>o que o piloto percebia</em> vs. o que de fato acontecia</li>
+        <li style="padding:5px 0;font-size:13px;border-bottom:1px solid var(--border)">▸ Recorrência de termos de <em>incerteza</em> (não sabíamos, ficamos sem saber)</li>
+        <li style="padding:5px 0;font-size:13px;border-bottom:1px solid var(--border)">▸ Momento de virada: delegação de funções (T06) como recuperação da SA</li>
+        <li style="padding:5px 0;font-size:13px">▸ Reflexão post-hoc indica maturidade metacognitiva do piloto</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="method-ref">
+    <strong>Referência metodológica:</strong> Vears &amp; Gillam (2022, p. 117) — "Before launching into the process of selecting and labelling chunks of text, read through all of your data so that you become very familiar with it. This step helps you think holistically — what are these texts or transcripts <em>about</em>?"
+  </div>
+</section>
+
+<!-- =====================================================================
+     SECTION 2: ETAPA 2 — BIG-PICTURE CODING
+     ===================================================================== -->
+<section class="sec" id="s-step2">
+  <div class="sec-head">
+    <span class="badge">ETAPA 2</span>
+    <div class="sec-head-text">
+      <h2>Codificação Big-Picture — Unidades de Significado</h2>
+      <p>Identificar e rotular seções do texto segundo sua "classe de conteúdo" — sem ainda descer ao nível dos detalhes</p>
+    </div>
+  </div>
+
+  <div class="proc-bar">
+    <div class="pb"><span class="sn">ETAPA 1</span><span class="sl">Leitura</span></div>
+    <div class="pb cur"><span class="sn">ETAPA 2</span><span class="sl">Big-Picture</span></div>
+    <div class="pb"><span class="sn">ETAPAS 3-4</span><span class="sl">Refinamento</span></div>
+    <div class="pb"><span class="sn">ETAPA 5</span><span class="sl">Síntese</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Como realizar</div>
+    <p>Pergunte para cada segmento: <strong><em>"Do que se trata esta passagem?"</em></strong> — não ainda <em>o que</em> especificamente é dito, mas qual é a <em>classe</em> de conteúdo. Rotule com uma etiqueta descritiva ampla.</p>
+    <div class="tip">
+      <strong>Analogia com aviação:</strong> Pense como um controlador de tráfego aéreo que vê o radar: primeiro identifica quais aeronaves existem e em que setor estão (big-picture), antes de gerenciar cada uma individualmente.
+    </div>
+  </div>
+
+  <h3 style="margin:20px 0 12px;font-size:16px">Schema Preliminar de Big-Picture Codes</h3>
+  <p style="font-size:13.5px;margin-bottom:14px">Resultado da primeira rodada de codificação dos 12 turnos da entrevista:</p>
+
+  <div class="two-col">
+    <div class="schema-box">
+      <h4>Categorias Big-Picture Identificadas</h4>
+      <ul>
+        <li><span class="cat-tag" style="background:rgba(139,160,176,.2);color:var(--desc)">DESC</span> Descrição do evento / contexto</li>
+        <li><span class="cat-tag" style="background:rgba(75,159,225,.2);color:var(--sa)">SA</span> Consciência situacional</li>
+        <li><span class="cat-tag" style="background:rgba(185,122,224,.2);color:var(--com)">COM</span> Comunicação (ATC e tripulação)</li>
+        <li><span class="cat-tag" style="background:rgba(224,92,92,.2);color:var(--wl)">WL</span> Gestão de workload</li>
+        <li><span class="cat-tag" style="background:rgba(82,192,112,.2);color:var(--crm)">CRM</span> Coordenação de tripulação</li>
+        <li><span class="cat-tag" style="background:rgba(245,166,35,.2);color:var(--dec)">DEC</span> Tomada de decisão</li>
+        <li><span class="cat-tag" style="background:rgba(122,184,204,.2);color:var(--ref)">REF</span> Reflexão / aprendizado</li>
+      </ul>
+    </div>
+
+    <div class="schema-box">
+      <h4>Mapeamento por Turno</h4>
+      <ul>
+        <li><span class="cat-tag" style="background:rgba(139,160,176,.2);color:var(--desc)">DESC</span> T01 — Contexto da missão</li>
+        <li><span class="cat-tag" style="background:rgba(75,159,225,.2);color:var(--sa)">SA</span> T02 — Percepção / diagnóstico</li>
+        <li><span class="cat-tag" style="background:rgba(185,122,224,.2);color:var(--com)">COM</span> T03 — Falha de comunicação</li>
+        <li><span class="cat-tag" style="background:rgba(75,159,225,.2);color:var(--sa)">SA</span> T04 — Projeção de consequências</li>
+        <li><span class="cat-tag" style="background:rgba(224,92,92,.2);color:var(--wl)">WL</span> T05 — Sobrecarga de demandas</li>
+        <li><span class="cat-tag" style="background:rgba(82,192,112,.2);color:var(--crm)">CRM</span> T06 — Reorganização da tripulação</li>
+        <li><span class="cat-tag" style="background:rgba(75,159,225,.2);color:var(--sa)">SA</span> T07-08 — Estado de sistemas / posição</li>
+        <li><span class="cat-tag" style="background:rgba(245,166,35,.2);color:var(--dec)">DEC</span> T09-10 — Decisão e execução</li>
+        <li><span class="cat-tag" style="background:rgba(122,184,204,.2);color:var(--ref)">REF</span> T11-12 — Reflexão / lições</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="info-box" style="margin-top:16px">
+    <strong>Nota importante:</strong> Um mesmo turno pode ter mais de um big-picture code (e.g., T02 contém tanto percepção [SA] quanto diagnóstico [SA-L2]). T05 contém workload E SA degradada. Isso é esperado — a linguagem humana é multidimensional.
+  </div>
+
+  <div class="method-ref">
+    <strong>Ref.:</strong> Vears &amp; Gillam (2022, p. 118) — "Looking for big-picture meaning involves reading the text or transcript carefully, asking yourself 'what is this section <em>about</em>?' Remember that the aim of the analysis is to answer your research question/s, so these big-picture categories will be connected to the research question/s in some way."
+  </div>
+</section>
+
+<!-- =====================================================================
+     SECTION 3-4: ETAPAS 3-4 — REFINAMENTO E SUBCATEGORIAS
+     ===================================================================== -->
+<section class="sec" id="s-step34">
+  <div class="sec-head">
+    <span class="badge">ETAPAS 3–4</span>
+    <div class="sec-head-text">
+      <h2>Codificação Refinada e Desenvolvimento de Subcategorias</h2>
+      <p>Cada big-picture category é "aberta" (Corbin &amp; Strauss, 2008) em subcategorias por meio de codificação linha-a-linha</p>
+    </div>
+  </div>
+
+  <div class="proc-bar">
+    <div class="pb"><span class="sn">ETAPA 1</span><span class="sl">Leitura</span></div>
+    <div class="pb"><span class="sn">ETAPA 2</span><span class="sl">Big-Picture</span></div>
+    <div class="pb cur"><span class="sn">ETAPAS 3-4</span><span class="sl">Refinamento</span></div>
+    <div class="pb"><span class="sn">ETAPA 5</span><span class="sl">Síntese</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Como realizar</div>
+    <p><strong>Etapa 3:</strong> Para cada big-picture category, examine <em>todos</em> os segmentos a ela atribuídos em <em>todos</em> os turnos. Codifique linha-a-linha: o que especificamente está sendo dito neste trecho?</p>
+    <p><strong>Etapa 4:</strong> Compare todas as subcategorias obtidas. Colapso subcategorias similares; separe as que são suficientemente distintas. Verifique se alguma subcategoria pertence a outra big-picture category.</p>
+  </div>
+
+  <h3 style="margin:20px 0 12px;font-size:16px">Schema de Codificação Refinada — Completo</h3>
+
+  <table class="ica-table">
+    <thead>
+      <tr>
+        <th>Categoria Principal</th>
+        <th>Subcategoria (código refinado)</th>
+        <th>Turno(s)</th>
+        <th>Nível SAW</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td rowspan="6"><span class="cat-tag" style="background:rgba(75,159,225,.18);color:var(--sa)">Consciência Situacional</span></td>
+        <td>SA-L1: Percepção de anomalia no ILS (localizer espúrio)</td>
+        <td>T02</td>
+        <td><span class="cat-tag" style="background:rgba(75,159,225,.15);color:var(--sa)">SAW-L1</span></td>
+      </tr>
+      <tr>
+        <td>SA-L1: Monitoramento do estado geral dos sistemas</td>
+        <td>T07</td>
+        <td><span class="cat-tag" style="background:rgba(75,159,225,.15);color:var(--sa)">SAW-L1</span></td>
+      </tr>
+      <tr>
+        <td>SA-L2: Diagnóstico da falha (hipótese de interferência)</td>
+        <td>T02</td>
+        <td><span class="cat-tag" style="background:rgba(82,192,112,.15);color:var(--crm)">SAW-L2</span></td>
+      </tr>
+      <tr>
+        <td>SA-L2: Triagem de falhas — isolamento do ILS</td>
+        <td>T07</td>
+        <td><span class="cat-tag" style="background:rgba(82,192,112,.15);color:var(--crm)">SAW-L2</span></td>
+      </tr>
+      <tr>
+        <td>SA-L2: Modelo mental espacial (posição / altitude / DME)</td>
+        <td>T08</td>
+        <td><span class="cat-tag" style="background:rgba(82,192,112,.15);color:var(--crm)">SAW-L2</span></td>
+      </tr>
+      <tr>
+        <td>SA-L3: Projeção de consequências (combustível / MAP)</td>
+        <td>T04</td>
+        <td><span class="cat-tag" style="background:rgba(245,166,35,.15);color:var(--dec)">SAW-L3</span></td>
+      </tr>
+      <tr>
+        <td rowspan="3"><span class="cat-tag" style="background:rgba(82,192,112,.18);color:var(--crm)">Coordenação de Tripulação</span></td>
+        <td>Delegação explícita e verbal de funções</td>
+        <td>T06</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>Monitoramento cruzado (cross-check)</td>
+        <td>T06</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>Callouts padronizados + confirmação verbal cruzada</td>
+        <td>T10</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td rowspan="2"><span class="cat-tag" style="background:rgba(245,166,35,.18);color:var(--dec)">Tomada de Decisão</span></td>
+        <td>Reconhecimento de padrão como gatilho decisório (RPD)</td>
+        <td>T09</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>Aplicação de critério SOP (regra dos 1000 ft em IMC)</td>
+        <td>T09</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td rowspan="2"><span class="cat-tag" style="background:rgba(224,92,92,.18);color:var(--wl)">Gestão de Workload</span></td>
+        <td>Acúmulo de demandas simultâneas (pilotagem + ATC + EGPWS)</td>
+        <td>T05</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>SA Degradada por sobrecarga → recuperação via CRM</td>
+        <td>T05, T06</td>
+        <td><span class="cat-tag" style="background:rgba(224,92,92,.15);color:var(--wl)">SAW-Deg</span></td>
+      </tr>
+      <tr>
+        <td rowspan="2"><span class="cat-tag" style="background:rgba(185,122,224,.18);color:var(--com)">Comunicação</span></td>
+        <td>Falha bidirecional de comunicação com ATC</td>
+        <td>T03</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>Incerteza sobre disponibilidade do canal de comunicação</td>
+        <td>T03</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td rowspan="2"><span class="cat-tag" style="background:rgba(122,184,204,.18);color:var(--ref)">Reflexão / Aprendizado</span></td>
+        <td>Análise post-hoc — identificação da causa raiz bidirecional</td>
+        <td>T11</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>Incorporação de lições nos briefings futuros (CRM precoce + freq. alternativa)</td>
+        <td>T12</td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="info-box">
+    <strong>Refinamento (Etapa 4):</strong> Na iteração entre turnos, observamos que "SA Degradada" (T05) e "Recuperação de SA" (T06) são subcategorias complementares de um processo dinâmico — e poderiam ser agrupadas em uma categoria de nível médio: <em>Dinâmica de Perda e Recuperação da Consciência Situacional</em>. Essa decisão seria documentada no diário de campo do pesquisador.
+  </div>
+
+  <div class="method-ref">
+    <strong>Ref.:</strong> Vears &amp; Gillam (2022, p. 122) — "Second- (and third-, if required) round coding is an iterative process where subcategories might be grouped and ungrouped in order to best account for the richness and complexity of the data, without being repetitious or cutting the data up into so many tiny categories that the meaning is lost."
+  </div>
+</section>
+
+<!-- =====================================================================
+     SECTION 5: ETAPA 5 — SÍNTESE E INTERPRETAÇÃO
+     ===================================================================== -->
+<section class="sec" id="s-step5">
+  <div class="sec-head">
+    <span class="badge">ETAPA 5</span>
+    <div class="sec-head-text">
+      <h2>Síntese e Interpretação</h2>
+      <p>Articular as categorias em uma narrativa coesa que responde à pergunta de pesquisa — "o mapa completo, incluindo todas as ruas" (Vears &amp; Gillam, 2022)</p>
+    </div>
+  </div>
+
+  <div class="proc-bar">
+    <div class="pb"><span class="sn">ETAPA 1</span><span class="sl">Leitura</span></div>
+    <div class="pb"><span class="sn">ETAPA 2</span><span class="sl">Big-Picture</span></div>
+    <div class="pb"><span class="sn">ETAPAS 3-4</span><span class="sl">Refinamento</span></div>
+    <div class="pb cur"><span class="sn">ETAPA 5</span><span class="sl">Síntese</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Narrativa Interpretativa</div>
+    <p>A experiência do Cap. Roberto A. ilustra como a Consciência Situacional pode ser construída, degradada e recuperada em tempo real durante uma operação de alto risco. A narrativa se organiza em três arcos:</p>
+  </div>
+
+  <div class="saw-level saw-l1" style="margin-bottom:12px">
+    <h4>🔵 Arco 1 — Construção da SA em ambiente degradado (T01–T04)</h4>
+    <p>A chegada ao FAF com ILS instável força o piloto a mobilizar recursos alternativos de SA: confirmação da frequência (SA-L1), formulação de hipótese diagnóstica (SA-L2) e projeção de cenários limitantes (SA-L3: MAP, combustível). A falha de comunicação com ATC adiciona uma camada de incerteza epistêmica — o piloto não sabe o que o sistema <em>sabe</em> sobre ele.</p>
+    <blockquote>T04: "Não sabíamos se a torre recebia nossos chamados ou se o problema estava apenas na nossa recepção."</blockquote>
+  </div>
+
+  <div class="saw-level saw-l2" style="margin-bottom:12px">
+    <h4>🟢 Arco 2 — Degradação e Recuperação (T05–T08)</h4>
+    <p>O acúmulo de demandas simultâneas (pilotagem manual + EGPWS + comunicação) eleva o workload a ponto de ameaçar a SA. A intervenção de CRM (delegação explícita, T06) funciona como mecanismo de restauração da SA distribuída — ao externalizar o monitoramento para o copiloto, o comandante libera recursos cognitivos para manter o modelo mental espacial (SA-L2, T08) mesmo sem referências visuais.</p>
+    <blockquote>T06: "Sentimos que retomamos o controle da situação a partir desse momento de reorganização da tripulação."</blockquote>
+  </div>
+
+  <div class="saw-level saw-l3" style="margin-bottom:12px">
+    <h4>🟡 Arco 3 — Decisão, Execução e Metacognição (T09–T12)</h4>
+    <p>A decisão de arremeter antes do MAP demonstra o mecanismo RPD (Klein, 1993): o reconhecimento de uma situação como instabilizada (padrão) ativa diretamente o curso de ação prescrito no SOP, sem necessidade de comparação analítica entre opções. A execução ordena-se em callouts padronizados (CRM). O debriefing revela capacidade metacognitiva elevada — o piloto reconstrói a causalidade da falha bidirecional e traduz o aprendizado em mudança de comportamento (briefings futuros).</p>
+    <blockquote>T09: "Não precisei esperar o ponto de arremetida perdida para decidir. Já sabia que a aproximação não estava estabilizada conforme os critérios do SOP."</blockquote>
+  </div>
+
+  <div class="card" style="margin-top:20px">
+    <div class="card-title">Conexões entre Categorias</div>
+    <p>A síntese revela que as 6 categorias não são independentes: <strong>CRM funciona como mediador da SA</strong> — a degradação de SA (pelo workload) é revertida pela intervenção de CRM (reorganização de tarefas), restaurando a capacidade de construção do modelo mental. Similarmente, <strong>Comunicação é condição para SA distribuída</strong> — a falha de comunicação com ATC cria lacuna na SA-L3 (o piloto não sabe se ATC tem informação sobre a falha do ILS). Esta topologia de relações é o que distingue a ICA de uma simples listagem de temas.</p>
+  </div>
+
+  <div class="method-ref">
+    <strong>Ref.:</strong> Vears &amp; Gillam (2022, p. 124) — "When you are writing the results section of your thesis or journal paper, think of the overall story as being like a map. It is important to represent all of the back streets, not just the main road."
+  </div>
+</section>
+
+<!-- =====================================================================
+     SECTION 6: TAXONOMIA SAW / SWARM
+     ===================================================================== -->
+<section class="sec" id="s-saw">
+  <div class="sec-head">
+    <span class="badge">TAXONOMIA</span>
+    <div class="sec-head-text">
+      <h2>Taxonomia SAW e Conexão com SWARM</h2>
+      <p>Como a ICA alimenta a taxonomia de Consciência Situacional (Endsley, 1995) e o método SWARM (Plant &amp; Stanton, 2012, caps. 6–7)</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">O Modelo de SA de Endsley (1995)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:8px">
+      <div style="background:rgba(75,159,225,.08);border:1px solid var(--sa);border-radius:var(--r);padding:12px;text-align:center">
+        <div style="color:var(--sa);font-weight:700;font-size:13px;font-family:system-ui,sans-serif">Nível 1</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Percepção dos elementos do ambiente</div>
+      </div>
+      <div style="background:rgba(82,192,112,.08);border:1px solid var(--crm);border-radius:var(--r);padding:12px;text-align:center">
+        <div style="color:var(--crm);font-weight:700;font-size:13px;font-family:system-ui,sans-serif">Nível 2</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Compreensão do significado atual</div>
+      </div>
+      <div style="background:rgba(245,166,35,.08);border:1px solid var(--dec);border-radius:var(--r);padding:12px;text-align:center">
+        <div style="color:var(--dec);font-weight:700;font-size:13px;font-family:system-ui,sans-serif">Nível 3</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Projeção de estados futuros</div>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="margin:22px 0 12px;font-size:16px">Taxonomia Emergente — clique para expandir</h3>
+
+  <div class="taxonomy-tree">
+
+    <div class="tax-cat">
+      <div class="tax-head" style="background:rgba(75,159,225,.1);border-color:var(--sa)">
+        <span style="color:var(--sa)">●</span>
+        <span>A. Consciência Situacional (SAW)</span>
+        <span style="font-size:12px;color:var(--muted);margin-left:auto;margin-right:8px">6 subcategorias</span>
+        <span class="tax-icon">▶</span>
+      </div>
+      <div class="tax-subs">
+        <div class="tax-sub"><span class="saw-tag" style="background:rgba(75,159,225,.2);color:var(--sa)">SAW-L1</span> Percepção de anomalia no ILS (localizer espúrio)</div>
+        <div class="tax-sub"><span class="saw-tag" style="background:rgba(75,159,225,.2);color:var(--sa)">SAW-L1</span> Monitoramento do estado dos sistemas (checklist mental)</div>
+        <div class="tax-sub"><span class="saw-tag" style="background:rgba(82,192,112,.2);color:var(--crm)">SAW-L2</span> Diagnóstico e compreensão da falha</div>
+        <div class="tax-sub"><span class="saw-tag" style="background:rgba(82,192,112,.2);color:var(--crm)">SAW-L2</span> Triagem de falhas — isolamento do ILS como falha única</div>
+        <div class="tax-sub"><span class="saw-tag" style="background:rgba(82,192,112,.2);color:var(--crm)">SAW-L2</span> Modelo mental espacial (posição / altitude / distância via DME)</div>
+        <div class="tax-sub"><span class="saw-tag" style="background:rgba(245,166,35,.2);color:var(--dec)">SAW-L3</span> Projeção de consequências (combustível / MAP / alternado)</div>
+      </div>
+    </div>
+
+    <div class="tax-cat">
+      <div class="tax-head" style="background:rgba(82,192,112,.1);border-color:var(--crm)">
+        <span style="color:var(--crm)">●</span>
+        <span>B. Coordenação de Tripulação (CRM)</span>
+        <span style="font-size:12px;color:var(--muted);margin-left:auto;margin-right:8px">3 subcategorias</span>
+        <span class="tax-icon">▶</span>
+      </div>
+      <div class="tax-subs">
+        <div class="tax-sub"><span class="saw-tag" style="background:rgba(82,192,112,.15);color:var(--crm)">CRM</span> Delegação explícita e verbal de funções</div>
+        <div class="tax-sub"><span class="saw-tag" style="background:rgba(82,192,112,.15);color:var(--crm)">CRM</span> Monitoramento cruzado inter-tripulação (cross-check)</div>
+        <div class="tax-sub"><span class="saw-tag" style="background:rgba(82,192,112,.15);color:var(--crm)">CRM</span> Callouts padronizados + confirmação verbal (read-back / hear-back)</div>
+      </div>
+    </div>
+
+    <div class="tax-cat">
+      <div class="tax-head" style="background:rgba(245,166,35,.1);border-color:var(--dec)">
+        <span style="color:var(--dec)">●</span>
+        <span>C. Tomada de Decisão</span>
+        <span style="font-size:12px;color:var(--muted);margin-left:auto;margin-right:8px">2 subcategorias</span>
+        <span class="tax-icon">▶</span>
+      </div>
+      <div class="tax-subs">
+        <div class="tax-sub"><span class="saw-tag" style="background:rgba(245,166,35,.15);color:var(--dec)">RPD</span> Reconhecimento de padrão como gatilho decisório (Klein, 1993)</div>
+        <div class="tax-sub"><span class="saw-tag" style="background:rgba(245,166,35,.15);color:var(--dec)">SOP</span> Aplicação do critério de estabilização (1000 ft, IMC)</div>
+      </div>
+    </div>
+
+    <div class="tax-cat">
+      <div class="tax-head" style="background:rgba(224,92,92,.1);border-color:var(--wl)">
+        <span style="color:var(--wl)">●</span>
+        <span>D. Gestão de Workload</span>
+        <span style="font-size:12px;color:var(--muted);margin-left:auto;margin-right:8px">2 subcategorias</span>
+        <span class="tax-icon">▶</span>
+      </div>
+      <div class="tax-subs">
+        <div class="tax-sub"><span class="saw-tag" style="background:rgba(224,92,92,.15);color:var(--wl)">WL</span> Acúmulo de demandas simultâneas (pilotagem + ATC + EGPWS)</div>
+        <div class="tax-sub"><span class="saw-tag" style="background:rgba(224,92,92,.15);color:var(--wl)">WL+SA</span> SA Degradada → recuperada por redistribuição de tarefas (CRM)</div>
+      </div>
+    </div>
+
+    <div class="tax-cat">
+      <div class="tax-head" style="background:rgba(185,122,224,.1);border-color:var(--com)">
+        <span style="color:var(--com)">●</span>
+        <span>E. Comunicação</span>
+        <span style="font-size:12px;color:var(--muted);margin-left:auto;margin-right:8px">2 subcategorias</span>
+        <span class="tax-icon">▶</span>
+      </div>
+      <div class="tax-subs">
+        <div class="tax-sub"><span class="saw-tag" style="background:rgba(185,122,224,.15);color:var(--com)">COM</span> Falha bidirecional de comunicação com ATC</div>
+        <div class="tax-sub"><span class="saw-tag" style="background:rgba(185,122,224,.15);color:var(--com)">COM</span> Incerteza epistêmica sobre disponibilidade do canal ATC</div>
+      </div>
+    </div>
+
+    <div class="tax-cat">
+      <div class="tax-head" style="background:rgba(122,184,204,.1);border-color:var(--ref)">
+        <span style="color:var(--ref)">●</span>
+        <span>F. Reflexão e Aprendizado</span>
+        <span style="font-size:12px;color:var(--muted);margin-left:auto;margin-right:8px">2 subcategorias</span>
+        <span class="tax-icon">▶</span>
+      </div>
+      <div class="tax-subs">
+        <div class="tax-sub"><span class="saw-tag" style="background:rgba(122,184,204,.15);color:var(--ref)">META</span> Análise post-hoc — reconstrução da causalidade da falha bidirecional</div>
+        <div class="tax-sub"><span class="saw-tag" style="background:rgba(122,184,204,.15);color:var(--ref)">META</span> Incorporação de lições nos briefings futuros (CRM precoce + freq. alternativa)</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="swarm-panel">
+    <h3>Conexão com o Método SWARM (Plant &amp; Stanton, 2012)</h3>
+    <p style="font-size:13.5px">O método SWARM (<em>Situation Awareness and Workload in Retrieval of Memories</em>) usa entrevistas semi-estruturadas para extrair os <strong>requisitos de SA</strong> de cada cargo/tarefa. A ICA é a técnica de análise que estrutura a taxonomia emergente. Os capítulos 6 e 7 de Plant &amp; Stanton (2012) demonstram:</p>
+    <ol style="margin:12px 0 0 20px;font-size:13.5px;line-height:1.9">
+      <li><strong>Coleta:</strong> entrevistas CDM ou semi-estruturadas com tripulantes sobre situações críticas</li>
+      <li><strong>Análise ICA:</strong> identificação de categorias e subcategorias temáticas (o que foi percebido, compreendido, projetado)</li>
+      <li><strong>Mapeamento SAW:</strong> atribuição de cada subcategoria ao nível SAW correspondente (L1/L2/L3) — exatamente o que fizemos na coluna "Nível SAW" acima</li>
+      <li><strong>Taxonomia:</strong> organização hierárquica dos requisitos de SA por fase de voo, cargo e sistema</li>
+      <li><strong>Aplicação:</strong> uso da taxonomia para design de displays, checklists, treinamento CRM, e protocolos de briefing</li>
+    </ol>
+    <div class="method-ref" style="margin-top:14px">
+      <strong>Resultado:</strong> A taxonomia emergente desta entrevista (categorias A–F acima) constitui uma primeira aproximação dos requisitos de SA para o segmento de aproximação instrumental com degradação de sistemas — e pode ser validada em estudos subsequentes com maior número de participantes.
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     SECTION 7: CÓDIGO R
+     ===================================================================== -->
+<section class="sec" id="s-r">
+  <div class="sec-head">
+    <span class="badge">CÓDIGO R</span>
+    <div class="sec-head-text">
+      <h2>Implementação com tidytext</h2>
+      <p>Suporte computacional à ICA usando os pacotes tidytext, widyr e topicmodels · Silge &amp; Robinson (2017)</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Papel do Código R na ICA</div>
+    <p>O processamento computacional <strong>não substitui</strong> a codificação manual — é um auxiliar que:</p>
+    <ul style="margin:10px 0 0 20px;font-size:14px;line-height:1.8">
+      <li>Identifica padrões lexicais que poderiam passar despercebidos na leitura</li>
+      <li>Provê evidência quantitativa complementar à análise qualitativa</li>
+      <li>Permite verificar consistência das categorias por diferentes critérios (frequência, TF-IDF, co-ocorrência)</li>
+      <li>Facilita a documentação e reprodutibilidade do processo analítico</li>
+    </ul>
+  </div>
+
+  <h3 style="margin:20px 0 12px;font-size:15px">Pipeline de análise</h3>
+
+  <div class="r-block"><span class="rc"># Etapa 0: Pacotes</span>
+pacman::p_load(tidyverse, tidytext, widyr, topicmodels, igraph, ggraph)
+
+<span class="rc"># Etapa 2: Tokenização e limpeza</span>
+tokens &lt;- corpus_bruto <span class="rf">%&gt;%</span>
+  <span class="rf">unnest_tokens</span>(palavra, texto) <span class="rf">%&gt;%</span>
+  <span class="rf">filter</span>(!palavra <span class="rf">%in%</span> stopwords_pt, <span class="rf">str_length</span>(palavra) &gt;= 3)
+
+<span class="rc"># Etapa 3A: TF-IDF por turno → termos mais distintivos</span>
+tokens <span class="rf">%&gt;%</span>
+  <span class="rf">count</span>(turno_id, palavra) <span class="rf">%&gt;%</span>
+  <span class="rf">bind_tf_idf</span>(palavra, turno_id, n)
+
+<span class="rc"># Etapa 3B: Bigramas → conceitos compostos</span>
+corpus_bruto <span class="rf">%&gt;%</span>
+  <span class="rf">unnest_ngrams</span>(bigram, texto, n = 2) <span class="rf">%&gt;%</span>
+  <span class="rf">separate</span>(bigram, c(<span class="rs">"w1"</span>, <span class="rs">"w2"</span>)) <span class="rf">%&gt;%</span>
+  <span class="rf">filter</span>(!w1 <span class="rf">%in%</span> stopwords_pt, !w2 <span class="rf">%in%</span> stopwords_pt)
+
+<span class="rc"># Etapa 4: Co-ocorrência (correlação φ entre palavras por turno)</span>
+tokens <span class="rf">%&gt;%</span>
+  <span class="rf">group_by</span>(palavra) <span class="rf">%&gt;%</span> <span class="rf">filter</span>(<span class="rf">n</span>() &gt;= 2) <span class="rf">%&gt;%</span>
+  <span class="rf">pairwise_cor</span>(palavra, turno_id, sort = TRUE)
+
+<span class="rc"># Etapa 5: LDA (k = 4) — suporte à síntese</span>
+dtm &lt;- tokens <span class="rf">%&gt;%</span> <span class="rf">count</span>(turno_id, palavra) <span class="rf">%&gt;%</span>
+        <span class="rf">cast_dtm</span>(turno_id, palavra, n)
+lda_fit &lt;- <span class="rf">LDA</span>(dtm, k = 4, control = list(seed = 2024))</div>
+
+  <div class="info-box" style="margin-top:16px">
+    <strong>Arquivo completo:</strong> O script R detalhado com todas as etapas, visualizações, codificação manual e taxonomia final está disponível em <code>TE261_ICA_tidytext.R</code>. Execute-o em um projeto RStudio para gerar todos os gráficos.
+  </div>
+
+  <div class="two-col" style="margin-top:16px">
+    <div class="card">
+      <div class="card-title">Saídas geradas pelo R</div>
+      <ul style="list-style:none;font-size:13px;line-height:1.9">
+        <li>▸ <code>output_01_freq_lexica.png</code> — frequências</li>
+        <li>▸ <code>output_02_tfidf.png</code> — TF-IDF por turno</li>
+        <li>▸ <code>output_03_bigramas.png</code> — bigramas</li>
+        <li>▸ <code>output_04_lda_beta.png</code> — termos por tópico</li>
+        <li>▸ <code>output_05_lda_gamma.png</code> — tópicos por turno</li>
+        <li>▸ <code>output_06_categorias.png</code> — distribuição ICA</li>
+        <li>▸ Rede de bigramas (ggraph)</li>
+        <li>▸ Rede de co-ocorrência (φ)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Notas metodológicas</div>
+      <p style="font-size:13px">O LDA requer corpus maior (≥ 50 docs) para resultados robustos. Aqui é demonstração pedagógica. Para estudos reais, use múltiplas entrevistas.</p>
+      <p style="font-size:13px;margin-top:8px">A codificação manual (<code>codigos</code> tibble) é o coração da análise — o código computacional é <em>evidência auxiliar</em>, não substituto do julgamento do pesquisador.</p>
+      <p style="font-size:13px;margin-top:8px">Valide a taxonomia com: (a) segundo codificador; (b) <em>member-checking</em> com o piloto; (c) triangulação com outros casos.</p>
+    </div>
+  </div>
+
+  <div class="method-ref" style="margin-top:20px">
+    <strong>Referências:</strong> Silge, J. &amp; Robinson, D. (2017). <em>Text Mining with R: A Tidy Approach</em>. O'Reilly. Disponível em tidytextmining.com · Vears, D.F. &amp; Gillam, L. (2022). Inductive content analysis: A guide for beginning qualitative researchers. <em>Focus on Health Professional Education</em>, 23(1), 111–127 · Plant, K.L. &amp; Stanton, N.A. (2012). <em>Distributed Cognition and Reality</em>. CRC Press · Endsley, M.R. (1995). Toward a theory of situation awareness in dynamic systems. <em>Human Factors</em>, 37(1), 32–64 · Klein, G. (1993). A recognition-primed decision model of rapid decision making. In G. Klein et al. (Eds.), <em>Decision Making in Action</em>. Ablex.
+  </div>
+
+</section>
+
+<!-- ===================================================================== -->
+<script>
+// ---- Navigation ----
+document.querySelectorAll('.snb').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.snb').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.target).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+
+// ---- Transcript turns ----
+document.querySelectorAll('.turn-head').forEach(head => {
+  head.addEventListener('click', () => {
+    const turn = head.closest('.turn');
+    turn.classList.toggle('open');
+  });
+});
+
+// ---- Toggle all ----
+const toggleBtn = document.getElementById('toggleAll');
+let allOpen = false;
+if (toggleBtn) {
+  toggleBtn.addEventListener('click', () => {
+    allOpen = !allOpen;
+    document.querySelectorAll('.turn').forEach(t => {
+      if (allOpen) t.classList.add('open');
+      else t.classList.remove('open');
+    });
+    toggleBtn.textContent = allOpen
+      ? '▼ Recolher todos os turnos'
+      : '▶ Expandir todos os turnos';
+  });
+}
+
+// ---- Tooltip for coded spans ----
+const tooltip = document.getElementById('tooltip');
+document.querySelectorAll('[data-cat]').forEach(span => {
+  span.addEventListener('mouseenter', e => {
+    tooltip.querySelector('.tc').textContent = '⬛ ' + (e.target.dataset.code || '');
+    tooltip.querySelector('.ts').textContent = e.target.dataset.sub || '';
+    const cat = e.target.dataset.cat;
+    const colors = {
+      sa: '#4B9FE1', crm: '#52C070', dec: '#F5A623',
+      wl: '#E05C5C', com: '#B97AE0', ref: '#7AB8CC', desc: '#8BA0B0'
+    };
+    tooltip.querySelector('.tc').style.color = colors[cat] || '#F5C842';
+    tooltip.style.display = 'block';
+  });
+  span.addEventListener('mousemove', e => {
+    let x = e.clientX + 14;
+    let y = e.clientY - 10;
+    if (x + 290 > window.innerWidth) x = e.clientX - 300;
+    tooltip.style.left = x + 'px';
+    tooltip.style.top  = y + 'px';
+  });
+  span.addEventListener('mouseleave', () => {
+    tooltip.style.display = 'none';
+  });
+  // Click to open turn if collapsed
+  span.addEventListener('click', e => {
+    const turn = e.target.closest('.turn');
+    if (turn && !turn.classList.contains('open')) {
+      turn.classList.add('open');
+    }
+  });
+});
+
+// ---- Taxonomy tree ----
+document.querySelectorAll('.tax-head').forEach(head => {
+  head.addEventListener('click', () => {
+    head.classList.toggle('open');
+    const subs = head.nextElementSibling;
+    if (subs) subs.classList.toggle('open');
+  });
+});
+
+// Open first turn by default
+const firstTurn = document.getElementById('t2');
+if (firstTurn) firstTurn.classList.add('open');
+</script>
+</body>
+</html>

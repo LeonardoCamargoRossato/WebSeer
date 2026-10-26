@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análise de Conteúdo Indutiva — Guia Interativo</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --surface-0:#f1efe8;--surface-1:#f5f4f0;--surface-2:#ffffff;
+  --text-primary:#2c2c2a;--text-secondary:#5f5e5a;--text-muted:#888780;
+  --border:rgba(44,44,42,.12);--border-strong:rgba(44,44,42,.22);
+  --bg-accent:#e6f1fb;--text-accent:#185fa5;--border-accent:#b5d4f4;
+  --bg-success:#eaf3de;--text-success:#3b6d11;--border-success:#c0dd97;
+  --bg-warning:#faeeda;--text-warning:#854f0b;--border-warning:#fac775;
+  --bg-pro:#eeedfe;--text-pro:#534ab7;--border-pro:#cecbf6;
+  --radius:8px;--font-sans:system-ui,-apple-system,sans-serif;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --surface-0:#1a1a18;--surface-1:#222220;--surface-2:#2a2a28;
+    --text-primary:#e8e8e4;--text-secondary:#a8a7a2;--text-muted:#666661;
+    --border:rgba(232,232,228,.1);--border-strong:rgba(232,232,228,.2);
+    --bg-accent:#042c53;--text-accent:#85b7eb;--border-accent:#0c447c;
+    --bg-success:#173404;--text-success:#97c459;--border-success:#27500a;
+    --bg-warning:#412402;--text-warning:#ef9f27;--border-warning:#633806;
+    --bg-pro:#26215c;--text-pro:#afa9ec;--border-pro:#3c3489;
+  }
+}
+body{background:var(--surface-0);color:var(--text-primary);font-family:var(--font-sans);min-height:100vh;padding:2rem 1rem}
+.container{max-width:760px;margin:0 auto}
+header{margin-bottom:2rem}
+header h1{font-size:22px;font-weight:500;margin-bottom:4px}
+header p{font-size:14px;color:var(--text-secondary)}
+.stepper{display:flex;gap:0;margin-bottom:1.5rem;border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.step-btn{flex:1;padding:8px 4px;font-size:12px;font-weight:500;background:var(--surface-1);border:none;cursor:pointer;color:var(--text-secondary);transition:background .15s;border-right:0.5px solid var(--border);line-height:1.3;font-family:var(--font-sans)}
+.step-btn:last-child{border-right:none}
+.step-btn.active{background:var(--bg-accent);color:var(--text-accent)}
+.step-btn:hover:not(.active){background:var(--surface-2)}
+.panel{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.panel-title{font-size:13px;font-weight:500;color:var(--text-secondary);margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.04em}
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px;margin-right:4px;margin-bottom:4px}
+.badge-a{background:var(--bg-accent);color:var(--text-accent)}
+.badge-s{background:var(--bg-success);color:var(--text-success)}
+.badge-w{background:var(--bg-warning);color:var(--text-warning)}
+.badge-p{background:var(--bg-pro);color:var(--text-pro)}
+.transcript{background:var(--surface-1);border:0.5px solid var(--border);border-radius:var(--radius);padding:1rem;font-size:13px;line-height:1.7;color:var(--text-secondary)}
+.highlight{border-radius:3px;padding:1px 0;cursor:pointer;transition:opacity .1s}
+.hl-a{background:rgba(55,138,221,.18)}
+.hl-s{background:rgba(99,153,34,.18)}
+.hl-w{background:rgba(186,117,23,.18)}
+.hl-p{background:rgba(83,74,183,.18)}
+.tag{font-size:10px;font-weight:500;vertical-align:middle;margin-left:4px;padding:1px 5px;border-radius:3px}
+.tag-a{background:var(--bg-accent);color:var(--text-accent)}
+.tag-s{background:var(--bg-success);color:var(--text-success)}
+.tag-w{background:var(--bg-warning);color:var(--text-warning)}
+.tag-p{background:var(--bg-pro);color:var(--text-pro)}
+.tree{font-size:13px;line-height:2}
+.tree-cat{font-weight:500;color:var(--text-primary)}
+.tree-sub{color:var(--text-secondary);padding-left:1.25rem}
+.tree-leaf{color:var(--text-muted);padding-left:2.5rem;font-size:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:500px){.grid2{grid-template-columns:1fr}}
+.card-mini{background:var(--surface-1);border:0.5px solid var(--border);border-radius:var(--radius);padding:.75rem;font-size:13px}
+.card-mini-title{font-weight:500;margin-bottom:.25rem;font-size:12px;color:var(--text-secondary)}
+.arrow-row{display:flex;align-items:center;gap:.5rem;margin:1rem 0;flex-wrap:wrap}
+.arrow-step{background:var(--bg-accent);color:var(--text-accent);border-radius:var(--radius);padding:6px 12px;font-size:12px;font-weight:500}
+.arrow-icon{color:var(--text-muted);font-size:18px}
+.info-box{border-left:3px solid var(--border-accent);padding:.75rem 1rem;background:var(--bg-accent);border-radius:0 var(--radius) var(--radius) 0;font-size:13px;color:var(--text-accent);margin-top:.75rem}
+.vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:500px){.vs-grid{grid-template-columns:1fr}}
+.vs-card{border-radius:var(--radius);padding:.75rem 1rem;font-size:13px}
+.vs-ica{background:var(--bg-accent);border:0.5px solid var(--border-accent)}
+.vs-ded{background:var(--bg-warning);border:0.5px solid var(--border-warning)}
+.vs-title{font-weight:500;margin-bottom:.5rem;font-size:12px}
+.legend{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem}
+li{margin-left:1.25rem;font-size:13px;line-height:1.8;color:var(--text-secondary)}
+footer{margin-top:2rem;font-size:12px;color:var(--text-muted);text-align:center;border-top:0.5px solid var(--border);padding-top:1rem}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <h1>Análise de Conteúdo Indutiva (ACI)</h1>
+  <p>Baseado em Vears &amp; Gillam (2022) — guia interativo passo a passo</p>
+</header>
+
+<div class="stepper" role="tablist">
+  <button class="step-btn active" onclick="show(0)" id="btn0" role="tab" aria-selected="true">O que é?</button>
+  <button class="step-btn" onclick="show(1)" id="btn1" role="tab">Passo 1<br>Ler</button>
+  <button class="step-btn" onclick="show(2)" id="btn2" role="tab">Passo 2<br>Macro</button>
+  <button class="step-btn" onclick="show(3)" id="btn3" role="tab">Passo 3<br>Micro</button>
+  <button class="step-btn" onclick="show(4)" id="btn4" role="tab">Passo 4<br>Refinar</button>
+  <button class="step-btn" onclick="show(5)" id="btn5" role="tab">Passo 5<br>Síntese</button>
+</div>
+
+<div id="p0">
+  <div class="panel">
+    <div class="panel-title">Características-chave da ACI</div>
+    <div class="arrow-row">
+      <span class="arrow-step">Processo indutivo</span>
+      <span class="arrow-icon">+</span>
+      <span class="arrow-step">Codificação iterativa</span>
+      <span class="arrow-icon">=</span>
+      <span class="arrow-step">Categorias de conteúdo</span>
+    </div>
+    <ul style="margin-top:.5rem">
+      <li>Códigos <strong>emergem</strong> dos dados — não são predefinidos</li>
+      <li>Cada documento é recodificado múltiplas vezes, de forma refinada</li>
+      <li>Resultado: categorias e subcategorias (≠ "temas" da análise temática)</li>
+      <li>Adequada a pesquisas práticas em saúde, segurança e políticas</li>
+    </ul>
+  </div>
+  <div class="vs-grid">
+    <div class="vs-card vs-ica">
+      <div class="vs-title" style="color:var(--text-accent)">ACI — Indutiva</div>
+      <ul>
+        <li>Códigos surgem dos dados</li>
+        <li>Lista de códigos evolui</li>
+        <li>Pouca teoria prévia necessária</li>
+        <li>Foco na descrição prática</li>
+      </ul>
+    </div>
+    <div class="vs-card vs-ded">
+      <div class="vs-title" style="color:var(--text-warning)">Análise Dedutiva</div>
+      <ul>
+        <li>Códigos predefinidos</li>
+        <li>Lista de códigos é fixa</li>
+        <li>Parte de teoria/modelo prévio</li>
+        <li>Testa hipóteses existentes</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div id="p1" style="display:none">
+  <div class="panel">
+    <div class="panel-title">Passo 1 — Ler e familiarizar-se</div>
+    <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem">
+      Antes de qualquer codificação, leia <em>todos</em> os dados para ter uma visão holística. Morse (1994) chama este processo cognitivo de <strong>"compreensão"</strong>.
+    </p>
+    <div class="card-mini" style="margin-bottom:.5rem">
+      <div class="card-mini-title">Perguntas orientadoras nesta etapa</div>
+      <ul>
+        <li>Do que tratam, em geral, esses textos/transcrições?</li>
+        <li>Que padrões iniciais consigo perceber?</li>
+        <li>Minha questão de pesquisa está sendo respondida pelos dados?</li>
+      </ul>
+    </div>
+    <div class="info-box">
+      <i class="ti ti-bulb" aria-hidden="true"></i> Esta etapa é ainda mais importante quando as transcrições foram coletadas por outro pesquisador.
+    </div>
+  </div>
+  <div class="panel" style="background:var(--surface-1)">
+    <div class="panel-title">Exemplo — trecho bruto (antes de qualquer código)</div>
+    <div class="transcript">
+      Pesquisadora: O que levou você a querer fazer o teste de portador no seu filho?<br><br>
+      Violeta: Descobrimos que eu era portadora e aí ficamos pensando... e se ela for portadora também? Minha irmã passou pelo processo de teste e foi muito estressante. Eu não queria que ela passasse por aquele susto quando fosse adulta. Além disso, se ela for portadora, pode planejar melhor a vida reprodutiva dela.
+    </div>
+  </div>
+</div>
+
+<div id="p2" style="display:none">
+  <div class="panel">
+    <div class="panel-title">Passo 2 — Codificação de 1ª rodada (macrocategorias)</div>
+    <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem">
+      Identifique e rotule seções do texto segundo seu <em>significado geral</em> em relação à questão de pesquisa. Pergunte: <strong>"Do que trata esta seção?"</strong>
+    </p>
+    <div class="legend">
+      <span class="badge badge-a">Razões para o teste</span>
+      <span class="badge badge-s">Reações aos resultados</span>
+      <span class="badge badge-w">Experiências com o pedido</span>
+      <span class="badge badge-p">Visões sobre divulgação</span>
+    </div>
+  </div>
+  <div class="panel" style="background:var(--surface-1)">
+    <div class="panel-title">Transcrição com macrocódigos — clique nos trechos</div>
+    <div class="transcript">
+      Pesquisadora: O que levou você a querer fazer o teste de portador no seu filho?<br><br>
+      Violeta: <span class="highlight hl-a" onclick="showTag(this)">Descobrimos que eu era portadora e aí ficamos pensando... e se ela for portadora também? Minha irmã passou pelo processo de teste e foi muito estressante. Eu não queria que ela passasse por aquele susto quando fosse adulta. Além disso, se ela for portadora, pode planejar melhor a vida reprodutiva dela.<span class="tag tag-a" style="display:none">Razões para o teste</span></span><br><br>
+      Pesquisadora: E como foi a experiência de pedir o teste?<br><br>
+      Violeta: <span class="highlight hl-w" onclick="showTag(this)">A médica foi muito receptiva. Explicou os prós e contras. No fim, concordou em realizar o teste.<span class="tag tag-w" style="display:none">Experiências com o pedido</span></span><br><br>
+      Pesquisadora: Como você se sentiu ao receber o resultado?<br><br>
+      Violeta: <span class="highlight hl-s" onclick="showTag(this)">Fiquei aliviada. Ela não é portadora. Foi um peso a menos, uma tranquilidade enorme.<span class="tag tag-s" style="display:none">Reações aos resultados</span></span>
+    </div>
+    <div class="info-box" style="margin-top:.75rem">Clique em cada trecho destacado para revelar o macrocódigo atribuído.</div>
+  </div>
+</div>
+
+<div id="p3" style="display:none">
+  <div class="panel">
+    <div class="panel-title">Passo 3 — Codificação de 2ª rodada (subcategorias e microcódigos)</div>
+    <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem">
+      Dentro de cada macrocategoria, aplique codificação <em>linha a linha</em> para identificar ideias específicas. Os microcódigos se tornam subcategorias.
+    </p>
+  </div>
+  <div class="panel" style="background:var(--surface-1)">
+    <div class="panel-title">Macrocategoria "Razões para o teste" — desmembrada</div>
+    <div class="transcript">
+      <span class="highlight hl-a">Descobrimos que eu era portadora e aí ficamos pensando... e se ela for portadora também?<span class="tag tag-a">Curiosidade / interesse</span></span><br><br>
+      <span class="highlight hl-w">Minha irmã passou pelo processo de teste e foi muito estressante. Eu não queria que ela passasse por aquele susto quando fosse adulta.<span class="tag tag-w">Evitar choque futuro</span></span><br><br>
+      <span class="highlight hl-s">Além disso, se ela for portadora, pode planejar melhor a vida reprodutiva dela.<span class="tag tag-s">Oportunidades reprodutivas</span></span>
+    </div>
+  </div>
+  <div class="grid2" style="margin-top:.75rem">
+    <div class="card-mini">
+      <div class="card-mini-title" style="color:var(--text-accent)">Subcategorias identificadas</div>
+      <ul>
+        <li>Curiosidade / interesse</li>
+        <li>Tranquilidade (peace of mind)</li>
+        <li>Evitar choque futuro</li>
+        <li>Oportunidades reprodutivas</li>
+        <li>Preocupações com saúde</li>
+      </ul>
+    </div>
+    <div class="card-mini">
+      <div class="card-mini-title" style="color:var(--text-success)">Dica metodológica</div>
+      <p style="font-size:12px;color:var(--text-secondary);line-height:1.6">Use as próprias palavras do texto como código ("in vivo") ou paráfrase próxima. Esta etapa vai sugerir revisões nas macrocategorias — é esperado!</p>
+    </div>
+  </div>
+</div>
+
+<div id="p4" style="display:none">
+  <div class="panel">
+    <div class="panel-title">Passo 4 — Refinamento das subcategorias</div>
+    <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem">
+      Compare todas as subcategorias entre todos os textos: agrupe as muito similares, separe as abrangentes demais, e verifique se estão na macrocategoria correta.
+    </p>
+  </div>
+  <div class="panel" style="background:var(--surface-1)">
+    <div class="panel-title">Árvore de codificação refinada (Vears et al., 2016)</div>
+    <div class="tree">
+      <div class="tree-cat"><span class="badge badge-a">b</span> Razões para conhecer o status</div>
+      <div class="tree-sub">i. Tranquilidade</div>
+      <div class="tree-sub">ii. Curiosidade / interesse</div>
+      <div class="tree-sub">iii. Enfrentamento (coping)</div>
+      <div class="tree-sub">iv. Necessidade de saber</div>
+      <div class="tree-sub">v. Comunicar informação ao filho</div>
+      <div class="tree-leaf">→ Oportunidades reprodutivas</div>
+      <div class="tree-leaf">→ Evitar choque futuro</div>
+      <div class="tree-leaf">→ Integração gradual da informação</div>
+      <div class="tree-sub">vi. Preocupações de saúde</div>
+      <div class="tree-cat" style="margin-top:.5rem"><span class="badge badge-s">c</span> Reações aos resultados</div>
+      <div class="tree-sub">i. Satisfação / alívio</div>
+      <div class="tree-sub">ii. Indiferença</div>
+      <div class="tree-sub">iii. Upset inicial → paz depois</div>
+      <div class="tree-cat" style="margin-top:.5rem"><span class="badge badge-p">d</span> Visões sobre divulgação</div>
+      <div class="tree-sub">i–v. (subcategorias refinadas)</div>
+    </div>
+  </div>
+  <div class="info-box">
+    <i class="ti ti-refresh" aria-hidden="true"></i> Recodifique os documentos anteriores sempre que surgirem novos códigos — o processo é <strong>iterativo</strong> por design.
+  </div>
+</div>
+
+<div id="p5" style="display:none">
+  <div class="panel">
+    <div class="panel-title">Passo 5 — Síntese e interpretação</div>
+    <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem">
+      Conecte as categorias em uma narrativa coerente que responda à questão de pesquisa. Na ACI, a interpretação é "interna" — próxima ao fenômeno, não a teorias externas.
+    </p>
+  </div>
+  <div class="grid2">
+    <div class="card-mini">
+      <div class="card-mini-title" style="color:var(--text-accent)">Síntese (exemplo)</div>
+      <p style="font-size:12px;color:var(--text-secondary);line-height:1.6">As razões dos pais podem ser agrupadas em dois eixos: razões de <strong>benefício próprio</strong> (curiosidade, tranquilidade) e razões de <strong>benefício do filho</strong> (evitar choque, oportunidades reprodutivas). Esta distinção tem implicações éticas para a prática clínica.</p>
+    </div>
+    <div class="card-mini">
+      <div class="card-mini-title" style="color:var(--text-success)">ACI ≠ Análise Temática</div>
+      <p style="font-size:12px;color:var(--text-secondary);line-height:1.6">A análise temática busca <em>temas</em> teóricos abstratos. A ACI fica mais próxima do fenômeno e produz <em>categorias de conteúdo</em> diretamente aplicáveis à prática ou política de saúde.</p>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:.75rem">
+    <div class="panel-title">Fluxo completo da ACI</div>
+    <div class="arrow-row">
+      <span class="arrow-step">1 Ler</span>
+      <span class="arrow-icon">→</span>
+      <span class="arrow-step">2 Macro</span>
+      <span class="arrow-icon">→</span>
+      <span class="arrow-step">3 Micro</span>
+      <span class="arrow-icon">→</span>
+      <span class="arrow-step">4 Refinar</span>
+      <span class="arrow-icon">→</span>
+      <span class="arrow-step">5 Síntese</span>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:.5rem">Os passos 2–4 são iterativos: retorne a documentos anteriores sempre que novos códigos emergirem.</p>
+  </div>
+</div>
+
+<footer>
+  Baseado em: Vears, D. F. &amp; Gillam, L. (2022). Inductive content analysis: A guide for beginning qualitative researchers. <em>Focus on Health Professional Education, 23</em>(1), 111–127.
+</footer>
+</div>
+
+<script>
+function show(i){
+  for(var n=0;n<6;n++){
+    document.getElementById('p'+n).style.display=n===i?'block':'none';
+    var b=document.getElementById('btn'+n);
+    b.classList.toggle('active',n===i);
+    b.setAttribute('aria-selected',n===i);
+  }
+}
+function showTag(el){
+  var t=el.querySelector('.tag');
+  if(t) t.style.display=t.style.display==='none'?'inline':'none';
+}
+</script>
+</body>
+</html>

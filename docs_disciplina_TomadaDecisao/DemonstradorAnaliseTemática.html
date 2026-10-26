@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard SWARM & Taxonomia SAW - Aviação (Caso Flameout)</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        .header { background-color: #2c3e50; color: white; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .container { display: flex; flex-wrap: wrap; gap: 20px; }
+        .card { background-color: white; border-radius: 8px; padding: 20px; flex: 1 1 30%; box-shadow: 0 4px 6px rgba(0,0,0,0.05); min-width: 300px; border-top: 5px solid #bdc3c7; }
+        .card.schema { border-top-color: #3498db; }
+        .card.action { border-top-color: #e74c3c; }
+        .card.world { border-top-color: #2ecc71; }
+        h3 { margin-top: 0; color: #2c3e50; border-bottom: 1px solid #ecf0f1; padding-bottom: 10px; }
+        .badge { display: inline-block; padding: 5px 10px; border-radius: 20px; font-size: 12px; margin: 5px; color: white; }
+        .schema-badge { background-color: #3498db; }
+        .action-badge { background-color: #e74c3c; }
+        .world-badge { background-color: #2ecc71; }
+        .transcript { background-color: #ecf0f1; padding: 15px; border-left: 4px solid #95a5a6; border-radius: 4px; font-style: italic; margin-top: 20px; line-height: 1.6; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f8f9fa; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1 style="margin:0;">Demonstração: Análise Temática - Falha Dupla de Motores</h1>
+        <p style="margin:5px 0 0 0;">Mapeamento Baseado na Taxonomia SAW (Texto Longo: Granizo e Dual Engine Flameout)</p>
+    </div>
+
+    <div class="container">
+        <!-- SCHEMA CARD -->
+        <div class="card schema">
+            <h3>🧠 Schema (Esquemas Mentais)</h3>
+            <p>Conhecimentos, treinamentos e protocolos ativados (Regras e Memória).</p>
+            <div>
+                <span class="badge schema-badge">Treinamento (Trained Past Exp.) - 35%</span>
+                <span class="badge schema-badge">Procedimentos (SOP) - 40%</span>
+                <span class="badge schema-badge">Experiência (Direct Past Exp.) - 25%</span>
+            </div>
+            <table>
+                <tr><th>Padrão Extraído (Códigos)</th><th>Relevância no Relato</th></tr>
+                <tr><td>"Treinamento de simulador / sessão"</td><td>Alta (Ativação Imediata)</td></tr>
+                <tr><td>"QRH / Checklist / Protocolo"</td><td>Alta (Base do SOP)</td></tr>
+                <tr><td>"Disciplina / Memória muscular"</td><td>Média (Resiliência)</td></tr>
+            </table>
+        </div>
+
+        <!-- ACTION CARD -->
+        <div class="card action">
+            <h3>⚙️ Action (Ações Tomadas)</h3>
+            <p>Ações de pilotagem, comunicação e monitoramento de sistemas.</p>
+            <div>
+                <span class="badge action-badge">Pilotagem (Aviate) - 40%</span>
+                <span class="badge action-badge">Comunicação (Communicate) - 35%</span>
+                <span class="badge action-badge">Monitoramento (Sys. Monitoring) - 25%</span>
+            </div>
+            <table>
+                <tr><th>Padrão Extraído (Códigos)</th><th>Relevância no Relato</th></tr>
+                <tr><td>"Desconectei / Assumi / Ajustei"</td><td>Alta (Controle Manual)</td></tr>
+                <tr><td>"Transmitiu Mayday / Declarou emergência"</td><td>Alta (Comunicação ATC)</td></tr>
+                <tr><td>"Varredura de instrumentos"</td><td>Média (Consciência Situacional)</td></tr>
+            </table>
+        </div>
+
+        <!-- WORLD CARD -->
+        <div class="card world">
+            <h3>🌍 World (Mundo/Ambiente)</h3>
+            <p>Condições externas e informações do painel de instrumentos.</p>
+            <div>
+                <span class="badge world-badge">Status da Aeronave (Aircraft Status) - 45%</span>
+                <span class="badge world-badge">Displays (Display Indications) - 30%</span>
+                <span class="badge world-badge">Pistas Físicas (Physical Cues) - 25%</span>
+            </div>
+            <table>
+                <tr><th>Padrão Extraído (Códigos)</th><th>Relevância no Relato</th></tr>
+                <tr><td>"Queda de N1 / EGT / Perda de potência"</td><td>Alta (Falha Sistêmica)</td></tr>
+                <tr><td>"Luz Master Warning / ECAM"</td><td>Alta (Interface Homem-Máquina)</td></tr>
+                <tr><td>"Granizo ensurdecedor / Turbulência severa"</td><td>Média (Ambiente Hostil)</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="transcript">
+        <strong>Exemplo de Trecho do Relato Longo (Codificação Integrada - SAW):</strong><br><br>
+        "A turbulência começou leve, mas logo evoluiu para severa. O avião balançava violentamente e o <strong>barulho do granizo na fuselagem era ensurdecedor [World: Physical Cues]</strong>. Imediatamente, o painel se iluminou como uma árvore de Natal. A <strong>luz vermelha do Master Warning [World: Display Indications]</strong> começou a piscar incessantemente. Olhei para o ECAM e a mensagem era clara: <strong>falha dupla de motores [World: Aircraft Status]</strong>...<br><br>
+        Naquele instante, todo o meu <strong>treinamento de simulador veio à tona [Schema: Trained Past Exp]</strong>. A <strong>regra básica [Schema: SOP]</strong> é sempre voar o avião primeiro. <strong>Desconectei o piloto automático e assumi o controle manual. Ajustei o pitch [Action: Aviate]</strong> para manter a velocidade ideal de planeio... Em seguida, <strong>instruí o meu co-piloto a declarar emergência (Mayday) [Action: Communicate]</strong>."
+    </div>
+
+</body>
+</html>
