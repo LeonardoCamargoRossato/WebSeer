@@ -31,27 +31,27 @@ export default function DocumentWorkspace({onOpen}:{onOpen:(p:Page)=>void}){
    setFile(candidate);setKind(detected);setProgress(null);setPreview(detected==='pdf'?URL.createObjectURL(candidate):null);
   }catch(error){fail(error,'identify',candidate.name)}
  };
- const applyText=(name:string,text:string,sourceType:CorpusSourceType,metadata?:ActiveCorpus['metadata'],pages?:string[])=>{
+ const applyText=(name:string,text:string,sourceType:CorpusSourceType,metadata?:ActiveCorpus['metadata'],pages?:string[],sourceFile?:Blob)=>{
   if(!text.trim())throw new Error(tr('Nenhum texto foi encontrado. Se o PDF for digitalizado, será necessário OCR, ainda indisponível nesta versão.','No text was found. Scanned PDFs need OCR, which is not available in this version.'));
-  const id=crypto.randomUUID();setActiveCorpus({id,name,sourceType,rawText:text,documents:(pages??[text]).map((text,i)=>({id:`${id}-${i}`,title:pages?`${name} — ${i+1}`:name,text,pageNumber:pages?i+1:undefined})),pageCount:pages?.length,metadata,createdAt:new Date().toISOString()});setDraft(text);setSuccess(true);
+  const id=crypto.randomUUID();setActiveCorpus({id,name,sourceFile,sourceType,rawText:text,documents:(pages??[text]).map((text,i)=>({id:`${id}-${i}`,title:pages?`${name} — ${i+1}`:name,text,pageNumber:pages?i+1:undefined})),pageCount:pages?.length,metadata,createdAt:new Date().toISOString()});setDraft(text);setSuccess(true);
  };
  const convert=async()=>{
   if(!file||!kind||busy)return;setBusy(true);setFailure(null);setSuccess(false);setWarning('');setProgress(null);progressRef.current=null;
   try{
    if(kind==='pdf'){
     const result=await extractPdfText(file,p=>{progressRef.current=p;setProgress(p)},options);
-    applyText(file.name,result.rawText,'pdf',result.metadata,result.pages);
+    applyText(file.name,result.rawText,'pdf',result.metadata,result.pages,file);
     try{
      const digest=await crypto.subtle.digest('SHA-256',await file.arrayBuffer());const id=savedId??Array.from(new Uint8Array(digest),x=>x.toString(16).padStart(2,'0')).join('');
      const item:StoredPdf={id,name:file.name,file,pages:result.pages,metadata:result.metadata,options,savedAt:new Date().toISOString()};await savePdf(item);setSaved(items=>[...items.filter(x=>x.id!==id),item]);
     }catch{setWarning(t.storage.error)}
    }else if(kind==='docx'){
-    const mammoth=await import('mammoth');const result=await mammoth.extractRawText({arrayBuffer:await file.arrayBuffer()});applyText(file.name,result.value,'docx',{converter:'Mammoth / DOCX'});
+    const mammoth=await import('mammoth');const result=await mammoth.extractRawText({arrayBuffer:await file.arrayBuffer()});applyText(file.name,result.value,'docx',{converter:'Mammoth / DOCX'},undefined,file);
     if(result.messages.length)setWarning(result.messages.map(m=>m.message).join(' · '));
    }else{
     const bytes=new Uint8Array(await file.arrayBuffer());let text:string;
     if(bytes[0]===255&&bytes[1]===254)text=new TextDecoder('utf-16le').decode(bytes);else if(bytes[0]===254&&bytes[1]===255)text=new TextDecoder('utf-16be').decode(bytes);else text=new TextDecoder('utf-8',{fatal:true}).decode(bytes);
-    applyText(file.name,text,kind,{converter:'Text / Unicode'});
+    applyText(file.name,text,kind,{converter:'Text / Unicode'},undefined,file);
    }
   }catch(error){fail(error,'convert-and-apply')}finally{setBusy(false)}
  };

@@ -9,6 +9,8 @@ export interface CorpusDocument {
 }
 
 export interface ActiveCorpus {
+  archive?: {documentId:string;snapshotId:string};
+  sourceFile?: Blob;
   id: string;
   name: string;
   sourceType: CorpusSourceType;

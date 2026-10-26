@@ -75,6 +75,10 @@ export default function WordCloudGraph({data,palette,customColor,background,shap
     const counts=data.map(d=>d.count);
     const min=Math.min(...counts),max=Math.max(...counts);
     const normalize=(value:number)=>max===min?1:(value-min)/(max-min);
+    canvas.dataset.rendering='true';
+    const done=()=>{canvas.dataset.rendering='false'};
+    canvas.addEventListener('wordcloudstop',done,{once:true});
+    canvas.addEventListener('wordcloudabort',done,{once:true});
     WordCloud(canvas,{
       list:data.map(d=>[d.word,d.count]),
       gridSize:Math.max(1,Math.round(wordSpacing*ratio)),
@@ -97,6 +101,7 @@ export default function WordCloudGraph({data,palette,customColor,background,shap
       drawOutOfBound:false,
       shrinkToFit:true
     });
+    return()=>{canvas.removeEventListener('wordcloudstop',done);canvas.removeEventListener('wordcloudabort',done);canvas.dataset.rendering='false'};
   },[data,colors,background,shape,rotation,fontFamily,scale,sizeContrast,wordSpacing,palette]);
 
   const fit=()=>{setZoom(100);setOffset({x:0,y:0})};

@@ -12,7 +12,7 @@ Aplicação React + TypeScript + Vite para exploração visual de linguagem.
 - Phrase Net com nodes retangulares, links direcionais e force simulation preservada.
 - Corpus com **Upload PDF**, preview local, zoom +/− e modo expandido/minimizado.
 - PT-BR / EN-US para as novas funcionalidades.
-- PDF mantido somente na sessão do navegador, sem cache/persistência.
+- PDF mantido no navegador, com persistência em IndexedDB.
 
 ## Executar
 
@@ -109,3 +109,50 @@ espaços, quebras de linha, margens e comparação. O teste de navegador cobre o
 novo fluxo, PDF completo, dashboard, IndexedDB/reprocessamento/exclusão, DOCX,
 TXT, arraste de Markdown, diagnóstico de PDF inválido, visualizações, PT/EN,
 exemplos, menu móvel e funcionamento sem acesso ao IndexedDB.
+
+## Biblioteca por documento e relatórios (v0, sem IA)
+
+O Histórico é uma biblioteca no IndexedDB, organizada por documento. Cada pasta
+oferece visualização (PDF original ou texto extraído), download do arquivo
+original, contagem de uso das ferramentas, pesquisas e relatórios. DOCX, TXT,
+Markdown, texto colado e exemplos também são salvos; o arquivo original é
+preservado quando existe, e texto colado recebe um original TXT.
+
+A base IndexedDB `webseer` foi atualizada para a versão 2, preservando `pdfs` e
+adicionando `documents`, `snapshots`, `runs` e `reports`. PDFs antigos são
+importados para a biblioteca. O histórico antigo em localStorage é preservado e
+exibido separadamente: ele não guardava documento nem parâmetros completos, por
+isso não é associado artificialmente a um documento.
+
+Documentos são identificados por hash do original. Revisões da extração são
+identificadas pelo conteúdo e metadados, compartilhadas pelas pesquisas e
+relatórios sem repetir todo o corpus a cada análise. Uma pesquisa guarda a
+ferramenta, os parâmetros completos, data/hora e a revisão do texto. Retomar
+restaura esses dados e não conta uma execução nova; Refazer registra outra.
+Alterações em filtros de ferramentas com atualização automática também são
+registradas, com debounce e gravação ao navegar para outra página.
+
+Cada ferramenta possui Gerar relatório. Resultados e parâmetros são congelados
+no momento da geração. Gráficos SVG recebem estilos embutidos; o mapa de palavras
+é salvo como PNG depois de terminar o desenho. O dashboard recebe um histograma
+SVG. São capturas dos gráficos, não screenshots de toda a interface.
+
+Relatórios ficam em Documento → Relatórios → Ferramenta → Versão/data/hora. A
+numeração é transacional por documento/ferramenta, inclusive em abas concorrentes.
+Um relatório geral reúne as estatísticas do documento e os últimos relatórios
+salvos por ferramenta, mantendo referências às versões originais; não executa
+análises ausentes. Os relatórios podem ser visualizados, baixados em HTML com
+imagens incorporadas e impressos/salvos em PDF pelo navegador. Os gráficos também
+podem ser baixados separadamente. Não há integração com GPT ou serviços externos.
+
+`CHROMIUM_PATH=/usr/bin/chromium npm run test:history` valida as seis ferramentas,
+versões de relatórios, captura de gráficos, original TXT, exportação HTML,
+retomada/refazer, persistência após recarregar, relatório geral, versões em duas
+abas concorrentes e migração de um IndexedDB v1 com PDF legado.
+
+Tudo fica apenas no navegador/origem atual. Limpar os dados do site, usar outro
+dispositivo ou a remoção de dados pelo navegador pode tornar a biblioteca
+indisponível. Mantenha cópias dos originais e exporte relatórios importantes.
+Os PDFs antigos continuam também na biblioteca de conversão para compatibilidade;
+essa cópia pode ocupar espaço adicional. Excluir um PDF nessa lista de conversão
+não remove o documento nem os relatórios do Histórico.
