@@ -7,7 +7,7 @@ assert.deepEqual(rows.map(r=>r.counts),[[2,1,0],[0,3,2],[1,0,1]]);
 assert.deepEqual(rows.map(r=>r.cumulative),[[2,1,0],[2,4,2],[3,4,3]]);
 assert.equal(countPages(docs,['Adão','Eva'])[2].counts[0],0);
 assert.equal(countPages([{id:'x',title:'blank',text:''},docs[0]],['Deus','Eva'])[0].counts[0],0);
-assert.equal(normalizeTerm(' NÃO '),'não');assert.equal(normalizeTerm('duas palavras'),'');
+assert.equal(normalizeTerm(' NÃO '),'não');assert.equal(normalizeTerm('COVID-19'),'covid-19');assert.equal(normalizeTerm('2026'),'');assert.equal(normalizeTerm('duas palavras'),'');
 assert.throws(()=>countPages(docs,['Deus']));assert.throws(()=>countPages(docs,['Deus','DEUS']));assert.throws(()=>countPages(docs,['a','b','c','d','e','f','g','h','i']));
 assert.equal(suggestions('o o o Deus Deus Eva',true)[0].word,'deus');assert.equal(suggestions('o o o Deus Deus Eva')[0].word,'o');
 assert.ok(nameSuggestions('Alice encontrou Eva. Alice falou com Eva.').some(n=>n.word==='Alice'));
