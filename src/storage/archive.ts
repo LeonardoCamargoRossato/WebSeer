@@ -1,6 +1,7 @@
+import {hashBlob as hash} from './blobDigest';
 import {announceChange,openDatabase,operation} from './database';
 import type {ActiveCorpus} from '../types/corpus';
-import {listPdfs} from './pdfStore';
+import {listPdfSummaries,getPdf} from './pdfStore';
 export type Tool='dashboard'|'compare'|'wordTree'|'phraseNet'|'frequencies'|'wordCloud'|'animatedHistogram'|'general';
 export type Inputs=Record<string,string|number|boolean|string[]>;
 export type ArchiveDocument={id:string;name:string;sourceType:ActiveCorpus['sourceType'];original:Blob;originalName:string;createdAt:string;updatedAt:string;currentSnapshotId:string};
@@ -12,7 +13,6 @@ export const getSnapshot=(id:string)=>operation<Snapshot|undefined>('snapshots',
 export const getRuns=()=>operation<ResearchRun[]>('runs','readonly',s=>s.getAll());
 export const getReports=()=>operation<Report[]>('reports','readonly',s=>s.getAll());
 export const getDocument=(id:string)=>operation<ArchiveDocument|undefined>('documents','readonly',s=>s.get(id));
-async function hash(blob:Blob){return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',await blob.arrayBuffer())),x=>x.toString(16).padStart(2,'0')).join('')}
 export async function archiveCorpus(corpus:ActiveCorpus){
  if(corpus.archive)return corpus.archive;
  const original=corpus.sourceFile??new Blob([corpus.rawText],{type:'text/plain;charset=utf-8'});
@@ -42,6 +42,6 @@ export async function saveReport(corpus:ActiveCorpus,tool:Tool,inputs:Inputs,dat
  });
 }
 export async function migrateSavedPdfs(){
- const [pdfs,existing]=await Promise.all([listPdfs(),getDocuments()]);const known=new Set(existing.map(d=>d.id));
- for(const pdf of pdfs){const key=`file-${await hash(pdf.file)}`;if(known.has(key))continue;const corpus:ActiveCorpus={id:crypto.randomUUID(),name:pdf.name,sourceType:'pdf',sourceFile:pdf.file,rawText:pdf.pages.join('\n\n'),documents:pdf.pages.map((text,i)=>({id:crypto.randomUUID(),title:`${pdf.name} — ${i+1}`,text,pageNumber:i+1})),pageCount:pdf.pages.length,metadata:pdf.metadata,createdAt:pdf.savedAt};await archiveCorpus(corpus);known.add(key)}
+ const [pdfs,existing]=await Promise.all([listPdfSummaries(),getDocuments()]);const known=new Set(existing.map(d=>d.id));
+ for(const summary of pdfs){const key=summary.documentId??`file-${await hash(summary.file)}`;if(known.has(key))continue;const pdf=await getPdf(summary.id);if(!pdf)continue;const corpus:ActiveCorpus={id:crypto.randomUUID(),name:pdf.name,sourceType:'pdf',sourceFile:pdf.file,rawText:pdf.pages.join('\n\n'),documents:pdf.pages.map((text,i)=>({id:crypto.randomUUID(),title:`${pdf.name} — ${i+1}`,text,pageNumber:i+1})),pageCount:pdf.pages.length,metadata:pdf.metadata,createdAt:pdf.savedAt};await archiveCorpus(corpus);known.add(key)}
 }

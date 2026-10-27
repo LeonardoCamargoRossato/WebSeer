@@ -4,7 +4,7 @@ const PT_MARKERS=new Set(['de','da','do','das','dos','que','e','em','para','com'
 const EN_MARKERS=new Set(['the','of','and','to','in','is','with','for','on','from','a','an','that','this','not']);
 
 export function detectCorpusLanguage(text:string):CorpusLanguage{
-  const words=text.toLowerCase().match(/[a-zà-ÿ']+/g)??[];
+  const words=text.slice(0,150000).toLowerCase().match(/[a-zà-ÿ']+/g)??[];
   let pt=0,en=0;
   for(const word of words.slice(0,12000)){
     if(PT_MARKERS.has(word))pt++;

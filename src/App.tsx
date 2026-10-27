@@ -20,7 +20,6 @@ import FrequencyHistogram from './components/frequency/FrequencyHistogram';
 import WordCloudGraph,{type CloudPalette,type CloudRotation,type CloudShape} from './components/wordCloud/WordCloudGraph';
 import {calculateWordFrequency} from './features/frequency/calculateWordFrequency';
 import type {StopwordLanguage} from './features/frequency/frequencyTypes';
-import {tokens} from './utils/corpusParser';
 import {matchPhrases,type Edge} from './utils/phraseMatcher';
 import {detectCorpusLanguage,getRelationSuggestions} from './utils/detectCorpusLanguage';
 import type {Suggestion} from './types/suggestion';
@@ -51,19 +50,19 @@ export default function App(){
  const [exampleError,setExampleError]=useState(false);
  useEffect(()=>{window.scrollTo({top:0,left:0,behavior:'instant'})},[page]);
  const tokenizerOptions:TokenizerOptions=useMemo(()=>({caseSensitive,ignorePunctuation}),[caseSensitive,ignorePunctuation]);
- const searchData=useMemo(()=>activeCorpus&&treeQuery.trim()?searchWordTree(activeCorpus.documents,treeQuery,depth,direction,tokenizerOptions):null,[activeCorpus,treeQuery,depth,direction,tokenizerOptions]);
+ const searchData=useMemo(()=>page==='wordTree'&&activeCorpus&&treeQuery.trim()?searchWordTree(activeCorpus.documents,treeQuery,depth,direction,tokenizerOptions):null,[page,activeCorpus,treeQuery,depth,direction,tokenizerOptions]);
  const treeResult=useMemo(()=>searchData?buildWordTreeResult(searchData.keyword,searchData.keywordFrequency,searchData.ngrams,maxBranches):null,[searchData,maxBranches]);
- const ctx=useMemo(()=>activeCorpus&&selectedTokens.length?findWordTreeContexts(activeCorpus,selectedTokens,tokenizerOptions):[],[activeCorpus,selectedTokens,tokenizerOptions]);
+ const ctx=useMemo(()=>page==='wordTree'&&activeCorpus&&selectedTokens.length?findWordTreeContexts(activeCorpus,selectedTokens,tokenizerOptions):[],[page,activeCorpus,selectedTokens,tokenizerOptions]);
  const corpusText=activeCorpus?.rawText??'';
- const corpusLanguage=useMemo(()=>detectCorpusLanguage(corpusText),[corpusText]);
+ const corpusLanguage=useMemo(()=>page==='phraseNet'?detectCorpusLanguage(corpusText):'pt',[page,corpusText]);
  const relationSuggestions=useMemo(()=>getRelationSuggestions(corpusLanguage),[corpusLanguage]);
  const phraseEdges=useMemo(()=>phraseMatches.filter(e=>e.count>=minOccurrence),[phraseMatches,minOccurrence]);
- const corpusStats=useMemo(()=>{const all=tokens(corpusText);const frequency=calculateWordFrequency(corpusText);return {words:all.length,sentences:corpusText.split(/[.!?]+/).map(s=>s.trim()).filter(Boolean).length,unique:frequency.length,top:frequency.slice(0,10).map(item=>[item.word,item.count] as [string,number])}},[corpusText]);
- const frequencyData=useMemo(()=>{const data=calculateWordFrequency(corpusText,{removeStopwords:frequencyRemoveStopwords,stopwordLanguage:frequencyStopwordLanguage,minWordLength:frequencyMinLength});const sorted=frequencyOrder==='desc'?data:[...data].reverse();return sorted.slice(0,frequencyCount)},[corpusText,frequencyRemoveStopwords,frequencyStopwordLanguage,frequencyMinLength,frequencyOrder,frequencyCount]);
- const cloudFrequencyTable=useMemo(()=>calculateWordFrequency(corpusText,{removeStopwords:cloudRemoveStopwords,stopwordLanguage:cloudStopwordLanguage,minWordLength:2}),[corpusText,cloudRemoveStopwords,cloudStopwordLanguage]);
+ const corpusStats=useMemo(()=>{if(!['compare','dashboard'].includes(page))return{words:0,sentences:0,unique:0,top:[] as [string,number][]};const frequency=calculateWordFrequency(corpusText);return {words:(corpusText.match(/\p{L}+(?:['’-]\p{L}+)*/gu)??[]).length,sentences:corpusText.split(/[.!?]+/).map(s=>s.trim()).filter(Boolean).length,unique:frequency.length,top:frequency.slice(0,10).map(item=>[item.word,item.count] as [string,number])}},[page,corpusText]);
+ const frequencyData=useMemo(()=>{if(page!=='frequencies')return[];const data=calculateWordFrequency(corpusText,{removeStopwords:frequencyRemoveStopwords,stopwordLanguage:frequencyStopwordLanguage,minWordLength:frequencyMinLength});const sorted=frequencyOrder==='desc'?data:[...data].reverse();return sorted.slice(0,frequencyCount)},[page,corpusText,frequencyRemoveStopwords,frequencyStopwordLanguage,frequencyMinLength,frequencyOrder,frequencyCount]);
+ const cloudFrequencyTable=useMemo(()=>page==='wordCloud'?calculateWordFrequency(corpusText,{removeStopwords:cloudRemoveStopwords,stopwordLanguage:cloudStopwordLanguage,minWordLength:2}):[],[page,corpusText,cloudRemoveStopwords,cloudStopwordLanguage]);
  const cloudData=useMemo(()=>cloudFrequencyTable.slice(0,cloudCount),[cloudFrequencyTable,cloudCount]);
 
- const validCompare=Boolean(activeCorpus&&activeCorpus.documents.some(doc=>corpusContains(doc.text,qa))&&activeCorpus.documents.some(doc=>corpusContains(doc.text,qb)));
+ const validCompare=Boolean(page==='compare'&&qa.trim()&&qb.trim()&&activeCorpus&&activeCorpus.documents.some(doc=>corpusContains(doc.text,qa))&&activeCorpus.documents.some(doc=>corpusContains(doc.text,qb)));
 
  const compare=()=>{if(!activeCorpus||!validCompare)return;setA(compareCorpus(activeCorpus.documents,qa).slice(0,resultCount));setB(compareCorpus(activeCorpus.documents,qb).slice(0,resultCount));setExecutionTick(n=>n+1)};
 
@@ -110,7 +109,7 @@ export default function App(){
   const timer=setTimeout(commit,400);
   return()=>{clearTimeout(timer);if(currentView.current.page!==page||currentView.current.id!==activeCorpus.id)commit()};
  },[recordSignature,ready,resumeRequest]);
- const reportData=tool==='compare'?{left:a,right:b}:tool==='wordTree'?{tree:treeResult,contexts:ctx}:tool==='phraseNet'?{edges:phraseEdges,maximumVisibleNodes:maxNodes}:tool==='frequencies'?frequencyData:tool==='wordCloud'?cloudData:{wordCount:(corpusText.match(/\p{L}+(?:['’-]\p{L}+)*/gu)??[]).length,uniqueTokens:calculateWordFrequency(corpusText).length,pages:activeCorpus?.pageCount,metadata:activeCorpus?.metadata,topTerms:corpusStats.top,accuracy:'Not measured; requires reference transcript',footnotes:'Not assessed'};
+ const reportData=tool==='compare'?{left:a,right:b}:tool==='wordTree'?{tree:treeResult,contexts:ctx}:tool==='phraseNet'?{edges:phraseEdges,maximumVisibleNodes:maxNodes}:tool==='frequencies'?frequencyData:tool==='wordCloud'?cloudData:tool==='dashboard'?{wordCount:corpusStats.words,uniqueTokens:corpusStats.unique,pages:activeCorpus?.pageCount,metadata:activeCorpus?.metadata,topTerms:corpusStats.top,accuracy:'Not measured; requires reference transcript',footnotes:'Not assessed'}:{};
 
  return <><AppHeader page={page} setPage={setPage}/><main className="appMain">{(storageError||archiveError)&&<p className="notice errorNotice" role="alert">{storageError||archiveError}</p>}{exampleError&&<p role="alert">{t.storage.loadError}</p>}<div className="pageFade" key={page}><div className="pageHelpBar"><span>{locale==='pt-BR'?'Sobre esta página':'About this page'}</span><InfoButton group={({home:'home',corpus:'corpus',compare:'compare',wordTree:'word-tree',phraseNet:'phrase-net',frequencies:'frequencies',wordCloud:'word-cloud',dashboard:'dashboard',history:'history',examples:'examples',animatedHistogram:'animated-histogram',videoStudio:'animated-histogram/video-studio',login:'login'} as Record<Page,string>)[page]}/></div>
  {tool&&activeCorpus&&<ReportActions key={`${activeCorpus.id}-${tool}`} corpus={activeCorpus} tool={tool} inputs={inputs} data={reportData} ready={ready} onRerun={()=>setExecutionTick(n=>n+1)} onHistory={()=>setPage('history')}/>}

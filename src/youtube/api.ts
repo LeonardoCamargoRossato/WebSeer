@@ -40,3 +40,11 @@ export async function uploadVideo(token:string,draft:VideoDraft,blob:Blob,signal
  }
  throw new YouTubeError('Sessão de envio incompleta. Confira o canal antes de reenviar. / Incomplete upload session; check your channel.','uncertain',true);
 }
+
+export async function createPlaylist(token:string,input:{title:string;description:string;privacyStatus:'private'|'unlisted'|'public'},channelId:string,signal?:AbortSignal):Promise<YouTubePlaylist>{
+ const title=input.title.trim();if(!title)throw new YouTubeError('Informe o nome da playlist. / Enter a playlist title.','playlist_title');
+ const data=await request<{id:string;snippet:{title:string;channelId:string}}>(token,'playlists?part=snippet,status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({snippet:{title,description:input.description},status:{privacyStatus:input.privacyStatus}})},signal);
+ if(!data.id)throw new YouTubeError('YouTube não confirmou a criação. Confira suas playlists antes de tentar novamente. / Creation not confirmed; check playlists before retrying.','playlist_response',true);
+ if(data.snippet.channelId!==channelId)throw new YouTubeError('A playlist foi criada em outro canal. Confira o YouTube antes de tentar novamente. / Playlist created in another channel; check YouTube before retrying.','playlist_channel',true);
+ return{id:data.id,title:data.snippet.title,channelId:data.snippet.channelId};
+}

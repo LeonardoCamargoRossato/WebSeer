@@ -299,5 +299,15 @@ export default {
       "Envia o MP4 ao canal confirmado com os metadados revisados. Não listado é o padrão para novos vídeos; confira a visibilidade efetiva retornada pelo YouTube. A porcentagem representa bytes enviados; o YouTube ainda pode processar o vídeo. O ID e o link ficam no rascunho e no Histórico. Falhas de playlist/miniatura não repetem o upload.",
       "Uploads MP4 to the confirmed channel with reviewed metadata. Unlisted is the new-video default; check actual visibility returned by YouTube. Percentage measures uploaded bytes; YouTube may still process the video. ID and link stay in the draft and History. Playlist/thumbnail failures do not re-upload the video."
     ]
+  },
+  "createPlaylist": {
+    "title": [
+      "Criar playlist no canal",
+      "Create channel playlist"
+    ],
+    "body": [
+      "Cria uma playlist real no canal autorizado, usando a permissão youtube.force-ssl já concedida. Informe nome, descrição e visibilidade. Ela será adicionada e selecionada na lista após a confirmação do YouTube. Abrir playlists leva ao canal no YouTube; essa página pode omitir playlists privadas. Uma falha de rede pode deixar a criação sem confirmação: confira o canal antes de repetir.",
+      "Creates a real playlist in the authorized channel using the existing youtube.force-ssl permission. Enter title, description and visibility. It is added and selected after YouTube confirms. Open playlists takes you to the channel on YouTube; that page may omit private playlists. Network failures can leave creation unconfirmed: check the channel before retrying."
+    ]
   }
 } satisfies Record<string,InfoTopic>;

@@ -94,3 +94,18 @@ Referências oficiais:
 
 Escopos e métodos conferidos no discovery oficial Google, revisão `20261012`:
 https://github.com/googleapis/google-api-python-client/blob/main/googleapiclient/discovery_cache/documents/youtube.v3.json
+
+## Criar e abrir playlists
+
+O menu de sincronização oferece **Criar nova playlist**, com nome, descrição e
+visibilidade (Não listado por padrão). O botão final cria uma playlist real via
+`playlists.insert`, e a resposta confirmada é inserida/selecionada na lista.
+A autorização `youtube.force-ssl` já utilizada cobre esse método; não é preciso
+adicionar outro escopo. Os links **Entrar nas playlists do canal**, **Gerenciar
+playlists no YouTube Studio** e **Abrir playlist selecionada** permitem conferir
+no YouTube; playlists privadas podem não aparecer na página pública do canal.
+
+Criação não é repetida automaticamente em erros de rede: confira o canal antes
+de tentar novamente, pois uma resposta perdida pode ocultar uma criação concluída.
+Confirmar o canal/playlist aplica o destino ao rascunho; salve o rascunho para
+persistir a escolha. Criar playlist não reenvia vídeos já publicados.

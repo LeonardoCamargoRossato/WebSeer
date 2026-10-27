@@ -267,3 +267,12 @@ retornada pelo YouTube. Veja [a configuração e os testes](docs/YOUTUBE.md). O 
 continua independente da autorização de canal. A contagem da animação avança na
 velocidade por página enquanto as ultrapassagens verticais usam duração própria
 (0,6 / 1 / 1,5 s), sem pausar contagens.
+
+A biblioteca oferece lista detalhada/cards, pastas de relatórios recolhidas,
+capacidade estimada do navegador, conteúdo local por documento/vídeo e prévias
+YouTube/local/áudio carregadas sob demanda. Playlists podem ser criadas no menu
+de sincronização e abertas no YouTube/Studio. A criação usa a autorização atual.
+
+A reconversão PDF tem cancelamento, execução serializada, prévia nativa sob
+demanda e menos retenção/cálculos de dados de ferramentas inativas.
+Veja [armazenamento e investigação do travamento](docs/LIBRARY_STORAGE_AND_PDF.md).
