@@ -210,7 +210,7 @@ restrição etária e legendas ficam como planejamento separado; miniaturas/agen
 de imagens e upload são etapas futuras, não implementadas.
 
 Sugestões automáticas usam nome do documento, palavras, contagens e páginas,
-sem GPT. Não decidem declarações de público infantil/licença/sintético. A
+sem GPT. Os presets de público infantil/licença/sintético são editáveis e devem ser revisados. A
 validação cobre limites do título (100 caracteres), descrição (5000 bytes UTF-8),
 tags (500 contando separadores/aspas), idioma e agendamento privado/futuro.
 Metadados inválidos podem ser salvos como rascunho, mas não exportados como
@@ -235,3 +235,15 @@ futuro upload requer MP4. Login e rascunhos não autorizam envio ao YouTube.
 `CHROMIUM_PATH=/usr/bin/chromium npm run test:video` valida painel, rascunhos,
 exportação, proteção contra perda de edição, layout e ausência de upload.
 O teste de autenticação usa somente provedor simulado; veja o guia de configuração.
+
+Novos rascunhos já abrem com título/descrição/tags locais em PT-BR, categoria
+Entretenimento, privacidade privada, público infantil Sim (editável), licença
+YouTube Standard, sem fala e data da animação. Edições de rascunhos existentes
+são preservadas. “Configurações de agentes” permite configurar e inspecionar o
+assistente por regras locais v1; não há modelo de IA nem envio a provedores.
+
+O painel aceita miniatura PNG/JPEG até 2 MB e soundtrack MP3/WAV/M4A/AAC/OGG até
+25 MB, conforme suporte do navegador. Há prévia, troca, exclusão e download dos
+anexos. Use **Salvar rascunho** para persistir os Blobs no IndexedDB. O JSON do
+rascunho exporta metadados dos anexos, não os arquivos: baixe-os separadamente.
+O áudio ainda não é mixado no MP4 e a miniatura não é gerada por IA.
