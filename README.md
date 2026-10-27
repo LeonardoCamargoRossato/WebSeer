@@ -285,3 +285,19 @@ de sincronização e abertas no YouTube/Studio. A criação usa a autorização 
 A reconversão PDF tem cancelamento, execução serializada, prévia nativa sob
 demanda e menos retenção/cálculos de dados de ferramentas inativas.
 Veja [armazenamento e investigação do travamento](docs/LIBRARY_STORAGE_AND_PDF.md).
+
+### Guias ilustrados de aplicação
+
+Exemplos de Aplicação possui seis cards que abrem páginas de leitura em PT-BR/EN-US,
+com perguntas, ideias, roteiro, texto fictício testável e referências relacionadas.
+Os textos ficam em `src/content/application-guides`; a interface em
+`src/components/workflow/ApplicationExamples.tsx`. Ler o guia não altera o corpus.
+O botão demonstrativo explicita a troca pelo texto fictício e usa o fluxo normal
+de arquivamento. As ilustrações conceituais foram geradas com IA e usam um único
+atlas estático (`public/images/application-guides.png`), reaproveitado por CSS.
+As referências são leituras metodológicas, não validações de resultados do app.
+
+O gráfico de armazenamento destaca categorias por mouse, teclado ou toque.
+Fatias a partir de 32% têm rótulos internos; entre 12% e 32%, chamadas externas;
+as menores não recebem rótulos permanentes. A legenda mantém todos os valores.
+`npm run test:guides` e `npm run test:library` verificam os fluxos no navegador.

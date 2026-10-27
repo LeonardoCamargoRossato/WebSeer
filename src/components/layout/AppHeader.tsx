@@ -3,7 +3,7 @@ import {GoogleAvatar,useAuth} from '../../auth/AuthContext';
 import {AUTHOR_NAME,PORTFOLIO_URL} from '../../config/author';
 import {useState} from 'react';
 import {useI18n} from '../../i18n';
-export type Page='home'|'corpus'|'dashboard'|'compare'|'wordTree'|'phraseNet'|'frequencies'|'wordCloud'|'history'|'examples'|'animatedHistogram'|'login'|'videoStudio';
+export type Page='home'|'corpus'|'dashboard'|'compare'|'wordTree'|'phraseNet'|'frequencies'|'wordCloud'|'history'|'examples'|'applicationGuide'|'animatedHistogram'|'login'|'videoStudio';
 export default function AppHeader({page,setPage}:{page:Page;setPage:(p:Page)=>void}){
  const {profile}=useAuth();
  const {t,locale}=useI18n();const en=locale==='en-US';const [open,setOpen]=useState(false),[tools,setTools]=useState(false);
@@ -13,6 +13,6 @@ export default function AppHeader({page,setPage}:{page:Page;setPage:(p:Page)=>vo
  <button className={page==='home'?'active':''} onClick={()=>go('home')}>{t.nav.home}</button>
  <button className={page==='corpus'?'active':''} onClick={()=>go('corpus')}>{en?'Document Corpus':'Corpus do Documento'}</button>
  <div className="analysisMenu"><button className={analyses.some(([key])=>key===page)?'active':''} aria-expanded={tools} onClick={()=>setTools(v=>!v)}>{en?'Analysis Tools':'Ferramentas de Análise'} ▾</button>{tools&&<div className="analysisPopover">{analyses.map(([key,label])=><button key={key} onClick={()=>go(key)}>{label}</button>)}</div>}</div>
- <button className={page==='history'?'active':''} onClick={()=>go('history')}>{t.nav.history}</button><button className={page==='examples'?'active':''} onClick={()=>go('examples')}>{en?'Application Examples':'Exemplos de Aplicação'}</button>
+ <button className={page==='history'?'active':''} onClick={()=>go('history')}>{t.nav.history}</button><button className={(page==='examples'||page==='applicationGuide')?'active':''} onClick={()=>go('examples')}>{en?'Application Examples':'Exemplos de Aplicação'}</button>
  </nav><button className="profileButton" onClick={()=>go('login')}>{profile?<><GoogleAvatar profile={profile}/><span>{profile.name}</span></>:<span>{en?'Sign in':'Entrar'}</span>}</button></div><div className="headerUtilities"><SettingsMenu navigationOpen={open} page={page} onOpen={()=>{setOpen(false);setTools(false)}}/><button className="menuToggle" aria-label="Menu" aria-expanded={open} onClick={()=>setOpen(v=>!v)}>☰</button></div></div></header>;
 }

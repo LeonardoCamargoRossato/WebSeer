@@ -131,3 +131,9 @@ Cada setor usa a mesma cor do rótulo/valor na legenda; linhas claras com borda
 colorida mantêm contraste. Valores zerados também constam da legenda. O gráfico
 normaliza os conteúdos lógicos do item, não a cota do navegador. Há fechamento
 por Escape/clique fora e restauração de foco ao botão; a janela rola no celular.
+
+O gráfico interativo (`StorageDistribution.tsx`) mantém os valores da legenda e
+realça a categoria com um quadro de nome, tamanho e percentual. Não depende do
+pequeno tooltip nativo do SVG: há foco por teclado e seleção por toque. Rótulos
+permanentes mostram apenas tamanho e percentual nas fatias grandes; chamadas
+externas usam cores correspondentes e afastamento vertical para reduzir colisões.
