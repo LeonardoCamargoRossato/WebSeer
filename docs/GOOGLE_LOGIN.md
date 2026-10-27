@@ -62,3 +62,27 @@ CHROMIUM_PATH=/usr/bin/chromium npm run test:auth
 
 A ativação e validação ponta a ponta com Google real ainda exigem o Client ID,
 as origens autorizadas e uma conta de teste configurados pelo administrador.
+
+## Botão Google aparece, mas a validação falha
+
+Se o botão aparece, o Client ID já chegou à build. Uma falha posterior pode ser
+conexão com o endpoint público de chaves, credencial expirada, relógio do
+dispositivo, audiência/Client ID, assinatura ou nonce. A mensagem genérica antiga
+não distinguia essas situações.
+
+A tela agora oferece **Ver diagnóstico do login**, com código e etapa, sem
+exibir ID token, nome, e-mail ou conteúdo da credencial. Use o código para o
+próximo diagnóstico; não compartilhe tokens nem Client Secret.
+
+- `network` / etapa `keys`: conferir conexão e bloqueio de
+  `https://www.googleapis.com/oauth2/v3/certs` no navegador/extensão/rede.
+- `audience`: conferir `GOOGLE_CLIENT_ID`, publicar de novo e recarregar.
+- `expired` / `clock`: conferir horário automático e refazer login.
+- `nonce`: recarregar e tentar novamente. GIS agora é inicializado uma vez por
+  página; revisitar a tela não substitui o nonce de um botão já criado.
+- `signature` / `keys`: credencial continua recusada; aguardar/recarregar e
+  investigar sem desativar verificação criptográfica.
+
+O nome de exibição é opcional no OpenID Connect. Após validar a assinatura e a
+identidade, o app usa nome completo, nomes individuais ou e-mail verificado como
+alternativas. Isso não dispensa assinatura, audiência, emissor, validade ou nonce.
