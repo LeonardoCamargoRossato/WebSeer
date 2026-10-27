@@ -3,13 +3,13 @@ import {createPortal} from 'react-dom';
 import {useEffect,useRef,useState} from 'react';
 import {useI18n} from '../i18n';
 import InfoButton from '../info-buttons/InfoButton';
-import {validateDraft,type VideoDraft} from '../video/videoDraft';
+import {validateDraft,validateShortReport,type VideoDraft} from '../video/videoDraft';
 import type {Report} from '../storage/archive';
 import type {YouTubePublication} from './types';
 import {useYouTube} from './YouTubeContext';
 import {channels,verifyPlaylist,uploadVideo,videoStatus,setThumbnail,addPlaylist,YouTubeError} from './api';
 import {beginUpload,saveAttempt,savePublication,clearAttempt} from './publicationStore';
-export default function YouTubePublisher({draft,report,onBusy,onPersist,onNotice,onConnect,disabled=false}:{disabled?:boolean;draft:VideoDraft;report:Report;onBusy:(value:boolean)=>void;onPersist:(value:VideoDraft,saved?:boolean)=>void;onNotice:(message:string,url?:string)=>void;onConnect:()=>void}){
+export default function YouTubePublisher({draft,report,onBusy,onPersist,onNotice,onConnect,disabled=false,shorts=false}:{disabled?:boolean;shorts?:boolean;draft:VideoDraft;report:Report;onBusy:(value:boolean)=>void;onPersist:(value:VideoDraft,saved?:boolean)=>void;onNotice:(message:string,url?:string)=>void;onConnect:()=>void}){
  const {locale}=useI18n();const en=locale==='en-US',tr=(pt:string,eng:string)=>en?eng:pt;const {connection}=useYouTube();const [phase,setPhase]=useState(''),[percent,setPercent]=useState(0),[elapsed,setElapsed]=useState(0),[error,setError]=useState(''),[busy,setBusy]=useState(false);const control=useRef<AbortController|null>(null),active=useRef(true),running=useRef(false);const publication=draft.youtubePublication;
  useEffect(()=>{active.current=true;return()=>{active.current=false;control.current?.abort()}},[]);
  useEffect(()=>{if(!busy)return;const started=Date.now();setElapsed(0);const timer=setInterval(()=>setElapsed(Math.floor((Date.now()-started)/1000)),1000);return()=>clearInterval(timer)},[busy]);
@@ -18,7 +18,7 @@ export default function YouTubePublisher({draft,report,onBusy,onPersist,onNotice
   if(running.current||disabled)return;setError('');if(publication){setError(tr('Esta versão já foi enviada. Abra o link salvo.','This version was already uploaded. Open the saved link.'));return}
   if(draft.youtubeAttempt&&draft.youtubeAttempt.state!=='failed'){setError(tr('Confira o envio anterior no canal antes de tentar novamente.','Check the prior upload in your channel before retrying.'));return}
   if(needsSoundtrackRender(draft)){setError(tr('Prepare o MP4 com trilha antes de publicar.','Prepare the MP4 with soundtrack before publishing.'));return}
-  const invalid=validateDraft(draft,en);if(invalid.length){setError(invalid.join(' '));return}
+  const invalid=[...validateDraft(draft,en),...(shorts?validateShortReport(report,en):[])];if(invalid.length){setError(invalid.join(' '));return}
   if(!connection||connection.expiresAt<Date.now()+30000||!draft.youtubeTarget||draft.youtubeTarget.channelId!==connection.channel.id){onConnect();return}
   if(report.visual?.type!=='video/mp4'){setError(tr('Gere uma versão MP4 no Histograma animado. GIF não é aceito para upload de vídeo.','Generate an MP4 version. GIF is not accepted for video upload.'));return}
   const snapshot=structuredClone(draft),current=connection,cancel=new AbortController();control.current=cancel;running.current=true;setBusy(true);onBusy(true);setPercent(0);setPhase(tr('Verificando canal…','Verifying channel…'));const attempt={id:crypto.randomUUID(),startedAt:new Date().toISOString(),state:'uploading' as const};let started=false,accepted:YouTubePublication|undefined;
@@ -32,7 +32,7 @@ export default function YouTubePublisher({draft,report,onBusy,onPersist,onNotice
    if(accepted.channelId!==snapshot.youtubeTarget!.channelId)accepted.warnings.push(tr('O canal retornado difere do selecionado. Confira o link. Playlist e miniatura não foram aplicadas.','Returned channel differs from selection. Check the link. Playlist and thumbnail were not applied.'));
    else{
     if(snapshot.youtubeTarget?.playlistId){if(active.current)setPhase(tr('Adicionando à playlist…','Adding to playlist…'));try{await addPlaylist(current.token,snapshot.youtubeTarget.playlistId,accepted.videoId,cancel.signal);accepted.playlistAdded=true}catch(e){accepted.warnings.push(tr('Vídeo enviado; não foi possível adicionar à playlist: ','Video uploaded; playlist insertion failed: ')+(e instanceof Error?e.message:String(e)))}}
-    if(snapshot.thumbnail){if(active.current)setPhase(tr('Enviando miniatura…','Uploading thumbnail…'));try{await setThumbnail(current.token,accepted.videoId,snapshot.thumbnail.blob,cancel.signal);accepted.thumbnailAdded=true}catch(e){accepted.warnings.push(tr('Vídeo enviado; não foi possível aplicar miniatura (o canal pode precisar ser habilitado): ','Video uploaded; thumbnail failed (channel eligibility may be required): ')+(e instanceof Error?e.message:String(e)))}}
+    if(snapshot.thumbnail&&!shorts){if(active.current)setPhase(tr('Enviando miniatura…','Uploading thumbnail…'));try{await setThumbnail(current.token,accepted.videoId,snapshot.thumbnail.blob,cancel.signal);accepted.thumbnailAdded=true}catch(e){accepted.warnings.push(tr('Vídeo enviado; não foi possível aplicar miniatura (o canal pode precisar ser habilitado): ','Video uploaded; thumbnail failed (channel eligibility may be required): ')+(e instanceof Error?e.message:String(e)))}}
    }
    try{const status=await videoStatus(current.token,accepted.videoId,cancel.signal);Object.assign(accepted,status)}catch{accepted.warnings.push(tr('Status de processamento ainda não confirmado. Use Atualizar status.','Processing status is not confirmed yet. Use Refresh status.'))}
    latest=await persist(accepted,latest);if(active.current){setPercent(100);setPhase('');onNotice(tr('Envio concluído. Confira o vídeo e o processamento no YouTube.','Upload complete. Check the video and processing on YouTube.'),accepted.url)}

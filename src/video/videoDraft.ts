@@ -1,3 +1,5 @@
+import type {PublicationPlatform} from '../features/animatedHistogram/videoFormats';
+import type {SocialDraft,SocialPlatform} from './socialPlatforms';
 import type {RenderedVideo} from './mixSoundtrack';
 import type {YouTubeTarget,YouTubePublication,YouTubeAttempt} from '../youtube/types';
 import type {Report} from '../storage/archive';
@@ -5,9 +7,29 @@ import {PORTFOLIO_URL,AUTHOR_BYLINE,EXPORT_ATTRIBUTION} from '../config/author.t
 export type SuggestionSettings={provider:'local-rules-v1';language:'pt-BR'|'en-US';style:'descriptive'|'discovery';includeCounts:boolean;titleTerms:number};
 export const DEFAULT_SUGGESTIONS:SuggestionSettings={provider:'local-rules-v1',language:'pt-BR',style:'descriptive',includeCounts:true,titleTerms:4};
 export type MediaAttachment={name:string;type:string;size:number;blob:Blob;addedAt:string;width?:number;height?:number;duration?:number};
-export type VideoDraft={renderedVideo?:RenderedVideo;id:string;reportId:string;documentId:string;title:string;description:string;tags:string;categoryId:string;defaultLanguage:string;defaultAudioLanguage:string;privacyStatus:'private'|'unlisted'|'public';license:'youtube'|'creativeCommon';madeForKids:'unset'|'yes'|'no';syntheticMedia:'unset'|'yes'|'no';hasPaidProductPlacement:boolean;embeddable:boolean;publicStatsViewable:boolean;notifySubscribers:boolean;publishAtLocal:string;recordingDate:string;playlistIds:string;ageRestrictionPlan:'unset'|'18+';captionsPlan:string;updatedAt:string;preparedBy?:string;thumbnail?:MediaAttachment;soundtrack?:MediaAttachment;suggestionSettings?:SuggestionSettings;suggestionGeneratedAt?:string;youtubeTarget?:YouTubeTarget;youtubePublication?:YouTubePublication;youtubeAttempt?:YouTubeAttempt};
+export type VideoDraft={activePlatform?:PublicationPlatform;socialDrafts?:Partial<Record<SocialPlatform,SocialDraft>>;renderedVideo?:RenderedVideo;id:string;reportId:string;documentId:string;title:string;description:string;tags:string;categoryId:string;defaultLanguage:string;defaultAudioLanguage:string;privacyStatus:'private'|'unlisted'|'public';license:'youtube'|'creativeCommon';madeForKids:'unset'|'yes'|'no';syntheticMedia:'unset'|'yes'|'no';hasPaidProductPlacement:boolean;embeddable:boolean;publicStatsViewable:boolean;notifySubscribers:boolean;publishAtLocal:string;recordingDate:string;playlistIds:string;ageRestrictionPlan:'unset'|'18+';captionsPlan:string;updatedAt:string;preparedBy?:string;thumbnail?:MediaAttachment;soundtrack?:MediaAttachment;suggestionSettings?:SuggestionSettings;suggestionGeneratedAt?:string;youtubeTarget?:YouTubeTarget;youtubePublication?:YouTubePublication;youtubeAttempt?:YouTubeAttempt};
+
+export function reportOrientation(report:Pick<Report,'inputs'>){return report.inputs.orientation==='vertical'?'vertical':'horizontal'}
+export function initialVideoPlatform(report:Pick<Report,'inputs'>,requested?:PublicationPlatform):PublicationPlatform{
+ const vertical=reportOrientation(report)==='vertical';const target=requested??report.inputs.targetPlatform;
+ if(target==='youtube'&&!vertical)return target;
+ if(vertical&&(target==='youtubeShorts'||target==='instagramReels'||target==='tiktok'))return target;
+ return vertical?'youtubeShorts':'youtube';
+}
+export function animationDuration(report:Pick<Report,'inputs'|'data'>){
+ const data=report.data as {durationSeconds?:number;rows?:unknown[];totalPages?:number};
+ if(Number.isFinite(data.durationSeconds)&&Number(data.durationSeconds)>0)return Number(data.durationSeconds);
+ const fps=Number(report.inputs.fps)||24,frames=Number(report.inputs.framesPerPage),pages=data.rows?.length??Number(data.totalPages),rank=Number(report.inputs.rankSeconds)||1;
+ return frames>0&&pages>0?(pages*frames+Math.ceil((rank+.25)*fps))/fps:undefined;
+}
+export function validateShortReport(report:Pick<Report,'inputs'|'data'|'visual'>,en=false){
+ const errors:string[]=[];if(reportOrientation(report)!=='vertical')errors.push(en?'Shorts requires a vertical version. Create a vertical animation first.':'Shorts exige a versão vertical. Gere a animação vertical primeiro.');
+ const duration=animationDuration(report);if(!duration)errors.push(en?'Video duration could not be confirmed. Generate a new vertical MP4.':'Não foi possível confirmar a duração. Gere um novo MP4 vertical.');else if(duration>180)errors.push(en?'YouTube Shorts: maximum 3 minutes. Reduce time per page and generate again.':'YouTube Shorts: máximo de 3 minutos. Reduza o tempo por página e gere novamente.');
+ if(report.visual?.type!=='video/mp4')errors.push(en?'Generate MP4 for YouTube Shorts. GIF cannot be uploaded.':'Gere MP4 para o YouTube Shorts. GIF não pode ser enviado.');return errors;
+}
+
 export function videoDate(iso?:string){const date=iso?new Date(iso):new Date();const value=Number.isFinite(date.getTime())?date:new Date();return`${value.getFullYear()}-${String(value.getMonth()+1).padStart(2,'0')}-${String(value.getDate()).padStart(2,'0')}`}
-export function newDraft(report:Report,documentName='WebSeer'):VideoDraft{return{id:report.id,reportId:report.id,documentId:report.documentId,...automaticSuggestions(report,documentName),categoryId:'24',defaultAudioLanguage:'',privacyStatus:'unlisted',license:'youtube',madeForKids:'no',syntheticMedia:'unset',hasPaidProductPlacement:false,embeddable:true,publicStatsViewable:true,notifySubscribers:true,publishAtLocal:'',recordingDate:videoDate(report.createdAt),playlistIds:'',ageRestrictionPlan:'unset',captionsPlan:'',updatedAt:new Date().toISOString(),suggestionSettings:{...DEFAULT_SUGGESTIONS},suggestionGeneratedAt:new Date().toISOString()}}
+export function newDraft(report:Report,documentName='WebSeer'):VideoDraft{return{activePlatform:initialVideoPlatform(report),id:report.id,reportId:report.id,documentId:report.documentId,...automaticSuggestions(report,documentName),categoryId:'24',defaultAudioLanguage:'',privacyStatus:'unlisted',license:'youtube',madeForKids:'no',syntheticMedia:'unset',hasPaidProductPlacement:false,embeddable:true,publicStatsViewable:true,notifySubscribers:true,publishAtLocal:'',recordingDate:videoDate(report.createdAt),playlistIds:'',ageRestrictionPlan:'unset',captionsPlan:'',updatedAt:new Date().toISOString(),suggestionSettings:{...DEFAULT_SUGGESTIONS},suggestionGeneratedAt:new Date().toISOString()}}
 export function draftForExport(draft:VideoDraft){const {thumbnail,soundtrack,renderedVideo,...fields}=draft;const describe=(media:MediaAttachment|undefined)=>media?{name:media.name,type:media.type,size:media.size,addedAt:media.addedAt,width:media.width,height:media.height,duration:media.duration}:undefined;return{...fields,attribution:EXPORT_ATTRIBUTION,thumbnail:describe(thumbnail),soundtrack:describe(soundtrack),renderedVideo:renderedVideo?{size:renderedVideo.blob.size,createdAt:renderedVideo.createdAt,soundtrackAddedAt:renderedVideo.soundtrackAddedAt}:undefined,attachmentNote:'Media files are stored separately in IndexedDB; JSON contains metadata only. The prepared MP4 includes the selected soundtrack.'}}
 
 const truncate=(text:string,max:number)=>Array.from(text).length>max?Array.from(text).slice(0,max-1).join('')+'…':text;

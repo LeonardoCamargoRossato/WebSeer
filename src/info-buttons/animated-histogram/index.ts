@@ -1,5 +1,6 @@
 import type {InfoTopic} from "../types";
 export default {
+  "orientation":{"title":["Orientação do vídeo","Video orientation"],"body":["Horizontal (16:9, 960 × 540) usa o layout de vídeo tradicional. Vertical (9:16, 540 × 960) reorganiza o gráfico para Shorts, Reels e TikTok; não estica nem corta a versão horizontal. Palavras, contagens, velocidade e ultrapassagens são preservadas. Gerar outra orientação cria uma nova versão na biblioteca, mantendo a anterior. O tipo de arquivo (MP4/GIF) é escolhido separadamente.","Horizontal (16:9, 960 × 540) uses the traditional video layout. Vertical (9:16, 540 × 960) rearranges the chart for Shorts, Reels and TikTok; it does not stretch or crop the horizontal version. Words, counts, speed and overtakes are preserved. Generating another orientation creates a new library version while retaining the original. File type (MP4/GIF) is selected separately."]},
   "overview": {
     "title": [
       "Histograma animado",

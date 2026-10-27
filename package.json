@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test:browser": "node tests/browser-smoke.cjs",
-    "test": "node tests/pdf-extraction.mjs && node tests/animation-counts.mjs && node tests/video-metadata.mjs && node tests/storage-sizes.mjs",
+    "test": "node tests/pdf-extraction.mjs && node tests/animation-counts.mjs && node tests/video-metadata.mjs && node tests/storage-sizes.mjs && node tests/social-platforms.mjs",
     "test:history": "node tests/history-browser.cjs",
     "test:animation": "node tests/animation-browser.cjs",
     "test:video": "node tests/video-studio-browser.cjs",
@@ -19,7 +19,9 @@
     "test:library-audio": "node tests/library-trash-audio-browser.cjs",
     "test:guides": "node tests/application-guides-browser.cjs",
     "test:narration": "node tests/guide-narration-browser.cjs",
-    "test:attribution": "node tests/export-attribution-browser.cjs"
+    "test:attribution": "node tests/export-attribution-browser.cjs",
+    "test:platforms": "node tests/video-platforms-browser.cjs",
+    "test:social": "node tests/social-platforms.mjs"
   },
   "dependencies": {
     "@mediabunny/aac-encoder": "^1.62.1",

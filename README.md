@@ -165,6 +165,21 @@ não remove o documento nem os relatórios do Histórico.
 
 ## Histograma animado (V0)
 
+A geração oferece **Horizontal (16:9, 960 × 540)** e **Vertical (9:16, 540 × 960)**,
+com layouts próprios. MP4/GIF é uma escolha separada da orientação. O painel
+possui abas para **YouTube Vídeo**, **YouTube Shorts**, **Instagram Reels** e
+**TikTok**. Uma aba que exige outra orientação oferece criar uma versão; a
+confirmação retorna ao histograma com as palavras e configurações da revisão
+original, sem iniciar geração automaticamente. Versões já existentes podem ser
+reabertas e a anterior é preservada na biblioteca.
+
+Shorts usa a publicação YouTube existente, com verificação de orientação e
+duração. Reels e TikTok oferecem modelos locais, informações de cada campo,
+rascunhos e exportação para preparação; não há autenticação nem envio para essas
+duas redes nesta etapa. A mídia vertical pode ser compartilhada entre os três
+destinos, com textos/configurações próprios por plataforma. Veja
+[formatos, campos e fontes](docs/SOCIAL_VIDEO_FORMATS.md).
+
 Última ferramenta no guia da página inicial e no menu Ferramentas de Análise.
 Selecione de 2 a 8 palavras distintas, verifique a existência ou use sugestões
 (4–8 palavras frequentes ou frequentes sem stopwords PT/EN). Candidatos a nomes

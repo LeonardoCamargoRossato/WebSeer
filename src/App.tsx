@@ -7,9 +7,10 @@ import AnimatedHistogram from './components/workflow/AnimatedHistogram';
 import Attribution from './components/layout/Attribution';
 import DocumentHistory from './components/workflow/DocumentHistory';
 import ReportActions from './reports/ReportActions';
-import {saveRun,type Inputs,type ResearchRun} from './storage/archive';
+import {saveRun,getSnapshot,getDocument,type Inputs,type ResearchRun,type Report} from './storage/archive';
+import {platformOrientation,type PublicationPlatform} from './features/animatedHistogram/videoFormats';
 import type {ActiveCorpus} from './types/corpus';
-import {useEffect,useMemo,useRef,useState,type ReactNode} from 'react';
+import {useCallback,useEffect,useMemo,useRef,useState,type ReactNode} from 'react';
 import AppHeader,{type Page} from './components/layout/AppHeader';
 import {compareCorpus,corpusContains} from './utils/compareCorpus';
 import DocumentWorkspace from './components/workflow/DocumentWorkspace';
@@ -40,19 +41,33 @@ export default function App(){
  const analysisReady=analysisPage&&Boolean(activeCorpus);
  useEffect(()=>{if(analysisPage&&availableCorpus)void loadForTool(page);else releaseTool();return()=>releaseTool()},[page,availableCorpus?.id,loadForTool,releaseTool]);
  const [guideId,setGuideId]=useState('literature');
- const [videoDirty,setVideoDirty]=useState(false);
- const setPage=(next:Page)=>{if(page==='videoStudio'&&next!==page&&videoDirty&&!window.confirm(locale==='pt-BR'?'Há alterações não salvas. Sair mesmo assim?':'There are unsaved changes. Leave anyway?'))return;setPageRaw(next)};
+ const videoDirty=useRef(false);
+ const onVideoDirty=useCallback((value:boolean)=>{videoDirty.current=value},[]);
+ const setPage=(next:Page)=>{if(page==='videoStudio'&&next!==page&&videoDirty.current&&!window.confirm(locale==='pt-BR'?'Há alterações não salvas. Sair mesmo assim?':'There are unsaved changes. Leave anyway?'))return;setPageRaw(next)};
  const [qa,setQa]=useState(''),[qb,setQb]=useState(''),[a,setA]=useState<Suggestion[]>([]),[b,setB]=useState<Suggestion[]>([]),[weight,setWeight]=useState<'Frequency'|'Rank'|'Score'>('Frequency'),[resultCount,setResultCount]=useState(20);
  const [queryDraft,setQueryDraft]=useState(''),[treeQuery,setTreeQuery]=useState(''),[depth,setDepth]=useState(5),[maxBranches,setMaxBranches]=useState(8),[direction,setDirection]=useState<WordTreeDirection>('both'),[selectedTokens,setSelectedTokens]=useState<string[]>([]),[caseSensitive,setCaseSensitive]=useState(false),[ignorePunctuation,setIgnorePunctuation]=useState(true);
  const [networkQuery,setNetworkQuery]=useState(''),[relationDraft,setRelationDraft]=useState('and'),[phraseMatches,setPhraseMatches]=useState<Edge[]>([]),[minOccurrence,setMinOccurrence]=useState(1),[maxNodes,setMaxNodes]=useState(40),[clusterStrength,setClusterStrength]=useState(55);
  const [frequencyCount,setFrequencyCount]=useState(25),[frequencyOrder,setFrequencyOrder]=useState<'desc'|'asc'>('desc'),[frequencyRemoveStopwords,setFrequencyRemoveStopwords]=useState(false),[frequencyStopwordLanguage,setFrequencyStopwordLanguage]=useState<StopwordLanguage>('pt'),[frequencyMinLength,setFrequencyMinLength]=useState(3),[frequencyOrientation,setFrequencyOrientation]=useState<'horizontal'|'vertical'>('horizontal');
  const [cloudCount,setCloudCount]=useState(80),[cloudPalette,setCloudPalette]=useState<CloudPalette>('webseer'),[cloudColor,setCloudColor]=useState('#315fba'),[cloudBackground,setCloudBackground]=useState('#ffffff'),[cloudShape,setCloudShape]=useState<CloudShape>('circle'),[cloudRotation,setCloudRotation]=useState<CloudRotation>('mixed'),[cloudFont,setCloudFont]=useState('Inter, sans-serif'),[cloudScale,setCloudScale]=useState(1),[cloudSizeContrast,setCloudSizeContrast]=useState(1),[cloudWordSpacing,setCloudWordSpacing]=useState(6),[cloudRemoveStopwords,setCloudRemoveStopwords]=useState(true),[cloudStopwordLanguage,setCloudStopwordLanguage]=useState<StopwordLanguage>('pt');
- const [videoReportId,setVideoReportId]=useState<string|null>(null);
- const openVideo=(id:string)=>{setVideoReportId(id);setPage('videoStudio')};
+ const [videoReportId,setVideoReportId]=useState<string|null>(null),[videoPlatform,setVideoPlatform]=useState<PublicationPlatform>();
+ const currentVideoView=useRef({page,reportId:videoReportId});currentVideoView.current={page,reportId:videoReportId};
+ const openVideo=(id:string,platform?:PublicationPlatform)=>{if(currentVideoView.current.page==='videoStudio'&&videoDirty.current&&!window.confirm(locale==='pt-BR'?'Há alterações não salvas. Abrir outra versão mesmo assim?':'There are unsaved changes. Open another version anyway?'))return;setVideoReportId(id);setVideoPlatform(platform);setPage('videoStudio')};
  const [histogramInputs,setHistogramInputs]=useState<Inputs|null>(null);
  const [archiveError,setArchiveError]=useState('');
  const [executionTick,setExecutionTick]=useState(0);
  const [resumeRequest,setResumeRequest]=useState<{corpus:ActiveCorpus;tool:ResearchRun['tool'];inputs:Inputs}|null>(null);
+ const createVideoVariant=async(report:Report,platform:PublicationPlatform)=>{
+  const [snapshot,document]=await Promise.all([getSnapshot(report.snapshotId),getDocument(report.documentId)]);
+  if(currentVideoView.current.page!=='videoStudio'||currentVideoView.current.reportId!==report.id)throw new Error(locale==='pt-BR'?'Preparação cancelada: o painel mudou.':'Preparation canceled: the panel changed.');
+  if(!snapshot||!document||document.deletedAt)throw new Error(locale==='pt-BR'?'A revisão original não está disponível. Restaure o documento na biblioteca para gerar outra versão.':'The original revision is unavailable. Restore the document in the library to generate another version.');
+  const data=report.data as {terms?:string[]},terms=Array.isArray(report.inputs.terms)?report.inputs.terms:data?.terms;
+  if(!terms||terms.length<2||terms.length>8)throw new Error(locale==='pt-BR'?'Esta versão não guardou palavras suficientes para recriar a animação.':'This version did not save enough words to recreate the animation.');
+  const corpus={...snapshot.corpus,archive:{documentId:report.documentId,snapshotId:report.snapshotId}};
+  const inputs:Inputs={...report.inputs,terms:[...terms],orientation:platformOrientation(platform),format:'mp4',sourceReportId:typeof report.inputs.sourceReportId==='string'?report.inputs.sourceReportId:report.id,targetPlatform:platform};
+  // Studio saves its current draft before requesting a variant. Reuse the exact
+  // archived revision, never the latest document or text from another open tool.
+  onVideoDirty(false);setActiveCorpus(corpus);setResumeRequest({corpus,tool:'animatedHistogram',inputs});
+ };
  const skipRecord=useRef('');const lastRecord=useRef('');
  const [exampleError,setExampleError]=useState(false);
  useEffect(()=>{window.scrollTo({top:0,left:0,behavior:'instant'})},[page]);
@@ -124,7 +139,7 @@ export default function App(){
  {analysisPage&&!analysisReady&&<section className="toolCorpusLoading surface" aria-busy={Boolean(availableCorpus&&!loadError)}><span className="eyebrow">{locale==='pt-BR'?'DOCUMENTO NESTA FERRAMENTA':'DOCUMENT IN THIS TOOL'}</span><h1>{({dashboard:locale==='pt-BR'?'Dashboard de dados':'Data dashboard',compare:t.nav.compare,wordTree:t.nav.wordTree,phraseNet:t.nav.phraseNet,frequencies:t.nav.frequencies,wordCloud:t.nav.wordCloud,animatedHistogram:locale==='pt-BR'?'Histograma animado':'Animated Histogram'} as Partial<Record<Page,string>>)[page]}</h1>{availableCorpus?<><strong>{availableCorpus.name}</strong>{loadError?<><p role="alert">{loadError}</p><button onClick={()=>void loadForTool(page)}>{locale==='pt-BR'?'Tentar carregar novamente':'Retry loading'}</button></>:<p role="status">{locale==='pt-BR'?'Carregando o texto salvo apenas nesta ferramenta…':'Loading saved text for this tool only…'}{loadingTool&&' '}</p>}</>:<p>{locale==='pt-BR'?'Prepare um documento no Corpus para usar esta ferramenta.':'Prepare a document in Corpus to use this tool.'}</p>}<div className="archiveActions"><button className="primary" onClick={()=>setPage('corpus')}>{locale==='pt-BR'?'Ir para Corpus do Documento':'Go to Document Corpus'}</button>{!availableCorpus&&<button onClick={()=>void loadExample()}>{locale==='pt-BR'?'Usar exemplo':'Use example'}</button>}</div></section>}
  {tool&&activeCorpus&&<ReportActions key={`${activeCorpus.id}-${tool}`} corpus={activeCorpus} tool={tool} inputs={inputs} data={reportData} ready={ready} onRerun={()=>setExecutionTick(n=>n+1)} onHistory={()=>setPage('history')}/>}
   {page==='login'&&<LoginPage onOpen={setPage}/>}
-  {page==='videoStudio'&&<VideoStudio onVideo={openVideo} reportId={videoReportId} onOpen={setPage} onDirtyChange={setVideoDirty}/>}
+  {page==='videoStudio'&&<VideoStudio onVideo={openVideo} reportId={videoReportId} initialPlatform={videoPlatform} onCreateVariant={createVideoVariant} onOpen={setPage} onDirtyChange={onVideoDirty}/>}
   {page==='home'&&<Landing onOpen={setPage}/>}
   {page==='animatedHistogram'&&analysisReady&&<AnimatedHistogram key={activeCorpus?.id} onOpen={setPage} initialInputs={histogramInputs} onVideo={openVideo}/>}
   {page==='examples'&&<ApplicationExamples onOpen={setPage} onGuide={id=>{setGuideId(id);setPage('applicationGuide')}}/>}

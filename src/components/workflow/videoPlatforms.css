@@ -1,0 +1,11 @@
+.studioDestinationBar{display:flex;align-items:flex-start;gap:.65rem;margin:1rem 0 1.25rem;padding:.7rem;border:1px solid var(--border,#d8e1ef);border-radius:14px;background:#f4f7fc}
+.studioPlatformTabs{display:flex;flex:1;gap:.55rem;overflow-x:auto;padding:.05rem}
+.studioPlatformTabs button{display:inline-flex;align-items:center;gap:.45rem;min-height:42px;white-space:nowrap;border:1px solid #cad6e8;background:#fff;color:#334760;border-radius:10px;padding:.6rem .8rem;font-weight:700}
+.studioPlatformTabs button[aria-selected=true]{border-color:#2f63c8;background:#2f63c8;color:#fff;box-shadow:0 4px 12px #2559b52e}
+.platformMark{display:grid;place-items:center;width:1.4rem;height:1.4rem;border-radius:6px;background:color-mix(in srgb,currentColor 12%,transparent)}
+.platformLocalBadge{display:inline-flex;padding:.5rem .7rem;border-radius:999px;background:#eef3fb;color:#425976;font-size:.82rem;font-weight:700}
+.videoVariantDialog{max-width:590px;width:calc(100% - 2rem);border:0;border-radius:18px;padding:1.5rem;box-shadow:0 24px 70px #15233f4d;color:inherit}
+.videoVariantDialog::backdrop{background:#13213c8c;backdrop-filter:blur(3px)}
+.studioVerticalVisual{width:min(100%,300px);max-height:560px;aspect-ratio:9/16;object-fit:contain;margin-inline:auto;display:block;background:#101827;border-radius:12px}
+.socialDestinationNotice{border-left:4px solid #b642c8}
+@media(max-width:760px){.studioDestinationBar{align-items:center}.studioPlatformTabs{scroll-snap-type:x proximity}.studioPlatformTabs button{scroll-snap-align:start}.studioPlatformTabs button{font-size:.82rem;padding:.55rem .65rem}}
