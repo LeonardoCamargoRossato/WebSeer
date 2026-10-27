@@ -120,3 +120,14 @@ nenhuma exclusão local chama a API para apagar vídeos no canal.
 Teste adicional: `npm run test:library-audio` (Chromium + ffmpeg/ffprobe) verifica
 restauração e contagens, MP4 com AAC audível, igualdade dos pacotes H.264 antes e
 depois da preparação e persistência do arquivo. APIs externas são simuladas.
+
+## Organização visual e distribuição do espaço
+
+A barra azul-clara reúne Documentos, Vídeos, Todos os documentos (quando dentro
+de uma pasta), lixeira, ajuda e seletor de visualização. O documento e suas ações
+ficam em um bloco separado das ferramentas, pesquisas e relatórios.
+O total de `UsageBreakdown` abre um diálogo com gráfico de pizza e nove categorias.
+Cada setor usa a mesma cor do rótulo/valor na legenda; linhas claras com borda
+colorida mantêm contraste. Valores zerados também constam da legenda. O gráfico
+normaliza os conteúdos lógicos do item, não a cota do navegador. Há fechamento
+por Escape/clique fora e restauração de foco ao botão; a janela rola no celular.
