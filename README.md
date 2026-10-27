@@ -303,9 +303,12 @@ de arquivamento. As ilustrações conceituais foram geradas com IA e usam um ún
 atlas estático (`public/images/application-guides.png`), reaproveitado por CSS.
 As referências são leituras metodológicas, não validações de resultados do app.
 
-A galeria e os seis guias oferecem **Escutar narração da página**, com pausar,
-retomar e parar. A leitura usa SpeechSynthesis, respeita PT-BR/EN-US e termina ao
-sair da página; a voz depende do navegador/sistema e pode precisar de conexão.
+A galeria e os seis guias oferecem o botão compacto **Ouvir**, à direita abaixo
+de Sobre esta página. Ele abre um player com pausar, retomar, parar e velocidade
+de 0,5× a 2×. A engrenagem permite escolher uma voz disponível no navegador e o
+trecho da leitura. Mudar a voz ou velocidade durante a leitura reinicia o trecho
+atual com a nova configuração. A leitura usa SpeechSynthesis, respeita PT-BR/EN-US
+e termina ao sair da página; a voz depende do navegador/sistema e pode precisar de conexão.
 Não lê documentos nem aparece nas ferramentas de análise. O componente fica em
 `src/components/accessibility/PageNarration.tsx`.
 
