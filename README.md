@@ -237,7 +237,7 @@ exportação, proteção contra perda de edição, layout e ausência de upload.
 O teste de autenticação usa somente provedor simulado; veja o guia de configuração.
 
 Novos rascunhos já abrem com título/descrição/tags locais em PT-BR, categoria
-Entretenimento, privacidade privada, público infantil Sim (editável), licença
+Entretenimento, privacidade privada, público infantil Não (editável), licença
 YouTube Standard, sem fala e data da animação. Edições de rascunhos existentes
 são preservadas. “Configurações de agentes” permite configurar e inspecionar o
 assistente por regras locais v1; não há modelo de IA nem envio a provedores.
@@ -247,3 +247,12 @@ O painel aceita miniatura PNG/JPEG até 2 MB e soundtrack MP3/WAV/M4A/AAC/OGG at
 anexos. Use **Salvar rascunho** para persistir os Blobs no IndexedDB. O JSON do
 rascunho exporta metadados dos anexos, não os arquivos: baixe-os separadamente.
 O áudio ainda não é mixado no MP4 e a miniatura não é gerada por IA.
+
+As explicações dos campos ficam em [`src/info-buttons`](src/info-buttons/README.md),
+separadas por página e ferramenta, incluindo `animated-histogram/video-studio`.
+Os ícones abrem ajuda por clique ou teclado, com conteúdo em PT-BR/EN-US.
+Novos rascunhos agora usam público infantil **Não**; rascunhos salvos preservam
+suas escolhas. Downloads de animação usam `WebSeer - <título do vídeo>.mp4/gif`;
+no Histórico usa-se o título salvo, ou a sugestão inicial se não houver rascunho.
+O vídeo tem barras com raio de até 10 px, eixo separado do progresso e geração
+a 24 fps, com duração por página ajustável a partir de aproximadamente 0,083 s.

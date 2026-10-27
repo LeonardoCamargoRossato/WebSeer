@@ -1,0 +1,16 @@
+import group0 from './home';
+import group1 from './corpus';
+import group2 from './compare';
+import group3 from './word-tree';
+import group4 from './phrase-net';
+import group5 from './frequencies';
+import group6 from './word-cloud';
+import group7 from './dashboard';
+import group8 from './history';
+import group9 from './examples';
+import group10 from './login';
+import group11 from './animated-histogram';
+import group12 from './animated-histogram/video-studio';
+import group13 from './common';
+import type {InfoTopic} from './types';
+export const infos:Record<string,Record<string,InfoTopic>>={"home":group0,"corpus":group1,"compare":group2,"word-tree":group3,"phrase-net":group4,"frequencies":group5,"word-cloud":group6,"dashboard":group7,"history":group8,"examples":group9,"login":group10,"animated-histogram":group11,"animated-histogram/video-studio":group12,"common":group13};
