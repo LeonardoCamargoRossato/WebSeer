@@ -1,3 +1,4 @@
+import {preparedVideo} from './mixSoundtrack';
 import type {Report} from '../storage/archive';
 import {operation} from '../storage/database';
 import {download} from '../reports/reportUtils';
@@ -11,5 +12,5 @@ export async function downloadVideo(report:Report,documentName:string){
  if(!report.visual)return;
  let draft:VideoDraft|undefined;
  try{draft=await operation<VideoDraft|undefined>('videoDrafts','readonly',s=>s.get(report.id))}catch{/* A download remains available if browser storage is unavailable. */}
- download(report.visual,videoFilename(draft?.title||automaticSuggestions(report,documentName).title,report.visual.type));
+ download(preparedVideo(report,draft)!,videoFilename(draft?.title||automaticSuggestions(report,documentName).title,report.visual.type));
 }

@@ -66,8 +66,8 @@ export default {
       "Audio language"
     ],
     "body": [
-      "Sem áudio é o padrão. Se houver fala, escolha o idioma falado; música instrumental não precisa de idioma de fala. O áudio anexado ainda não é mixado no MP4.",
-      "No audio is the default. If speech exists, choose its language; instrumental music needs no spoken language. Attached audio is not yet mixed into MP4."
+      "Sem áudio é o padrão. Se houver fala, escolha o idioma falado; música instrumental não precisa de idioma de fala. Prepare o MP4 com trilha para incluir áudio.",
+      "No audio is the default. If speech exists, choose its language; instrumental music needs no spoken language. Prepare MP4 with soundtrack to include audio."
     ]
   },
   "privacy": {
@@ -216,8 +216,8 @@ export default {
       "Soundtrack"
     ],
     "body": [
-      "Carregue uma trilha que você possa utilizar: MP3/WAV/M4A/AAC/OGG até 25 MB, conforme suporte do navegador. Clique para ouvir. É um anexo salvo no projeto; ainda não altera o MP4.",
-      "Upload a track you can use: MP3/WAV/M4A/AAC/OGG up to 25 MB, subject to browser support. Click to listen. It is a saved project attachment and does not change MP4 yet."
+      "Carregue uma trilha que você possa utilizar: MP3/WAV/M4A/AAC/OGG até 25 MB, conforme suporte do navegador. Clique para ouvir. Ao carregar em um MP4, o WebSeer prepara o vídeo com áudio AAC no navegador. A trilha repete e é cortada na duração da animação. Salve o rascunho para manter esse arquivo. O vídeo original permanece guardado; vídeos já publicados exigem uma nova versão e novo envio.",
+      "Upload a track you can use: MP3/WAV/M4A/AAC/OGG up to 25 MB, subject to browser support. Click to listen. For MP4, WebSeer prepares the video with AAC audio in your browser. Soundtrack loops and trims to the animation duration. Save the draft to retain this file. Original video stays saved; existing uploads require a new version and upload."
     ]
   },
   "provider": {

@@ -15,14 +15,17 @@
     "test:pdf-repeat": "node tests/pdf-repeat-browser.cjs",
     "test:library": "node tests/library-browser.cjs",
     "test:youtube": "node tests/youtube-browser.cjs",
-    "test:auth": "node tests/google-auth-browser.cjs"
+    "test:auth": "node tests/google-auth-browser.cjs",
+    "test:library-audio": "node tests/library-trash-audio-browser.cjs"
   },
   "dependencies": {
+    "@mediabunny/aac-encoder": "^1.62.1",
     "@vitejs/plugin-react": "latest",
     "d3": "^7.9.0",
     "gifenc": "1.0.3",
     "jose": "6.2.13",
     "mammoth": "1.13.0",
+    "mediabunny": "^1.62.1",
     "mp4-muxer": "5.2.2",
     "pdfjs-dist": "^4.10.38",
     "react": "^18.3.1",

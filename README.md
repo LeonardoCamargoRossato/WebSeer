@@ -247,7 +247,16 @@ O painel aceita miniatura PNG/JPEG até 2 MB e soundtrack MP3/WAV/M4A/AAC/OGG at
 25 MB, conforme suporte do navegador. Há prévia, troca, exclusão e download dos
 anexos. Use **Salvar rascunho** para persistir os Blobs no IndexedDB. O JSON do
 rascunho exporta metadados dos anexos, não os arquivos: baixe-os separadamente.
-O áudio ainda não é mixado no MP4 e a miniatura não é gerada por IA.
+O painel prepara um MP4 com áudio AAC incorporado no navegador, preservando os
+pacotes H.264 originais. A trilha repete e é cortada na duração da animação.
+Prévia, download e próximos uploads usam esse arquivo após a preparação.
+Vídeos já publicados exigem **Criar nova versão para publicar com som** e novo
+envio; o link anterior permanece salvo. A miniatura não é gerada por IA.
+
+A biblioteca alterna lista/cards pelo botão de ícone à direita de Documentos/Vídeos.
+Documentos, pesquisas, relatórios e vídeos podem ir para a lixeira e ser restaurados.
+As contagens principais excluem itens na lixeira, que continuam ocupando espaço.
+A lixeira local não apaga vídeos do YouTube.
 
 As explicações dos campos ficam em [`src/info-buttons`](src/info-buttons/README.md),
 separadas por página e ferramenta, incluindo `animated-histogram/video-studio`.

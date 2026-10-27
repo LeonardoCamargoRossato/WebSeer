@@ -64,8 +64,9 @@ publicam vídeos reais na sua conta.
   em abas distintas. Se a conexão cair sem confirmação, a versão fica marcada
   como incerta. Confira o YouTube Studio antes de liberar manualmente outra
   tentativa. Um envio iniciado em uma aba que foi fechada também exige conferência.
-- Miniaturas exigem elegibilidade/permissão do canal. A trilha de áudio anexada
-  continua sendo um anexo local: **não é mixada no MP4 enviado**.
+- Miniaturas exigem elegibilidade/permissão do canal. A trilha de áudio é
+  incorporada ao MP4 preparado antes do envio (AAC). Salve e confira a prévia.
+  Vídeos já publicados não podem ser substituídos: crie uma nova versão com som.
 - Cotas, permissões negadas, ausência de canal, API desabilitada e erros de rede
   são exibidos. Não há automação em segundo plano nem refresh token no Pages.
 

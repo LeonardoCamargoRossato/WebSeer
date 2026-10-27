@@ -41,9 +41,13 @@ prévia. Há paginação de 20 itens para evitar dezenas de players/imagens ativ
 Vídeos privados/em processamento/com incorporação bloqueada podem exigir abrir
 no YouTube. O iframe usa `youtube-nocookie.com` e envia referência de origem.
 
-O player remoto mostra o conteúdo realmente enviado. A trilha anexada tem
-player separado: **não é mixada no MP4 nem adicionada retroativamente ao vídeo
-publicado**. A capa local pode diferir da atual no canal; a ajuda explica isso.
+O player remoto mostra o conteúdo realmente enviado. A trilha pode ser incorporada
+ao MP4 no painel: AAC a 128 kbps, repetida/cortada na duração do vídeo, com
+cópia dos pacotes H.264 originais. A codificação ocorre em Worker, com fallback
+AAC WASM local. Salvar preserva o MP4 preparado; prévias, downloads e próximos
+envios usam esse arquivo. O original é mantido e ambos entram na estimativa
+de espaço. Vídeos já publicados exigem nova versão/novo envio; o link original
+é mantido. O player de áudio separado permite conferir o anexo original. A capa local pode diferir da atual no canal; a ajuda explica isso.
 
 ## Investigação do travamento na segunda conversão
 
@@ -101,3 +105,18 @@ O primeiro executa reconversões reais, verifica resposta da UI, workers,
 cancelamento e deduplicação. O segundo usa cota simulada e mídia de teste para
 verificar tamanhos, layouts, pastas fechadas e players. Nenhum desses testes
 publica vídeos ou usa uma conta real de YouTube.
+
+## Exclusão e apresentação
+
+O botão único de ícone à direita de Documentos/Vídeos alterna lista/cards;
+a preferência é mantida por biblioteca. Pesquisas usam linhas compactas no PC.
+`deletedAt` nos registros permite lixeira/restauração sem nova versão do schema.
+Contagens de itens ativos excluem os apagados; a lixeira mostra os itens e data.
+Excluir documento oculta seus vídeos/relatórios, mantendo os vínculos para restaurar.
+Excluir pesquisa preserva relatórios já gerados. A alocação de versões inclui
+relatórios excluídos para nunca reutilizar um número. Lixeira ainda ocupa disco;
+nenhuma exclusão local chama a API para apagar vídeos no canal.
+
+Teste adicional: `npm run test:library-audio` (Chromium + ffmpeg/ffprobe) verifica
+restauração e contagens, MP4 com AAC audível, igualdade dos pacotes H.264 antes e
+depois da preparação e persistência do arquivo. APIs externas são simuladas.

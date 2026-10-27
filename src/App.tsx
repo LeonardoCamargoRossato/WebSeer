@@ -114,7 +114,7 @@ export default function App(){
  return <><AppHeader page={page} setPage={setPage}/><main className="appMain">{(storageError||archiveError)&&<p className="notice errorNotice" role="alert">{storageError||archiveError}</p>}{exampleError&&<p role="alert">{t.storage.loadError}</p>}<div className="pageFade" key={page}><div className="pageHelpBar"><span>{locale==='pt-BR'?'Sobre esta página':'About this page'}</span><InfoButton group={({home:'home',corpus:'corpus',compare:'compare',wordTree:'word-tree',phraseNet:'phrase-net',frequencies:'frequencies',wordCloud:'word-cloud',dashboard:'dashboard',history:'history',examples:'examples',animatedHistogram:'animated-histogram',videoStudio:'animated-histogram/video-studio',login:'login'} as Record<Page,string>)[page]}/></div>
  {tool&&activeCorpus&&<ReportActions key={`${activeCorpus.id}-${tool}`} corpus={activeCorpus} tool={tool} inputs={inputs} data={reportData} ready={ready} onRerun={()=>setExecutionTick(n=>n+1)} onHistory={()=>setPage('history')}/>}
   {page==='login'&&<LoginPage onOpen={setPage}/>}
-  {page==='videoStudio'&&<VideoStudio reportId={videoReportId} onOpen={setPage} onDirtyChange={setVideoDirty}/>}
+  {page==='videoStudio'&&<VideoStudio onVideo={openVideo} reportId={videoReportId} onOpen={setPage} onDirtyChange={setVideoDirty}/>}
   {page==='home'&&<Landing onOpen={setPage}/>}
   {page==='animatedHistogram'&&<AnimatedHistogram key={activeCorpus?.id} onOpen={setPage} initialInputs={histogramInputs} onVideo={openVideo}/>}
   {page==='examples'&&<Landing onOpen={setPage} examples/>}

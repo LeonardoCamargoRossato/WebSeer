@@ -4,10 +4,10 @@ import type {ActiveCorpus} from '../types/corpus';
 import {listPdfSummaries,getPdf} from './pdfStore';
 export type Tool='dashboard'|'compare'|'wordTree'|'phraseNet'|'frequencies'|'wordCloud'|'animatedHistogram'|'general';
 export type Inputs=Record<string,string|number|boolean|string[]>;
-export type ArchiveDocument={id:string;name:string;sourceType:ActiveCorpus['sourceType'];original:Blob;originalName:string;createdAt:string;updatedAt:string;currentSnapshotId:string};
+export type ArchiveDocument={deletedAt?:string;id:string;name:string;sourceType:ActiveCorpus['sourceType'];original:Blob;originalName:string;createdAt:string;updatedAt:string;currentSnapshotId:string};
 export type Snapshot={id:string;documentId:string;corpus:ActiveCorpus};
-export type ResearchRun={id:string;documentId:string;snapshotId:string;tool:Exclude<Tool,'general'>;inputs:Inputs;createdAt:string};
-export type Report={id:string;documentId:string;snapshotId:string;runId?:string;tool:Tool;version:number;createdAt:string;inputs:Inputs;data:unknown;visual?:Blob;visualName?:string;relatedReportIds?:string[];formatVersion:1};
+export type ResearchRun={deletedAt?:string;id:string;documentId:string;snapshotId:string;tool:Exclude<Tool,'general'>;inputs:Inputs;createdAt:string};
+export type Report={deletedAt?:string;id:string;documentId:string;snapshotId:string;runId?:string;tool:Tool;version:number;createdAt:string;inputs:Inputs;data:unknown;visual?:Blob;visualName?:string;relatedReportIds?:string[];formatVersion:1};
 export const getDocuments=()=>operation<ArchiveDocument[]>('documents','readonly',s=>s.getAll());
 export const getSnapshot=(id:string)=>operation<Snapshot|undefined>('snapshots','readonly',s=>s.get(id));
 export const getRuns=()=>operation<ResearchRun[]>('runs','readonly',s=>s.getAll());
@@ -44,4 +44,9 @@ export async function saveReport(corpus:ActiveCorpus,tool:Tool,inputs:Inputs,dat
 export async function migrateSavedPdfs(){
  const [pdfs,existing]=await Promise.all([listPdfSummaries(),getDocuments()]);const known=new Set(existing.map(d=>d.id));
  for(const summary of pdfs){const key=summary.documentId??`file-${await hash(summary.file)}`;if(known.has(key))continue;const pdf=await getPdf(summary.id);if(!pdf)continue;const corpus:ActiveCorpus={id:crypto.randomUUID(),name:pdf.name,sourceType:'pdf',sourceFile:pdf.file,rawText:pdf.pages.join('\n\n'),documents:pdf.pages.map((text,i)=>({id:crypto.randomUUID(),title:`${pdf.name} — ${i+1}`,text,pageNumber:i+1})),pageCount:pdf.pages.length,metadata:pdf.metadata,createdAt:pdf.savedAt};await archiveCorpus(corpus);known.add(key)}
+}
+
+// Soft deletion preserves relationships, version numbers, original files and publication links.
+export async function setArchiveDeleted(store:'documents'|'runs'|'reports',id:string,deleted:boolean){
+ const db=await openDatabase();return new Promise<void>((resolve,reject)=>{const tx=db.transaction(store,'readwrite'),s=tx.objectStore(store),request=s.get(id);let failure:unknown;request.onsuccess=()=>{const item=request.result;if(!item){failure=new Error('Registro não encontrado. / Record not found.');tx.abort();return}if(deleted)item.deletedAt=new Date().toISOString();else delete item.deletedAt;s.put(item)};tx.oncomplete=()=>{db.close();announceChange();resolve()};tx.onerror=tx.onabort=()=>{db.close();reject(failure??tx.error)}})
 }
