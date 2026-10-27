@@ -12,5 +12,6 @@ import group10 from './login';
 import group11 from './animated-histogram';
 import group12 from './animated-histogram/video-studio';
 import group13 from './common';
+import group14 from './publishing-schedule';
 import type {InfoTopic} from './types';
-export const infos:Record<string,Record<string,InfoTopic>>={"home":group0,"corpus":group1,"compare":group2,"word-tree":group3,"phrase-net":group4,"frequencies":group5,"word-cloud":group6,"dashboard":group7,"history":group8,"examples":group9,"login":group10,"animated-histogram":group11,"animated-histogram/video-studio":group12,"common":group13};
+export const infos:Record<string,Record<string,InfoTopic>>={"home":group0,"corpus":group1,"compare":group2,"word-tree":group3,"phrase-net":group4,"frequencies":group5,"word-cloud":group6,"dashboard":group7,"history":group8,"examples":group9,"login":group10,"animated-histogram":group11,"animated-histogram/video-studio":group12,"common":group13,"publishing-schedule":group14};

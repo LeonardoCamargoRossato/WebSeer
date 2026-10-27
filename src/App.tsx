@@ -3,6 +3,7 @@ import ApplicationExamples,{ApplicationGuide} from './components/workflow/Applic
 import InfoButton from './info-buttons/InfoButton';
 import LoginPage from './auth/LoginPage';
 import VideoStudio from './components/workflow/VideoStudio';
+import PublishingSchedulePage from './publishing/PublishingSchedule';
 import AnimatedHistogram from './components/workflow/AnimatedHistogram';
 import Attribution from './components/layout/Attribution';
 import DocumentHistory from './components/workflow/DocumentHistory';
@@ -35,7 +36,7 @@ import type {TokenizerOptions,WordTreeDirection} from './features/wordTree/wordT
 
 
 export default function App(){
- const {t,locale}=useI18n(); const {activeCorpus:loadedCorpus,availableCorpus,loadedFor,loadingTool,loadError,loadForTool,releaseTool,setTextCorpus,setActiveCorpus,storageError}=useCorpus(); const [page,setPageRaw]=useState<Page>('home');
+ const {t,locale}=useI18n(); const {activeCorpus:loadedCorpus,availableCorpus,loadedFor,loadingTool,loadError,loadForTool,releaseTool,setTextCorpus,setActiveCorpus,storageError}=useCorpus(); const [page,setPageRaw]=useState<Page>(()=>location.hash==='#publishing-schedule'?'publishingSchedule':'home');
  const analysisPage=['dashboard','compare','wordTree','phraseNet','frequencies','wordCloud','animatedHistogram'].includes(page);
  const activeCorpus=loadedFor===page?loadedCorpus:null;
  const analysisReady=analysisPage&&Boolean(activeCorpus);
@@ -43,7 +44,7 @@ export default function App(){
  const [guideId,setGuideId]=useState('literature');
  const videoDirty=useRef(false);
  const onVideoDirty=useCallback((value:boolean)=>{videoDirty.current=value},[]);
- const setPage=(next:Page)=>{if(page==='videoStudio'&&next!==page&&videoDirty.current&&!window.confirm(locale==='pt-BR'?'Há alterações não salvas. Sair mesmo assim?':'There are unsaved changes. Leave anyway?'))return;setPageRaw(next)};
+ const setPage=(next:Page)=>{if(page==='videoStudio'&&next!==page&&videoDirty.current&&!window.confirm(locale==='pt-BR'?'Há alterações não salvas. Sair mesmo assim?':'There are unsaved changes. Leave anyway?'))return;if(next==='publishingSchedule')history.replaceState(null,'','#publishing-schedule');else if(location.hash==='#publishing-schedule')history.replaceState(null,'',location.pathname+location.search);setPageRaw(next)};
  const [qa,setQa]=useState(''),[qb,setQb]=useState(''),[a,setA]=useState<Suggestion[]>([]),[b,setB]=useState<Suggestion[]>([]),[weight,setWeight]=useState<'Frequency'|'Rank'|'Score'>('Frequency'),[resultCount,setResultCount]=useState(20);
  const [queryDraft,setQueryDraft]=useState(''),[treeQuery,setTreeQuery]=useState(''),[depth,setDepth]=useState(5),[maxBranches,setMaxBranches]=useState(8),[direction,setDirection]=useState<WordTreeDirection>('both'),[selectedTokens,setSelectedTokens]=useState<string[]>([]),[caseSensitive,setCaseSensitive]=useState(false),[ignorePunctuation,setIgnorePunctuation]=useState(true);
  const [networkQuery,setNetworkQuery]=useState(''),[relationDraft,setRelationDraft]=useState('and'),[phraseMatches,setPhraseMatches]=useState<Edge[]>([]),[minOccurrence,setMinOccurrence]=useState(1),[maxNodes,setMaxNodes]=useState(40),[clusterStrength,setClusterStrength]=useState(55);
@@ -71,6 +72,7 @@ export default function App(){
  const skipRecord=useRef('');const lastRecord=useRef('');
  const [exampleError,setExampleError]=useState(false);
  useEffect(()=>{window.scrollTo({top:0,left:0,behavior:'instant'})},[page]);
+ useEffect(()=>{const update=()=>{if(location.hash==='#publishing-schedule')setPageRaw('publishingSchedule')};window.addEventListener('hashchange',update);return()=>window.removeEventListener('hashchange',update)},[]);
  const tokenizerOptions:TokenizerOptions=useMemo(()=>({caseSensitive,ignorePunctuation}),[caseSensitive,ignorePunctuation]);
  const searchData=useMemo(()=>page==='wordTree'&&activeCorpus&&treeQuery.trim()?searchWordTree(activeCorpus.documents,treeQuery,depth,direction,tokenizerOptions):null,[page,activeCorpus,treeQuery,depth,direction,tokenizerOptions]);
  const treeResult=useMemo(()=>searchData?buildWordTreeResult(searchData.keyword,searchData.keywordFrequency,searchData.ngrams,maxBranches):null,[searchData,maxBranches]);
@@ -134,12 +136,13 @@ export default function App(){
  },[recordSignature,ready,resumeRequest]);
  const reportData=tool==='compare'?{left:a,right:b}:tool==='wordTree'?{tree:treeResult,contexts:ctx}:tool==='phraseNet'?{edges:phraseEdges,maximumVisibleNodes:maxNodes}:tool==='frequencies'?frequencyData:tool==='wordCloud'?cloudData:tool==='dashboard'?{wordCount:corpusStats.words,uniqueTokens:corpusStats.unique,pages:activeCorpus?.pageCount,metadata:activeCorpus?.metadata,topTerms:corpusStats.top,accuracy:'Not measured; requires reference transcript',footnotes:'Not assessed'}:{};
 
- return <><AppHeader page={page} setPage={setPage}/><main className="appMain">{(storageError||archiveError)&&<p className="notice errorNotice" role="alert">{storageError||archiveError}</p>}{exampleError&&<p role="alert">{t.storage.loadError}</p>}<div className="pageFade" key={page}><div className="pageHelpBar"><span>{locale==='pt-BR'?'Sobre esta página':'About this page'}</span><InfoButton group={({home:'home',corpus:'corpus',compare:'compare',wordTree:'word-tree',phraseNet:'phrase-net',frequencies:'frequencies',wordCloud:'word-cloud',dashboard:'dashboard',history:'history',examples:'examples',applicationGuide:'examples',animatedHistogram:'animated-histogram',videoStudio:'animated-histogram/video-studio',login:'login'} as Record<Page,string>)[page]}/></div>
+ return <><AppHeader page={page} setPage={setPage}/><main className="appMain">{(storageError||archiveError)&&<p className="notice errorNotice" role="alert">{storageError||archiveError}</p>}{exampleError&&<p role="alert">{t.storage.loadError}</p>}<div className="pageFade" key={page}><div className="pageHelpBar"><span>{locale==='pt-BR'?'Sobre esta página':'About this page'}</span><InfoButton group={({home:'home',corpus:'corpus',compare:'compare',wordTree:'word-tree',phraseNet:'phrase-net',frequencies:'frequencies',wordCloud:'word-cloud',dashboard:'dashboard',history:'history',examples:'examples',applicationGuide:'examples',animatedHistogram:'animated-histogram',videoStudio:'animated-histogram/video-studio',publishingSchedule:'publishing-schedule',login:'login'} as Record<Page,string>)[page]}/></div>
  {(page==='examples'||page==='applicationGuide')&&<ApplicationNarration guideId={page==='applicationGuide'?guideId:undefined}/>}
  {analysisPage&&!analysisReady&&<section className="toolCorpusLoading surface" aria-busy={Boolean(availableCorpus&&!loadError)}><span className="eyebrow">{locale==='pt-BR'?'DOCUMENTO NESTA FERRAMENTA':'DOCUMENT IN THIS TOOL'}</span><h1>{({dashboard:locale==='pt-BR'?'Dashboard de dados':'Data dashboard',compare:t.nav.compare,wordTree:t.nav.wordTree,phraseNet:t.nav.phraseNet,frequencies:t.nav.frequencies,wordCloud:t.nav.wordCloud,animatedHistogram:locale==='pt-BR'?'Histograma animado':'Animated Histogram'} as Partial<Record<Page,string>>)[page]}</h1>{availableCorpus?<><strong>{availableCorpus.name}</strong>{loadError?<><p role="alert">{loadError}</p><button onClick={()=>void loadForTool(page)}>{locale==='pt-BR'?'Tentar carregar novamente':'Retry loading'}</button></>:<p role="status">{locale==='pt-BR'?'Carregando o texto salvo apenas nesta ferramenta…':'Loading saved text for this tool only…'}{loadingTool&&' '}</p>}</>:<p>{locale==='pt-BR'?'Prepare um documento no Corpus para usar esta ferramenta.':'Prepare a document in Corpus to use this tool.'}</p>}<div className="archiveActions"><button className="primary" onClick={()=>setPage('corpus')}>{locale==='pt-BR'?'Ir para Corpus do Documento':'Go to Document Corpus'}</button>{!availableCorpus&&<button onClick={()=>void loadExample()}>{locale==='pt-BR'?'Usar exemplo':'Use example'}</button>}</div></section>}
  {tool&&activeCorpus&&<ReportActions key={`${activeCorpus.id}-${tool}`} corpus={activeCorpus} tool={tool} inputs={inputs} data={reportData} ready={ready} onRerun={()=>setExecutionTick(n=>n+1)} onHistory={()=>setPage('history')}/>}
   {page==='login'&&<LoginPage onOpen={setPage}/>}
   {page==='videoStudio'&&<VideoStudio onVideo={openVideo} reportId={videoReportId} initialPlatform={videoPlatform} onCreateVariant={createVideoVariant} onOpen={setPage} onDirtyChange={onVideoDirty}/>}
+  {page==='publishingSchedule'&&<PublishingSchedulePage/>}
   {page==='home'&&<Landing onOpen={setPage}/>}
   {page==='animatedHistogram'&&analysisReady&&<AnimatedHistogram key={activeCorpus?.id} onOpen={setPage} initialInputs={histogramInputs} onVideo={openVideo}/>}
   {page==='examples'&&<ApplicationExamples onOpen={setPage} onGuide={id=>{setGuideId(id);setPage('applicationGuide')}}/>}

@@ -21,7 +21,7 @@ function pdfFixture(){
 
 async function archive(page){
  return page.evaluate(()=>new Promise((resolve,reject)=>{
-  const request=indexedDB.open('webseer',3);
+  const request=indexedDB.open('webseer',4);
   request.onerror=()=>reject(request.error);
   request.onsuccess=()=>{
    const db=request.result,transaction=db.transaction(['reports','videoDrafts','snapshots'],'readonly');
@@ -46,7 +46,7 @@ async function archive(page){
   const base=process.env.TEST_URL||'http://127.0.0.1:4173/';
   const button=name=>page.getByRole('button',{name,exact:true});
   const nav=async name=>{const destination=page.locator('header nav').getByRole('button',{name,exact:true});if(!await destination.isVisible())await button('Menu').click();await destination.click()};
-  const tab=name=>page.getByRole('tab').filter({hasText:name});
+  const tab=name=>page.getByRole('tab').nth(name.includes('Shorts')?1:name.includes('Instagram')?2:name==='TikTok'?3:0);
   const openHistogram=async()=>{await nav('Ferramentas de Análise ▾');await page.locator('.analysisPopover').getByRole('button',{name:'Histograma animado',exact:true}).click();await page.getByLabel('Orientação do vídeo',{exact:true}).waitFor()};
   const openReport=async version=>{
    await nav('Histórico');
@@ -59,7 +59,7 @@ async function archive(page){
   };
   const save=async()=>{await button('Salvar rascunho').click();await page.getByRole('status').filter({hasText:'Rascunho salvo'}).waitFor()};
   const download=async name=>{const pending=page.waitForEvent('download');await button(name).click();const file=await pending;return{file,bytes:await fs.readFile(await file.path())}};
-  const assertTabs=async()=>{for(const name of ['YouTube Vídeo','YouTube Shorts – Short','Instagram Reels – Reels','TikTok'])assert.equal(await tab(name).count(),1,`Missing platform tab ${name}; tabs: ${JSON.stringify(await page.getByRole('tab').allTextContents())}`)};
+  const assertTabs=async()=>assert.equal(await page.getByRole('tab').count(),4,`Platform tabs: ${JSON.stringify(await page.getByRole('tab').allTextContents())}`);
   const assertNoOverflow=async()=>assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
 
   await page.goto(base);

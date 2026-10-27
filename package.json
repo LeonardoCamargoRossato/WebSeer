@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test:browser": "node tests/browser-smoke.cjs",
-    "test": "node tests/pdf-extraction.mjs && node tests/animation-counts.mjs && node tests/video-metadata.mjs && node tests/storage-sizes.mjs && node tests/social-platforms.mjs",
+    "test": "node tests/pdf-extraction.mjs && node tests/animation-counts.mjs && node tests/video-metadata.mjs && node tests/storage-sizes.mjs && node tests/social-platforms.mjs && node tests/publishing-schedule.mjs",
     "test:history": "node tests/history-browser.cjs",
     "test:animation": "node tests/animation-browser.cjs",
     "test:video": "node tests/video-studio-browser.cjs",
@@ -21,6 +21,7 @@
     "test:narration": "node tests/guide-narration-browser.cjs",
     "test:attribution": "node tests/export-attribution-browser.cjs",
     "test:platforms": "node tests/video-platforms-browser.cjs",
+    "test:schedule": "node tests/publishing-schedule-browser.cjs",
     "test:social": "node tests/social-platforms.mjs"
   },
   "dependencies": {

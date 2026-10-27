@@ -180,6 +180,22 @@ duas redes nesta etapa. A mídia vertical pode ser compartilhada entre os três
 destinos, com textos/configurações próprios por plataforma. Veja
 [formatos, campos e fontes](docs/SOCIAL_VIDEO_FORMATS.md).
 
+### Agenda de publicação
+
+A Biblioteca de vídeos possui acesso destacado à **Agenda de Publicação** em
+`#/publishing-schedule`. A agenda organiza vídeos horizontais e verticais em
+filas recorrentes para YouTube, Instagram e TikTok, usando por padrão o fuso
+`America/Sao_Paulo`. A ordem de seleção cria a primeira fila; arrastar ou usar
+os botões de direção recalcula os próximos horários automaticamente.
+
+Agendas e filas ficam no IndexedDB do navegador. O modelo do YouTube já separa
+o futuro fluxo de `publishAt` (upload privado seguido da data de publicação) da
+interface. Instagram e TikTok oferecem configuração, seleção, fila e
+planejamento local, mas continuam explicitamente sem publicação automática por
+API nesta versão. A Biblioteca identifica cada arquivo como vídeo horizontal
+16:9 ou Short/Reel/TikTok vertical 9:16 e exibe filtros de disponibilidade,
+agendamento, publicação e plataforma.
+
 Última ferramenta no guia da página inicial e no menu Ferramentas de Análise.
 Selecione de 2 a 8 palavras distintas, verifique a existência ou use sugestões
 (4–8 palavras frequentes ou frequentes sem stopwords PT/EN). Candidatos a nomes

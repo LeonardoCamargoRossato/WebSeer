@@ -1,0 +1,5 @@
+import assert from 'node:assert/strict';
+import {nextPublishingSlots,generateQueue,reorderQueue} from '../src/publishing/scheduleEngine.ts';
+const from=new Date('2026-10-27T12:00:00.000Z'),slots=[{weekday:2,time:'19:00'},{weekday:4,time:'19:00'},{weekday:6,time:'19:00'}],dates=nextPublishingSlots(slots,10,'America/Sao_Paulo',from);
+assert.equal(dates.length,10);assert.equal(dates[0],'2026-10-27T22:00:00.000Z');assert.equal(dates[1],'2026-10-29T22:00:00.000Z');assert.equal(dates[3],'2026-11-03T22:00:00.000Z');
+const queue=generateQueue(['a','b','c'],slots,'youtube','video','schedule','America/Sao_Paulo',from);assert.deepEqual(queue.map(item=>item.videoId),['a','b','c']);assert.deepEqual(queue.map(item=>item.position),[0,1,2]);const reordered=reorderQueue(queue,2,0,slots,from);assert.deepEqual(reordered.map(item=>item.videoId),['c','a','b']);assert.deepEqual(reordered.map(item=>item.scheduledAt),dates.slice(0,3));console.log('PASS: Sao Paulo recurring slots, automatic multi-week distribution, selection order and queue reordering with date recalculation.');
