@@ -1,3 +1,5 @@
+import {pngWithAttribution} from '../../reports/exportAttribution';
+import {download} from '../../reports/reportUtils';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import WordCloud from 'wordcloud';
 import VisualizationToolbar from '../common/VisualizationToolbar';
@@ -55,7 +57,7 @@ export default function WordCloudGraph({data,palette,customColor,background,shap
   const shellRef=useRef<HTMLDivElement|null>(null);
   const canvasRef=useRef<HTMLCanvasElement|null>(null);
   const viewportRef=useRef<HTMLDivElement|null>(null);
-  const [zoom,setZoom]=useState(100);
+  const [zoom,setZoom]=useState(100);const [exportError,setExportError]=useState('');
   const [offset,setOffset]=useState({x:0,y:0});
   const drag=useRef<{x:number;y:number;ox:number;oy:number}|null>(null);
 
@@ -105,10 +107,10 @@ export default function WordCloudGraph({data,palette,customColor,background,shap
   },[data,colors,background,shape,rotation,fontFamily,scale,sizeContrast,wordSpacing,palette]);
 
   const fit=()=>{setZoom(100);setOffset({x:0,y:0})};
-  const exportPng=()=>{const canvas=canvasRef.current;if(!canvas)return;const a=document.createElement('a');a.href=canvas.toDataURL('image/png');a.download='web-seer-word-cloud.png';a.click()};
+  const exportPng=async()=>{const canvas=canvasRef.current;if(!canvas)return;setExportError('');try{download(await pngWithAttribution(canvas),'web-seer-word-cloud.png')}catch(error){setExportError(`Não foi possível exportar a imagem. / Could not export image. ${error instanceof Error?error.message:String(error)}`)}};
 
   return <div className="vizShell" ref={shellRef}>
-    <VisualizationToolbar zoom={zoom} onZoomOut={()=>setZoom(z=>Math.max(40,z-10))} onZoomIn={()=>setZoom(z=>Math.min(300,z+10))} onFit={fit} onExport={exportPng} targetRef={shellRef}/>
+    {exportError&&<p className="notice errorNotice" role="alert">{exportError}</p>}<VisualizationToolbar zoom={zoom} onZoomOut={()=>setZoom(z=>Math.max(40,z-10))} onZoomIn={()=>setZoom(z=>Math.min(300,z+10))} onFit={fit} onExport={exportPng} targetRef={shellRef}/>
     <div
       ref={viewportRef}
       className={`viz wordCloudViz ${drag.current?'isDragging':''}`}

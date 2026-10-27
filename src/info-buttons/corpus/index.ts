@@ -6,8 +6,8 @@ export default {
       "Document Corpus"
     ],
     "body": [
-      "Arraste um arquivo ou cole texto. Confira nome e tipo, configure a leitura e clique em converter/aplicar. O documento e suas análises ficam relacionados no Histórico deste navegador.",
-      "Drop a file or paste text. Check its name and type, configure reading and convert/apply. The document and its analyses are linked in this browser’s History."
+      "Arraste um arquivo ou cole texto. Confira nome e tipo, configure a leitura e clique em converter/aplicar. O documento e suas análises ficam relacionados no Histórico deste navegador. A conversão prepara o texto no IndexedDB, sem abrir prévia. Ao clicar em uma aba de análise, apenas aquela ferramenta carrega o texto salvo; sair da aba libera a cópia da ferramenta. Se o armazenamento estiver bloqueado, a sessão mantém uma cópia temporária.",
+      "Drop a file or paste text. Check its name and type, configure reading and convert/apply. The document and its analyses are linked in this browser’s History. Conversion prepares text in IndexedDB without opening a preview. Clicking an analysis tab loads saved text for that tool only; leaving releases its copy. If storage is blocked, a temporary session copy is retained."
     ]
   },
   "converter": {

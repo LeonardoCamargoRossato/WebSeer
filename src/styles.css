@@ -181,3 +181,4 @@ select:disabled{color:var(--text-secondary)!important}
 .applicationArticleHero figure{width:100%}
 @media(min-width:650px) and (max-width:1050px){.applicationExamples .useCaseGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:750px){.guideArticleAside{grid-row:auto}}
+.toolCorpusLoading{padding:30px;margin:12px 0;min-height:240px}.toolCorpusLoading h1{font-size:28px;margin:0 0 20px}.toolCorpusLoading>strong{display:block;overflow-wrap:anywhere}.toolCorpusLoading p{color:#64738b;line-height:1.8;margin:16px 0}.toolCorpusLoading .archiveActions{margin-top:20px}

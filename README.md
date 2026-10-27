@@ -93,6 +93,12 @@ Abrir e confirmar a conversão; isso corrige documentos extraídos pela versão
 antiga. O registro salvo é atualizado. Novos uploads usam hash SHA-256 para
 reutilizar o registro quando o mesmo arquivo for importado novamente.
 
+A conversão prepara o documento no IndexedDB, sem abrir uma prévia do texto nem
+montar análises. Cada aba de análise lê a revisão salva somente ao ser aberta e
+libera o texto carregado ao sair. Fora das ferramentas, mantém-se apenas o resumo
+do documento selecionado. Se o IndexedDB estiver indisponível, o texto fica na
+sessão, com aviso. O PDF original continua disponível para visualização sob demanda.
+
 O dashboard mostra palavras, tokens distintos, páginas, frequências, metadados,
 marcadores e sinais heurísticos para revisão. Não apresenta uma porcentagem de
 acerto inventada: medir acurácia exige uma transcrição de referência. Capítulos
@@ -297,7 +303,20 @@ de arquivamento. As ilustrações conceituais foram geradas com IA e usam um ún
 atlas estático (`public/images/application-guides.png`), reaproveitado por CSS.
 As referências são leituras metodológicas, não validações de resultados do app.
 
+A galeria e os seis guias oferecem **Escutar narração da página**, com pausar,
+retomar e parar. A leitura usa SpeechSynthesis, respeita PT-BR/EN-US e termina ao
+sair da página; a voz depende do navegador/sistema e pode precisar de conexão.
+Não lê documentos nem aparece nas ferramentas de análise. O componente fica em
+`src/components/accessibility/PageNarration.tsx`.
+
+Imagens, relatórios e novas animações geradas recebem **By Leonardo Camargo
+Rossato** e a URL do portfólio. HTML e SVG também permitem clicar no link;
+PNG/GIF/MP4 mostram a identificação visual. Arquivos originais não são alterados.
+Veja a [cobertura e as limitações das assinaturas](docs/EXPORT_ATTRIBUTION.md).
+
 O gráfico de armazenamento destaca categorias por mouse, teclado ou toque.
 Fatias a partir de 32% têm rótulos internos; entre 12% e 32%, chamadas externas;
 as menores não recebem rótulos permanentes. A legenda mantém todos os valores.
 `npm run test:guides` e `npm run test:library` verificam os fluxos no navegador.
+`npm run test:narration` e `npm run test:attribution` verificam controles de voz e
+identificação nas exportações, respectivamente.

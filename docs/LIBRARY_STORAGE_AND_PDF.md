@@ -51,6 +51,33 @@ de espaço. Vídeos já publicados exigem nova versão/novo envio; o link origin
 
 ## Investigação do travamento na segunda conversão
 
+### Texto carregado apenas na ferramenta aberta
+
+A confirmação da conversão arquiva a revisão e conserva apenas seu resumo em
+`availableCorpus`. O card de prévia do texto ativo foi removido; o campo de colar
+texto também não recebe uma cópia automática do PDF. A visualização do PDF
+original continua sob demanda.
+
+Ao clicar em uma aba de análise, `loadForTool` lê sua revisão no IndexedDB e
+monta somente aquela ferramenta. Ao sair, `releaseTool` limpa a referência ao
+texto e desmonta a análise. Leituras atrasadas são ignoradas após navegação ou
+troca de documento. Os parâmetros das pesquisas permanecem independentes desse
+ciclo, inclusive ao retomar uma pesquisa salva. A seleção lembrada no
+localStorage contém identificadores e resumo, nunca o texto completo.
+
+Se o armazenamento falhar, há uma cópia de sessão para continuar trabalhando e
+um aviso explica a limitação. Nesse caso, sair da ferramenta libera sua análise,
+mas a cópia de sessão precisa permanecer até outro documento ser selecionado ou
+a página ser fechada. Não prometemos redução da RAM total do navegador.
+
+O teste de reconversão verifica zero leituras de snapshots e zero novas pesquisas
+enquanto o Corpus está aberto, carregamento ao escolher cada ferramenta e
+desmontagem ao sair. Três conversões do Gênesis em produção terminaram com heap
+JS após GC de aproximadamente 4,41 / 4,76 / 4,89 MB no ambiente de teste. A
+revisão/documento/cache permaneceram deduplicados.
+
+### Outras fontes de retenção investigadas
+
 O código não contém bloqueio deliberado à segunda conversão. Identificamos:
 
 1. Um iframe nativo de PDF era montado mesmo dentro de `<details>` fechado.

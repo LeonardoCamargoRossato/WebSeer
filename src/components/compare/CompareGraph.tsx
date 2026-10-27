@@ -1,3 +1,4 @@
+import {svgWithAttribution} from '../../reports/exportAttribution';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import * as d3 from 'd3';
 import {scaleLinear} from 'd3';
@@ -52,7 +53,7 @@ export default function CompareGraph({a,b,weightBy,queryA,queryB}:Props){
  };
  const exportSvg=()=>{
    const svg=svgRef.current;if(!svg)return;
-   const blob=new Blob([svg.outerHTML],{type:'image/svg+xml'}); const u=URL.createObjectURL(blob);
+   const blob=svgWithAttribution(svg); const u=URL.createObjectURL(blob);
    const el=document.createElement('a');el.href=u;el.download='web-seer-compare.svg';el.click();URL.revokeObjectURL(u);
  };
 

@@ -17,7 +17,9 @@
     "test:youtube": "node tests/youtube-browser.cjs",
     "test:auth": "node tests/google-auth-browser.cjs",
     "test:library-audio": "node tests/library-trash-audio-browser.cjs",
-    "test:guides": "node tests/application-guides-browser.cjs"
+    "test:guides": "node tests/application-guides-browser.cjs",
+    "test:narration": "node tests/guide-narration-browser.cjs",
+    "test:attribution": "node tests/export-attribution-browser.cjs"
   },
   "dependencies": {
     "@mediabunny/aac-encoder": "^1.62.1",

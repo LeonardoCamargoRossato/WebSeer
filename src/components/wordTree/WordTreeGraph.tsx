@@ -1,3 +1,4 @@
+import {svgWithAttribution} from '../../reports/exportAttribution';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import * as d3 from 'd3';
 import VisualizationToolbar from '../common/VisualizationToolbar';
@@ -61,7 +62,7 @@ export default function WordTreeGraph({result,onSelect}:{result:WordTreeResult;o
     d3.select(svg).transition().duration(220).call(behavior.transform,tr);
   };
   const exportSvg=()=>{
-    const svg=svgRef.current;if(!svg)return;const blob=new Blob([svg.outerHTML],{type:'image/svg+xml'});
+    const svg=svgRef.current;if(!svg)return;const blob=svgWithAttribution(svg);
     const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='web-seer-word-tree.svg';a.click();URL.revokeObjectURL(url);
   };
 

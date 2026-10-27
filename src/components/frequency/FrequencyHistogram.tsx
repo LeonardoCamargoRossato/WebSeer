@@ -1,3 +1,5 @@
+import {AUTHOR_BYLINE,PORTFOLIO_URL} from '../../config/author';
+import {svgWithAttribution} from '../../reports/exportAttribution';
 import {useEffect,useRef,useState} from 'react';
 import * as d3 from 'd3';
 import VisualizationToolbar from '../common/VisualizationToolbar';
@@ -44,11 +46,11 @@ export default function FrequencyHistogram({data,orientation,onOpenWordTree}:Pro
 
   const exportSvg=()=>{
     const svg=svgRef.current;if(!svg)return;
-    const blob=new Blob([svg.outerHTML],{type:'image/svg+xml'});
+    const blob=svgWithAttribution(svg);
     const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='web-seer-frequencies.svg';a.click();URL.revokeObjectURL(url);
   };
   const exportCsv=()=>{
-    const rows=[['word','frequency','percentage'],...data.map(d=>[d.word,String(d.count),d.percentage.toFixed(6)])];
+    const rows=[['word','frequency','percentage','created_by','portfolio_url'],...data.map(d=>[d.word,String(d.count),d.percentage.toFixed(6),AUTHOR_BYLINE,PORTFOLIO_URL])];
     const blob=new Blob([rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n')],{type:'text/csv;charset=utf-8'});
     const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='web-seer-frequencies.csv';a.click();URL.revokeObjectURL(url);
   };

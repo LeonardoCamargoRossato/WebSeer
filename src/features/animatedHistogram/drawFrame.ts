@@ -1,3 +1,4 @@
+import {AUTHOR_BYLINE,PORTFOLIO_URL} from '../../config/author.ts';
 import type {PageCounts} from './countPages';
 export const WIDTH=960,HEIGHT=540;
 const colors=['#315fba','#dc8157','#6e59a5','#298775','#c89b36','#b7587c','#5a99b0','#697384'];
@@ -9,5 +10,5 @@ export function drawFrame(ctx:CanvasRenderingContext2D|OffscreenCanvasRenderingC
  ctx.textAlign='right';ctx.font='bold 22px sans-serif';ctx.fillStyle='#315fba';ctx.fillText(`${english?'Page':'Página'} ${row.page}`,WIDTH-32,44);ctx.textAlign='left';
  ctx.font='12px sans-serif';for(let i=0;i<=4;i++){const x=left+(right-left)*i/4;ctx.strokeStyle='#dce3ee';ctx.beginPath();ctx.moveTo(x,top-15);ctx.lineTo(x,top+rowHeight*terms.length);ctx.stroke();ctx.fillStyle='#718099';ctx.fillText(String(Math.round(totalMax*i/4)),x-5,top+rowHeight*terms.length+22)}
  terms.forEach((term,i)=>{const position=positions?.[i]??before.indexOf(i)+(after.indexOf(i)-before.indexOf(i))*eased;const y=top+position*rowHeight;ctx.fillStyle='#20324c';ctx.textAlign='right';ctx.font='bold 16px sans-serif';ctx.fillText(term,left-14,y+22);ctx.textAlign='left';ctx.fillStyle=colors[i];const width=(right-left)*values[i]/totalMax;if(width>0){ctx.beginPath();ctx.roundRect(left,y+4,width,rowHeight-10,Math.min(10,width/2,(rowHeight-10)/2));ctx.fill();}ctx.fillStyle='#20324c';ctx.font='14px sans-serif';ctx.fillText(String(Math.round(values[i])),left+(right-left)*values[i]/totalMax+8,y+22)});
- ctx.fillStyle='#315fba';ctx.fillRect(32,490,(WIDTH-64)*((index+progress)/rows.length),3);ctx.font='11px sans-serif';ctx.fillStyle='#718099';ctx.fillText('Leonardo Camargo Rossato | LCR · WebSeer',32,518);ctx.textAlign='right';ctx.fillText(english?'Cumulative occurrences':'Ocorrências acumuladas',WIDTH-32,518);ctx.textAlign='left';
+ ctx.fillStyle='#315fba';ctx.fillRect(32,490,(WIDTH-64)*((index+progress)/rows.length),3);ctx.font='11px sans-serif';ctx.fillStyle='#718099';ctx.fillText(AUTHOR_BYLINE,32,516);ctx.font='9px sans-serif';ctx.fillText(PORTFOLIO_URL,32,534);ctx.font='11px sans-serif';ctx.textAlign='right';ctx.fillText(english?'Cumulative occurrences':'Ocorrências acumuladas',WIDTH-32,518);ctx.textAlign='left';
 }

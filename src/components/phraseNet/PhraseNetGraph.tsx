@@ -1,3 +1,4 @@
+import {svgWithAttribution} from '../../reports/exportAttribution';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import * as d3 from 'd3';
 import type {Edge} from '../../utils/phraseMatcher';
@@ -79,7 +80,7 @@ export default function PhraseNetGraph({edges,clusterStrength=55,maxNodes=40}:{e
    const tr=d3.zoomIdentity.translate(W/2,H/2).scale(k).translate(-(box.x+box.width/2),-(box.y+box.height/2));
    d3.select(svg).transition().duration(220).call(behavior.transform,tr);
  };
- const exportSvg=()=>{if(!ref.current)return;const blob=new Blob([ref.current.outerHTML],{type:'image/svg+xml'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='web-seer-phrase-net.svg';a.click();URL.revokeObjectURL(url)};
+ const exportSvg=()=>{if(!ref.current)return;const blob=svgWithAttribution(ref.current);const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='web-seer-phrase-net.svg';a.click();URL.revokeObjectURL(url)};
 
  return <div className="vizShell" ref={shellRef}>
    <VisualizationToolbar zoom={zoom} onZoomOut={()=>changeZoom(.85)} onZoomIn={()=>changeZoom(1.18)} onFit={fit} onExport={exportSvg} targetRef={shellRef}/>

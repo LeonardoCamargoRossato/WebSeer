@@ -26,7 +26,7 @@ const path=require('node:path');
  console.log('All six tools save reports and visual snapshots; document original and version folders: PASS');
  await page.locator('.reportsFolder > summary').click();await page.locator('.reportToolFolder').filter({has:page.locator('summary').filter({hasText:'Árvore de Palavras'})}).locator('summary').first().click();
  await page.getByRole('button',{name:/Árvore de Palavras · versão 1/}).click();
- const htmlPromise=page.waitForEvent('download');await page.locator('.savedReport').getByRole('button',{name:'Baixar relatório (HTML / imprimir em PDF)',exact:true}).click();const html=await htmlPromise;const content=await fs.readFile(await html.path(),'utf8');assert.match(content,/Alice/);assert.match(content,/data:image\/svg\+xml;base64/);
+ const htmlPromise=page.waitForEvent('download');await page.locator('.savedReport').getByRole('button',{name:'Baixar relatório (HTML / imprimir em PDF)',exact:true}).click();const html=await htmlPromise;const content=await fs.readFile(await html.path(),'utf8');assert.match(content,/Alice/);assert.match(content,/By Leonardo Camargo Rossato/);assert.match(content,/data:image\/svg\+xml;base64/);
  const before=(await read('runs')).length;
  await page.locator('.savedReport').getByRole('button',{name:'Retomar pesquisa',exact:true}).click();await page.locator('.wordTreeLayout svg').waitFor();assert.equal(await page.locator('.wordTreeSearch input').inputValue(),'Alice');assert.equal(await page.locator('.wordTreeControls select').nth(1).inputValue(),'5');await page.waitForTimeout(650);assert.equal((await read('runs')).length,before);
  await page.getByRole('button',{name:'Refazer pesquisa',exact:true}).click();await page.waitForTimeout(650);assert.equal((await read('runs')).length,before+1);

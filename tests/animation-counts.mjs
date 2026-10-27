@@ -12,7 +12,7 @@ assert.throws(()=>countPages(docs,['Deus']));assert.throws(()=>countPages(docs,[
 assert.equal(suggestions('o o o Deus Deus Eva',true)[0].word,'deus');assert.equal(suggestions('o o o Deus Deus Eva')[0].word,'o');
 assert.ok(nameSuggestions('Alice encontrou Eva. Alice falou com Eva.').some(n=>n.word==='Alice'));
 const labels=[];const ctx={fillRect(){},fillText(text,x,y){labels.push({text,y})},roundRect(){},fill(){},beginPath(){},moveTo(){},lineTo(){},stroke(){}};
-drawFrame(ctx,['Deus','disse','Eva'],rows,1,1,'Test');assert.ok(labels.find(x=>x.text==='disse').y<labels.find(x=>x.text==='Deus').y);
+drawFrame(ctx,['Deus','disse','Eva'],rows,1,1,'Test');const byline=labels.find(label=>label.text==='By Leonardo Camargo Rossato'),portfolio=labels.find(label=>label.text.includes('https://leonardocamargorossato.github.io/'));assert.ok(byline&&portfolio);assert.ok(byline.y>502&&portfolio.y>byline.y+10&&portfolio.y<540);assert.ok(labels.find(x=>x.text==='disse').y<labels.find(x=>x.text==='Deus').y);
 console.log('PASS: exact words, accents, case, page counts, cumulative counts, empty pages, selection limits, name candidates and ranking crossover.');
 
 // Keep eight bars and axis labels above the independent progress line.
