@@ -36,8 +36,8 @@ export default {
       "Video format"
     ],
     "body": [
-      "MP4 usa H.264/WebCodecs quando disponível e serve para o futuro upload ao YouTube. GIF é uma imagem animada sem áudio. Ambos são gerados localmente.",
-      "MP4 uses H.264/WebCodecs when available and suits future YouTube uploads. GIF is an animated image without audio. Both are generated locally."
+      "MP4 usa H.264/WebCodecs quando disponível e pode ser enviado ao YouTube pelo painel de vídeo. GIF é uma imagem animada sem áudio. Ambos são gerados localmente.",
+      "MP4 uses H.264/WebCodecs when available and can be uploaded to YouTube from the video panel. GIF is an animated image without audio. Both are generated locally."
     ]
   },
   "speed": {
@@ -60,4 +60,5 @@ export default {
       "Drag to inspect a page/section. Play animates progression; Restart returns to the beginning. Downloads use the speed selected during generation."
     ]
   }
+,"rankMotion":{"title":["Tempo de ultrapassagem","Overtake duration"],"body":["Controla apenas a troca vertical de posições, de 0,6 a 1,5 segundo. A contagem e o crescimento horizontal continuam na velocidade por página, sem pausa durante a ultrapassagem.","Controls only vertical rank movement, from 0.6 to 1.5 seconds. Counts and horizontal growth continue at the page speed without pausing during overtakes."]}
 } satisfies Record<string,InfoTopic>;

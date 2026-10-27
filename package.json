@@ -12,6 +12,7 @@
     "test:history": "node tests/history-browser.cjs",
     "test:animation": "node tests/animation-browser.cjs",
     "test:video": "node tests/video-studio-browser.cjs",
+    "test:youtube": "node tests/youtube-browser.cjs",
     "test:auth": "node tests/google-auth-browser.cjs"
   },
   "dependencies": {

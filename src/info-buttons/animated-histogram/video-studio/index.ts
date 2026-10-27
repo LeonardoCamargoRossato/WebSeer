@@ -6,8 +6,8 @@ export default {
       "Video creation panel"
     ],
     "body": [
-      "Prepare título, descrição e opções para publicação futura. Salvar rascunho guarda tudo localmente; exportar JSON não publica. Baixar vídeo usa o título atual e o prefixo WebSeer.",
-      "Prepare metadata for future publication. Save draft stores it locally; JSON export does not publish. Download video uses the current title with the WebSeer prefix."
+      "Prepare metadados, sincronize o canal e clique em Postar no YouTube para enviar o MP4. Salvar rascunho guarda as configurações localmente. Depois do envio, o link e o status ficam no painel e no Histórico; processamento do YouTube pode continuar.",
+      "Prepare metadata, connect a channel and click Post to YouTube to upload MP4. Save draft stores settings locally. After upload, the link and status remain in the panel and History; YouTube processing may continue."
     ]
   },
   "title": {
@@ -76,8 +76,8 @@ export default {
       "Visibility"
     ],
     "body": [
-      "Privado: apenas você e pessoas convidadas. Não listado: qualquer pessoa com o link pode assistir e repassar, sem busca pública normal. Público: pode aparecer em buscas e no canal. Padrão: privado.",
-      "Private: only you and invited people. Unlisted: anyone with the link can watch and share, without normal public search listing. Public: may appear in searches and on your channel. Default: private."
+      "Privado: só você e pessoas convidadas. Não listado: qualquer pessoa com o link pode assistir e repassar, sem busca pública normal. Público: pode aparecer em buscas e no canal. Padrão: Não listado. Confira a visibilidade retornada pelo YouTube, pois configurações ou restrições do canal podem interferir.",
+      "Private: you and invited people only. Unlisted: anyone with the link can watch and share, without normal public search listing. Public: may appear in searches and on your channel. Default: Unlisted. Check returned visibility because channel settings or restrictions can affect it."
     ]
   },
   "kids": {
@@ -116,8 +116,8 @@ export default {
       "Schedule publication"
     ],
     "body": [
-      "Opcional. Defina data/hora futura no fuso mostrado e mantenha o vídeo privado. É apenas planejamento local: não agenda no YouTube nesta versão.",
-      "Optional. Set a future date/time in the displayed timezone and keep the video private. This is local planning only; it does not schedule on YouTube yet."
+      "Defina data e hora futuras no fuso mostrado e mantenha o vídeo Privado. O agendamento é enviado ao YouTube junto ao upload. Revise o horário antes de postar.",
+      "Set a future date/time in the displayed timezone and keep the video Private. The schedule is sent to YouTube with the upload. Review the time before posting."
     ]
   },
   "date": {
@@ -166,8 +166,8 @@ export default {
       "Notify subscribers"
     ],
     "body": [
-      "Planeja notificar inscritos quando o upload futuro permitir. O YouTube e as preferências de cada usuário determinam a entrega; não garante notificação.",
-      "Plans subscriber notifications when future upload supports it. YouTube and individual preferences determine delivery; it is not guaranteed."
+      "Solicita notificar inscritos no upload. O YouTube e as preferências dos usuários determinam a entrega. Não listado/Privado não funcionam como uma publicação pública no feed.",
+      "Requests subscriber notifications on upload. YouTube and user preferences determine delivery. Unlisted/Private do not act like a public feed publication."
     ]
   },
   "playlists": {
@@ -206,8 +206,8 @@ export default {
       "Thumbnail"
     ],
     "body": [
-      "Imagem de capa escolhida pelo espectador antes de assistir. Carregue PNG/JPEG até 2 MB, preferencialmente 1280×720. Clique para ampliar, trocar, excluir ou baixar. Salve o rascunho para persistir no navegador.",
-      "Cover image seen before watching. Upload PNG/JPEG up to 2 MB, preferably 1280×720. Click to enlarge, replace, remove or download. Save the draft to persist it locally."
+      "Imagem de capa antes de assistir. PNG/JPEG até 2 MB, preferencialmente 1280×720. Clique para ampliar, trocar ou excluir; salve o rascunho. Depois do upload, a miniatura é enviada ao YouTube se o canal tiver permissão para miniaturas personalizadas. Uma falha não apaga o vídeo.",
+      "Cover image shown before watching. PNG/JPEG up to 2 MB, preferably 1280×720. Click to enlarge, replace or remove; save the draft. After upload, the thumbnail is sent if the channel permits custom thumbnails. Failure does not delete the video."
     ]
   },
   "soundtrack": {
@@ -268,6 +268,36 @@ export default {
     "body": [
       "Inclui as contagens acumuladas finais para as palavras escolhidas. São dados descritivos do corpus, sem interpretação por IA.",
       "Includes final cumulative counts for selected words. These are descriptive corpus data without AI interpretation."
+    ]
+  },
+  "youtubeConnect": {
+    "title": [
+      "Sincronizar canal",
+      "Connect channel"
+    ],
+    "body": [
+      "O Google pede autorização YouTube separada do login. Você pode continuar com a conta atual ou escolher outra conta/canal de marca. O canal retornado pela API é o destino real. A permissão youtube.force-ssl permite gerenciar vídeos, miniaturas e playlists; não dá acesso aos seus PDFs. O token expira e fica apenas na memória.",
+      "Google requests YouTube authorization separately from sign-in. Continue with your current account or choose another account/Brand Account. The API-returned channel is the actual destination. youtube.force-ssl permits managing videos, thumbnails and playlists, not your PDFs. The expiring token stays in memory."
+    ]
+  },
+  "youtubePlaylist": {
+    "title": [
+      "Playlist de destino",
+      "Target playlist"
+    ],
+    "body": [
+      "Escolha uma playlist do canal autorizado ou Sem playlist. A lista inclui playlists privadas que a autorização permita ler; use Carregar mais para paginar. O vídeo é enviado primeiro e depois adicionado à playlist. Se essa etapa falhar, o vídeo e seu link são mantidos.",
+      "Choose a playlist owned by the authorized channel or No playlist. The list includes private playlists permitted by the authorization; use Load more for pagination. The video uploads first, then is added to the playlist. If that step fails, the uploaded video and link are retained."
+    ]
+  },
+  "youtubePublish": {
+    "title": [
+      "Postar no YouTube",
+      "Post to YouTube"
+    ],
+    "body": [
+      "Envia o MP4 ao canal confirmado com os metadados revisados. Não listado é o padrão para novos vídeos; confira a visibilidade efetiva retornada pelo YouTube. A porcentagem representa bytes enviados; o YouTube ainda pode processar o vídeo. O ID e o link ficam no rascunho e no Histórico. Falhas de playlist/miniatura não repetem o upload.",
+      "Uploads MP4 to the confirmed channel with reviewed metadata. Unlisted is the new-video default; check actual visibility returned by YouTube. Percentage measures uploaded bytes; YouTube may still process the video. ID and link stay in the draft and History. Playlist/thumbnail failures do not re-upload the video."
     ]
   }
 } satisfies Record<string,InfoTopic>;

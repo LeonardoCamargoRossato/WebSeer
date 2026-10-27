@@ -33,13 +33,14 @@ como configuração real.
   emissor, audiência, validade e nonce). Nome/foto só aparecem após verificação.
 - O ID token fica em sessionStorage para revalidar a sessão ao recarregar; não
   fica em IndexedDB, relatórios, rascunhos ou localStorage. Expiração e Sair limpam
-  a sessão. Nenhum access token/refresh token do YouTube é solicitado ou guardado.
+  a sessão. O login de identidade não solicita tokens YouTube. A autorização separada
+  no painel de vídeo mantém seu access token apenas em memória; não usa refresh token.
 - Este é um login de identidade no frontend. Não cria backend de autorização,
   sincronização, isolamento de documentos por conta ou armazenamento em nuvem.
   A biblioteca IndexedDB permanece compartilhada neste navegador/origem.
-- Entrar com Google não identifica nem autoriza um canal do YouTube. O futuro
-  upload precisará de OAuth próprio/incremental com escopo YouTube, seleção e
-  confirmação do canal. Nenhum upload é implementado aqui.
+- Entrar com Google não identifica nem autoriza um canal do YouTube. O painel de
+  vídeo oferece autorização OAuth YouTube separada e confirmação do canal.
+  Consulte [YOUTUBE.md](YOUTUBE.md) para configuração e publicação.
 
 Referências:
 - https://developers.google.com/identity/gsi/web/guides/overview

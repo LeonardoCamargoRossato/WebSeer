@@ -20,3 +20,11 @@ const ticks=[],rects=[],rounded=[];const layoutCtx={fillRect(x,y,w,h){rects.push
 drawFrame(layoutCtx,['a','b','c','d','e','f','g','h'],[{page:1,counts:[8,7,6,5,4,3,2,1],cumulative:[8,7,6,5,4,3,2,1]}],0,1,'Layout');
 const progressLine=rects.find(r=>r.h===3);assert.ok(Math.max(...ticks)+12<progressLine.y);assert.equal(rounded.length,8);assert.ok(rounded.every(r=>r.r>0&&r.r<=10&&r.y+r.h<progressLine.y));
 console.log('PASS: eight rounded bars and axis labels do not overlap the progress line.');
+
+const {advanceRank,sampleRank}=await import('../src/features/animatedHistogram/rankMotion.ts');
+let motion=advanceRank(undefined,[10,8],0,1).motion;
+const crossing=advanceRank(motion,[10,11],.1,1);motion=crossing.motion;assert.deepEqual(crossing.positions,[0,1]);
+const during=advanceRank(motion,[13,18],.6,1);assert.ok(during.positions[0]>0&&during.positions[0]<1);assert.ok(during.positions[1]>0&&during.positions[1]<1);
+assert.deepEqual(sampleRank(during.motion,1.2),[1,0]);
+const reverse=advanceRank(during.motion,[25,20],.7,1);assert.deepEqual(reverse.positions,sampleRank(during.motion,.7));assert.deepEqual(sampleRank(reverse.motion,1.8),[0,1]);
+console.log('PASS: independent rank overtakes continue smoothly across advancing counts and reverse without jumps.');

@@ -205,9 +205,9 @@ Após gerar uma animação salva, abra **Painel de criação de vídeo** pelo re
 ou **Preparar vídeo para YouTube** no relatório do Histórico. O painel edita
 título, descrição, tags, categoria, idioma dos metadados/áudio, privacidade,
 agendamento, público infantil, conteúdo sintético, promoção paga, licença,
-incorporação, estatísticas públicas e notificação de inscritos. Playlists,
-restrição etária e legendas ficam como planejamento separado; miniaturas/agente
-de imagens e upload são etapas futuras, não implementadas.
+incorporação, estatísticas públicas e notificação de inscritos. Playlists são selecionadas no menu de sincronização; miniaturas são enviadas após o vídeo.
+Restrição etária e legendas ficam como notas locais; geração de imagens por IA
+ainda não está implementada.
 
 Sugestões automáticas usam nome do documento, palavras, contagens e páginas,
 sem GPT. Os presets de público infantil/licença/sintético são editáveis e devem ser revisados. A
@@ -223,13 +223,14 @@ https://github.com/googleapis/google-api-python-client/blob/main/googleapiclient
 `notifySubscribers` é parâmetro de query, não corpo do vídeo. Miniaturas,
 playlists e legendas usam operações separadas; estado de processamento,
 estatísticas e ID do canal não são campos de preenchimento de `videos.insert`.
-Categorias/permissões reais do canal serão revalidadas na implementação de upload.
+O canal real do token é revalidado antes do upload.
 
 O IndexedDB passou para versão 3, preservando documentos/pesquisas/relatórios e
 adicionando `videoDrafts`. Cada rascunho referencia uma versão de animação sem
 duplicar o arquivo. O salvamento é explícito; alterações não salvas são protegidas
 por confirmação ao navegar/sair. Um GIF pode ter metadados preparados, mas o
-futuro upload requer MP4. Login e rascunhos não autorizam envio ao YouTube.
+upload requer MP4. O envio exige autorização YouTube separada do login,
+confirmação do destino e clique em Postar no YouTube.
 
 `npm test` inclui validação/sugestões de metadados. Com preview em 4173,
 `CHROMIUM_PATH=/usr/bin/chromium npm run test:video` valida painel, rascunhos,
@@ -237,7 +238,7 @@ exportação, proteção contra perda de edição, layout e ausência de upload.
 O teste de autenticação usa somente provedor simulado; veja o guia de configuração.
 
 Novos rascunhos já abrem com título/descrição/tags locais em PT-BR, categoria
-Entretenimento, privacidade privada, público infantil Não (editável), licença
+Entretenimento, visibilidade Não listado, público infantil Não (editável), licença
 YouTube Standard, sem fala e data da animação. Edições de rascunhos existentes
 são preservadas. “Configurações de agentes” permite configurar e inspecionar o
 assistente por regras locais v1; não há modelo de IA nem envio a provedores.
@@ -256,3 +257,13 @@ suas escolhas. Downloads de animação usam `WebSeer - <título do vídeo>.mp4/g
 no Histórico usa-se o título salvo, ou a sugestão inicial se não houver rascunho.
 O vídeo tem barras com raio de até 10 px, eixo separado do progresso e geração
 a 24 fps, com duração por página ajustável a partir de aproximadamente 0,083 s.
+
+
+A publicação no YouTube está disponível no painel de vídeo: autorize o canal,
+escolha a playlist e use **Postar no YouTube**. Uploads confirmados recebem link
+no painel e em **Histórico → Vídeos**, com filtros de enviados/não enviados.
+Novos rascunhos usam **Não listado**; o painel mostra a visibilidade efetivamente
+retornada pelo YouTube. Veja [a configuração e os testes](docs/YOUTUBE.md). O login Google
+continua independente da autorização de canal. A contagem da animação avança na
+velocidade por página enquanto as ultrapassagens verticais usam duração própria
+(0,6 / 1 / 1,5 s), sem pausar contagens.
